@@ -98,6 +98,9 @@ public interface RpcSystem extends RpcSystemUtils, AutoCloseable {
         while (iterator.hasNext()) {
             final RpcSystemLoader next = iterator.next();
             try {
+                /**
+                 *  next为：{@link org.apache.flink.runtime.rpc.akka.AkkaRpcSystemLoader}
+                 */
                 return next.loadRpcSystem(config);
             } catch (Exception e) {
                 loadError = ExceptionUtils.firstOrSuppressed(e, loadError);

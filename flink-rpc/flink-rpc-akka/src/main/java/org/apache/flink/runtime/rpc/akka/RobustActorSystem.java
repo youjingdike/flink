@@ -32,7 +32,7 @@ import scala.Option;
 import scala.concurrent.ExecutionContext;
 
 /**
- * {@link ActorSystemImpl}} which has a configurable {@link
+ * {@link ActorSystemImpl} which has a configurable {@link
  * java.lang.Thread.UncaughtExceptionHandler}.
  *
  * <p>The class is abstract because instances need to override {@link

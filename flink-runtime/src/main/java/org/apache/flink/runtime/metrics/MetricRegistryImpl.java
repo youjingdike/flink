@@ -212,6 +212,9 @@ public class MetricRegistryImpl implements MetricRegistry {
 
             try {
                 metricQueryServiceRpcService = rpcService;
+                /**
+                 * 就是一个RpcEndpoint
+                 */
                 queryService =
                         MetricQueryService.createMetricQueryService(
                                 rpcService, resourceID, maximumFramesize);

@@ -294,8 +294,12 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
         LOG.info("Initializing cluster services.");
 
         synchronized (lock) {
+            /**
+             * rpcSystem是{@link org.apache.flink.runtime.rpc.akka.CleanupOnCloseRpcSystem}实例，实际持有的是 {@link org.apache.flink.runtime.rpc.akka.AkkaRpcSystem}的实例
+             * 用于创建AkkaRpcService实例，持有ActorSystem实例
+             */
             rpcSystem = RpcSystem.load(configuration);
-
+            /*RpcService*/
             commonRpcService =
                     RpcUtils.createRemoteRpcService(
                             rpcSystem,
