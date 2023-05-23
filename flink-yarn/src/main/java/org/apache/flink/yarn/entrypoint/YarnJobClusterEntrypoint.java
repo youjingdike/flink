@@ -53,6 +53,7 @@ public class YarnJobClusterEntrypoint extends JobClusterEntrypoint {
             createDispatcherResourceManagerComponentFactory(Configuration configuration)
                     throws IOException {
         return DefaultDispatcherResourceManagerComponentFactory.createJobComponentFactory(
+                //创建第一个工厂：YarnResourceManagerFactory
                 YarnResourceManagerFactory.getInstance(),
                 FileJobGraphRetriever.createFrom(
                         configuration,
