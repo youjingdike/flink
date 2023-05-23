@@ -923,6 +923,7 @@ public class WebMonitorEndpoint<T extends RestfulGateway> extends RestServerEndp
 
     @Override
     public void startInternal() throws Exception {
+        // TODO 开始选举，去找回调方法
         leaderElectionService.start(this);
         startExecutionGraphCacheCleanupTask();
 

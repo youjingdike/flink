@@ -111,8 +111,15 @@ public class ZooKeeperLeaderElectionDriver implements LeaderElectionDriver, Lead
                         this::retrieveLeaderInformationFromZooKeeper);
 
         running = true;
-
+        //设置回调监听
         leaderLatch.addListener(this);
+        // TODO 开始选举
+        /*
+        TODO 选举开始后，不就会接收到响应：
+         1.如果竞选成功，则回调该类的isLeader方法
+         2.如果竞选失败，则回调该类的notLeader方法
+         每一个竞选者对应一个竞选Driver
+         */
         leaderLatch.start();
 
         cache.start();

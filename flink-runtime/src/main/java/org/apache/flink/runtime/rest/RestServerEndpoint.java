@@ -171,10 +171,11 @@ public abstract class RestServerEndpoint implements AutoCloseableAsync {
                     state == State.CREATED, "The RestServerEndpoint cannot be restarted.");
 
             log.info("Starting rest endpoint.");
-
+            // TODO 路由器，解析请求寻找对应Handler
             final Router router = new Router();
             final CompletableFuture<String> restAddressFuture = new CompletableFuture<>();
 
+            // TODO 初始化Handlers
             handlers = initializeHandlers(restAddressFuture);
 
             /* sort the handlers such that they are ordered the following:
@@ -183,10 +184,13 @@ public abstract class RestServerEndpoint implements AutoCloseableAsync {
              * /jobs/:jobid
              * /jobs/:jobid/config
              * /:*
+             *
+             * TODO 排序，为了确认URL和Handler的一一对应的关系，不应出现一对多的情况
              */
             Collections.sort(handlers, RestHandlerUrlComparator.INSTANCE);
-
+            // TODO 确认唯一性方法
             checkAllEndpointsAndHandlersAreUnique(handlers);
+            // TODO 注册Handler
             handlers.forEach(handler -> registerHandler(router, handler, log));
 
             ChannelInitializer<SocketChannel> initializer =
@@ -229,7 +233,7 @@ public abstract class RestServerEndpoint implements AutoCloseableAsync {
                                     .addLast(new PipelineErrorHandler(log, responseHeaders));
                         }
                     };
-
+            // TODO 启动Netty Server 端引导程序
             NioEventLoopGroup bossGroup =
                     new NioEventLoopGroup(
                             1, new ExecutorThreadFactory("flink-rest-server-netty-boss"));
@@ -252,7 +256,7 @@ public abstract class RestServerEndpoint implements AutoCloseableAsync {
                 throw new IllegalArgumentException(
                         "Invalid port range definition: " + restBindPortRange);
             }
-
+            // 此处为防止端口冲突，将逐一尝试端口是否可用
             int chosenPort = 0;
             while (portsIterator.hasNext()) {
                 try {
@@ -297,9 +301,10 @@ public abstract class RestServerEndpoint implements AutoCloseableAsync {
             restBaseUrl = new URL(determineProtocol(), advertisedAddress, port, "").toString();
 
             restAddressFuture.complete(restBaseUrl);
-
+            // 修改状态
             state = State.RUNNING;
-
+            //TODO 到此为止，WebMonitorEndpoint的netty服务端就启动好了
+            // TODO 启动其他基础服务
             startInternal();
         }
     }

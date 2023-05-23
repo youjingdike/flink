@@ -84,7 +84,22 @@ public class DefaultLeaderElectionService
         Preconditions.checkState(leaderContender == null, "Contender was already set.");
 
         synchronized (lock) {
+            /*
+             TODO
+              1.在WebMonitorEndpoint中调用时，此contender为MiniDispatcherRestEndpoint
+              2.在ResourceManager中调用时,contender为ResourceManager
+              3.在DispatcherRunner中调用时,contender为DispatcherRunner
+             */
+            /*
+            TODO 有4中竞选者类型，LeaderContender有4种情况:
+             1.Dispatcher = DefaultDispatcherRunner
+             2.JobMaster = JobMasterServiceLeadershipRunner
+             3.ResourceManager = ResourceManagerServiceImpl
+             4.WebMonitorEndpoint = WebMonitorEndpoint
+             */
             leaderContender = contender;
+
+            // TODO 此处创建选举对象 leaderElectionDriver
             leaderElectionDriver =
                     leaderElectionDriverFactory.createLeaderElectionDriver(
                             this,
@@ -123,6 +138,7 @@ public class DefaultLeaderElectionService
         synchronized (lock) {
             if (hasLeadership(leaderSessionID)) {
                 if (running) {
+                    // TODO 确认Leader信息，并将节点信息写入zk
                     confirmLeaderInformation(leaderSessionID, leaderAddress);
                 } else {
                     if (LOG.isDebugEnabled()) {
@@ -207,7 +223,13 @@ public class DefaultLeaderElectionService
                             leaderContender.getDescription(),
                             issuedLeaderSessionID);
                 }
-
+                /*
+                TODO 有4种竞选者类型，LeaderContender有4种情况:
+                 1.Dispatcher = DefaultDispatcherRunner
+                 2.JobMaster = JobMasterServiceLeadershipRunner
+                 3.ResourceManager = ResourceManagerServiceImpl
+                 4.WebMonitorEndpoint = WebMonitorEndpoint
+                 */
                 leaderContender.grantLeadership(issuedLeaderSessionID);
             } else {
                 if (LOG.isDebugEnabled()) {
