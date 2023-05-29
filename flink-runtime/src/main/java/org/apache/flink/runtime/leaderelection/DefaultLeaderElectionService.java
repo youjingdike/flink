@@ -95,7 +95,7 @@ public class DefaultLeaderElectionService
              1.Dispatcher = DefaultDispatcherRunner
              2.JobMaster = JobMasterServiceLeadershipRunner
              3.ResourceManager = ResourceManagerServiceImpl
-             4.WebMonitorEndpoint = WebMonitorEndpoint
+             4.WebMonitorEndpoint = MiniDispatcherRestEndpoint
              */
             leaderContender = contender;
 

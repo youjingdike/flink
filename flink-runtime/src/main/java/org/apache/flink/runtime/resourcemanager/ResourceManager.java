@@ -233,8 +233,9 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
 
             registerMetrics();
 
+            // TODO 启动两个心跳服务
             startHeartbeatServices();
-
+            // TODO SlotManager是存在于ResourceManager中用来管理所有TaskManager汇报和注册的Slot的工作的
             slotManager.start(
                     getFencingToken(), getMainThreadExecutor(), new ResourceActionsImpl());
 
@@ -1105,13 +1106,15 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
     }
 
     private void startHeartbeatServices() {
+        // TODO ResourceManager(主节点)维持和从节点的心跳
+        // TODO ResourceManager(逻辑JobManager)维持和TaskExecutor(TaskManager)的心跳
         taskManagerHeartbeatManager =
                 heartbeatServices.createHeartbeatManagerSender(
                         resourceId,
                         new TaskManagerHeartbeatListener(),
                         getMainThreadExecutor(),
                         log);
-
+        // TODO ResourceManager维持和JobMaster(主控程序)的心跳
         jobManagerHeartbeatManager =
                 heartbeatServices.createHeartbeatManagerSender(
                         resourceId,

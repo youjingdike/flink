@@ -250,6 +250,12 @@ public class ResourceManagerServiceImpl implements ResourceManagerService, Leade
         stopLeaderResourceManager();
 
         this.leaderSessionID = newLeaderSessionID;
+
+        /* TODO ActiveResourceManager 内部持有：
+            YarnResourceManagerDriver对象
+            SlotManager对象
+            JobLeaderIdService对象
+        * */
         this.leaderResourceManager =
                 resourceManagerFactory.createResourceManager(
                         rmProcessContext, newLeaderSessionID, ResourceID.generate());

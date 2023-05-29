@@ -88,6 +88,10 @@ public abstract class ResourceManagerFactory<T extends ResourceIDRetrievable> {
             ResourceManagerProcessContext context, UUID leaderSessionId, ResourceID resourceId)
             throws Exception {
 
+        /* TODO ResourceManagerRuntimeServices 内部持有：
+            SlotManager对象
+            JobLeaderIdService对象
+        * */
         final ResourceManagerRuntimeServices resourceManagerRuntimeServices =
                 createResourceManagerRuntimeServices(
                         context.getRmRuntimeServicesConfig(),
@@ -95,7 +99,11 @@ public abstract class ResourceManagerFactory<T extends ResourceIDRetrievable> {
                         context.getHighAvailabilityServices(),
                         SlotManagerMetricGroup.create(
                                 context.getMetricRegistry(), context.getHostname()));
-
+        /* TODO ActiveResourceManager 内部持有：
+            YarnResourceManagerDriver对象
+            SlotManager对象
+            JobLeaderIdService对象
+        * */
         return createResourceManager(
                 context.getRmConfig(),
                 resourceId,

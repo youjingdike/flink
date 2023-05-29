@@ -316,7 +316,7 @@ public class DefaultDispatcherResourceManagerComponentFactory
     public static DefaultDispatcherResourceManagerComponentFactory createJobComponentFactory(
             ResourceManagerFactory<?> resourceManagerFactory, JobGraphRetriever jobGraphRetriever) {
         return new DefaultDispatcherResourceManagerComponentFactory(
-                //TODO 第二个工厂:DefaultDispatcherRunnerFactory -> JobDispatcherLeaderProcessFactoryFactory
+                //TODO 第二个工厂:DefaultDispatcherRunnerFactory 内部引用 JobDispatcherLeaderProcessFactoryFactory
                 DefaultDispatcherRunnerFactory.createJobRunner(jobGraphRetriever),
                 //TODO 第一个工厂:YarnResourceManagerFactory
                 resourceManagerFactory,

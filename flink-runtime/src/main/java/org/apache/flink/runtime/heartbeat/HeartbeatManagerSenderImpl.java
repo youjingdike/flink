@@ -75,6 +75,7 @@ public class HeartbeatManagerSenderImpl<I, O> extends HeartbeatManagerImpl<I, O>
                 heartbeatMonitorFactory);
 
         this.heartbeatPeriod = heartbeatPeriod;
+        // TODO 线程池定时调用this的run方法,由于delay为0L,立即执行
         mainThreadExecutor.schedule(this, 0L, TimeUnit.MILLISECONDS);
     }
 
@@ -82,10 +83,12 @@ public class HeartbeatManagerSenderImpl<I, O> extends HeartbeatManagerImpl<I, O>
     public void run() {
         if (!stopped) {
             log.debug("Trigger heartbeat request.");
+            // 详细说明待后面解析完从节点后在介绍，其他类会调用注册动作
             for (HeartbeatMonitor<O> heartbeatMonitor : getHeartbeatTargets().values()) {
+                // TODO 发送心跳
                 requestHeartbeat(heartbeatMonitor);
             }
-
+            //等heartbeatPeriod=10s之后,再次执行this的run方法,来控制上面的for循环每隔10s执行一次,实现心跳的无限循环
             getMainThreadExecutor().schedule(this, heartbeatPeriod, TimeUnit.MILLISECONDS);
         }
     }
