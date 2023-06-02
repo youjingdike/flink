@@ -232,12 +232,18 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
     }
 
     private void startRecoveredJobs() {
+        // 遍历recoveredJobs，per-job模式，是有一个jobGraph
         for (JobGraph recoveredJob : recoveredJobs) {
+            //启动任务
             runRecoveredJob(recoveredJob);
         }
         recoveredJobs.clear();
     }
 
+    /**
+     * 开始启动任务
+     * @param recoveredJob
+     */
     private void runRecoveredJob(final JobGraph recoveredJob) {
         checkNotNull(recoveredJob);
         try {

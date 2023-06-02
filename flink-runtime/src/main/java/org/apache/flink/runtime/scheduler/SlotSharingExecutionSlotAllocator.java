@@ -130,7 +130,9 @@ class SlotSharingExecutionSlotAllocator implements ExecutionSlotAllocator {
                                         slotSharingStrategy::getExecutionSlotSharingGroup));
         Map<ExecutionSlotSharingGroup, SharedSlot> slots =
                 executionsByGroup.keySet().stream()
-                        .map(group -> getOrAllocateSharedSlot(group, sharedSlotProfileRetriever))
+                        .map(group ->
+                                //step.11;
+                                getOrAllocateSharedSlot(group, sharedSlotProfileRetriever))
                         .collect(
                                 Collectors.toMap(
                                         SharedSlot::getExecutionSlotSharingGroup,
@@ -210,6 +212,7 @@ class SlotSharingExecutionSlotAllocator implements ExecutionSlotAllocator {
                                     physicalSlotRequestId,
                                     slotProfile,
                                     slotWillBeOccupiedIndefinitely);
+                    //step.12;
                     CompletableFuture<PhysicalSlot> physicalSlotFuture =
                             slotProvider
                                     .allocatePhysicalSlot(physicalSlotRequest)

@@ -147,6 +147,7 @@ public class PipelinedRegionSchedulingStrategy implements SchedulingStrategy {
                 IterableUtils.toStream(schedulingTopology.getAllPipelinedRegions())
                         .filter(this::isSourceRegion)
                         .collect(Collectors.toSet());
+        //step.6;
         maybeScheduleRegions(sourceRegions);
     }
 
@@ -212,7 +213,9 @@ public class PipelinedRegionSchedulingStrategy implements SchedulingStrategy {
                         schedulingTopology, regions);
 
         final Map<ConsumedPartitionGroup, Boolean> consumableStatusCache = new HashMap<>();
+        // 遍历regions，按region调度
         for (SchedulingPipelinedRegion region : regionsSorted) {
+            //step.7;
             maybeScheduleRegion(region, consumableStatusCache);
         }
     }
@@ -231,6 +234,7 @@ public class PipelinedRegionSchedulingStrategy implements SchedulingStrategy {
         final List<ExecutionVertexDeploymentOption> vertexDeploymentOptions =
                 SchedulingStrategyUtils.createExecutionVertexDeploymentOptions(
                         regionVerticesSorted.get(region), id -> deploymentOption);
+        //step.8;
         schedulerOperations.allocateSlotsAndDeploy(vertexDeploymentOptions);
     }
 

@@ -265,12 +265,13 @@ public class DeclarativeSlotPoolService implements SlotPoolService {
 
         resourceRequirementServiceConnectionManager.connect(
                 resourceRequirements ->
+                        //step.23; 向Flink RM发送RPC请求，获取slots资源
                         resourceManagerGateway.declareRequiredResources(
                                 jobMasterId, resourceRequirements, rpcTimeout));
 
         declareResourceRequirements(declarativeSlotPool.getResourceRequirements());
     }
-
+    //step.19;
     private void declareResourceRequirements(Collection<ResourceRequirement> resourceRequirements) {
         assertHasBeenStarted();
 

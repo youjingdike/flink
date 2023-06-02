@@ -235,10 +235,11 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
 
             // TODO 启动两个心跳服务
             startHeartbeatServices();
+            // TODO 启动两个定时服务
             // TODO SlotManager是存在于ResourceManager中用来管理所有TaskManager汇报和注册的Slot的工作的
             slotManager.start(
                     getFencingToken(), getMainThreadExecutor(), new ResourceActionsImpl());
-
+            //初始化Container
             initialize();
         } catch (Exception e) {
             handleStartResourceManagerServicesException(e);
@@ -514,6 +515,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
 
         if (null != jobManagerRegistration) {
             if (Objects.equals(jobMasterId, jobManagerRegistration.getJobMasterId())) {
+                //step.24;
                 slotManager.processResourceRequirements(resourceRequirements);
 
                 return CompletableFuture.completedFuture(Acknowledge.get());
@@ -1251,6 +1253,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
         @Override
         public boolean allocateResource(WorkerResourceSpec workerResourceSpec) {
             validateRunsInMainThread();
+            //step.30;
             return startNewWorker(workerResourceSpec);
         }
 

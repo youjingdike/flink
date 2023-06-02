@@ -55,6 +55,7 @@ public class YarnJobClusterEntrypoint extends JobClusterEntrypoint {
         return DefaultDispatcherResourceManagerComponentFactory.createJobComponentFactory(
                 //创建第一个工厂：YarnResourceManagerFactory
                 YarnResourceManagerFactory.getInstance(),
+                //JobGraphRetriever:从文件中恢复JobGraph
                 FileJobGraphRetriever.createFrom(
                         configuration,
                         YarnEntrypointUtils.getUsrLibDir(configuration).orElse(null)));

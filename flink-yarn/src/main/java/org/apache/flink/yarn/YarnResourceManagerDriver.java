@@ -163,15 +163,19 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
     protected void initializeInternal() throws Exception {
         final YarnContainerEventHandler yarnContainerEventHandler = new YarnContainerEventHandler();
         try {
+            // 创建并启动AMRMClientAsync，联系YARN RM
             resourceManagerClient =
                     yarnResourceManagerClientFactory.createResourceManagerClient(
                             yarnHeartbeatIntervalMillis, yarnContainerEventHandler);
             resourceManagerClient.init(yarnConfig);
             resourceManagerClient.start();
 
+            // AM启动后向YARN RM注册自己，这样可以通过YARN跳转到Flink web ui页面
             final RegisterApplicationMasterResponse registerApplicationMasterResponse =
                     registerApplicationMaster();
+
             getContainersFromPreviousAttempts(registerApplicationMasterResponse);
+
             taskExecutorProcessSpecContainerResourcePriorityAdapter =
                     new TaskExecutorProcessSpecContainerResourcePriorityAdapter(
                             registerApplicationMasterResponse.getMaximumResourceCapability(),
@@ -181,7 +185,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
         } catch (Exception e) {
             throw new ResourceManagerException("Could not start resource manager client.", e);
         }
-
+        // 创建并启动NMClientAsync，用于联系YARN NM
         nodeManagerClient =
                 yarnNodeManagerClientFactory.createNodeManagerClient(yarnContainerEventHandler);
         nodeManagerClient.init(yarnConfig);
@@ -259,6 +263,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
         } else {
             final Priority priority = priorityAndResourceOpt.get().getPriority();
             final Resource resource = priorityAndResourceOpt.get().getResource();
+            //step.33;请求获取container资源,申请成功后，回调：YarnContainerEventHandler.onContainersAllocated
             resourceManagerClient.addContainerRequest(getContainerRequest(resource, priority));
 
             // make sure we transmit the request fast and receive fast news of granted allocations
@@ -323,6 +328,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
                         .iterator();
 
         int numAccepted = 0;
+        ////step.35; 遍历containers
         while (containerIterator.hasNext() && pendingContainerRequestIterator.hasNext()) {
             final Container container = containerIterator.next();
             final AMRMClient.ContainerRequest pendingRequest =
@@ -336,7 +342,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
             if (pendingRequestResourceFutures.isEmpty()) {
                 requestResourceFutures.remove(taskExecutorProcessSpec);
             }
-
+            //step.36;
             startTaskExecutorInContainerAsync(
                     container, taskExecutorProcessSpec, resourceId, requestResourceFuture);
             removeContainerRequest(pendingRequest);
@@ -380,6 +386,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
         final CompletableFuture<ContainerLaunchContext> containerLaunchContextFuture =
                 FutureUtils.supplyAsync(
                         () ->
+                                //step.37; TODO 创建ContainerLaunchContext请求对象，指定启动的入口类YarnTaskExecutorRunner.class及参数
                                 createTaskExecutorLaunchContext(
                                         resourceId,
                                         container.getNodeId().getHost(),
@@ -390,6 +397,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
                 containerLaunchContextFuture.handleAsync(
                         (context, exception) -> {
                             if (exception == null) {
+                                //step.38; 通过YARN NM Client发送请求，启动container运行TaskManager进程
                                 nodeManagerClient.startContainerAsync(container, context);
                                 requestResourceFuture.complete(
                                         new YarnWorkerNode(container, resourceId));
@@ -604,6 +612,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
 
                         for (Map.Entry<Priority, List<Container>> entry :
                                 groupContainerByPriority(containers).entrySet()) {
+                            //step.34;
                             onContainersOfPriorityAllocated(entry.getKey(), entry.getValue());
                         }
 

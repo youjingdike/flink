@@ -125,6 +125,11 @@ class TaskExecutorManager implements AutoCloseable {
 
         this.resourceActions = Preconditions.checkNotNull(resourceActions);
         this.mainThreadExecutor = mainThreadExecutor;
+
+        /*
+        TODO 定时任务checkTaskManagerTimeoutsAndRedundancy
+         每隔30秒检查一次闲置的TaskManager
+         */
         taskManagerTimeoutsAndRedundancyCheck =
                 scheduledExecutor.scheduleWithFixedDelay(
                         () ->
@@ -268,7 +273,7 @@ class TaskExecutorManager implements AutoCloseable {
             // requested resource profile is unfulfillable
             return Optional.empty();
         }
-
+        //step.29;
         if (!resourceActions.allocateResource(defaultWorkerResourceSpec)) {
             // resource cannot be allocated
             return Optional.empty();

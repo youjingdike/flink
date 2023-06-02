@@ -210,6 +210,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
                 "Starting scheduling with scheduling strategy [{}]",
                 schedulingStrategy.getClass().getName());
         transitionToRunning();
+        //step.5;
         schedulingStrategy.startScheduling();
     }
 
@@ -395,7 +396,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
                 executionVertexVersioner.recordVertexModifications(verticesToDeploy);
 
         transitionToScheduled(verticesToDeploy);
-
+        //step.9;
         final List<SlotExecutionVertexAssignment> slotExecutionVertexAssignments =
                 allocateSlots(executionVertexDeploymentOptions);
 
@@ -435,6 +436,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
 
     private List<SlotExecutionVertexAssignment> allocateSlots(
             final List<ExecutionVertexDeploymentOption> executionVertexDeploymentOptions) {
+        //step.10;
         return executionSlotAllocator.allocateSlotsFor(
                 executionVertexDeploymentOptions.stream()
                         .map(ExecutionVertexDeploymentOption::getExecutionVertexId)

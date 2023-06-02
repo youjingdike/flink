@@ -56,6 +56,9 @@ public class ResourceManagerServiceImpl implements ResourceManagerService, Leade
     private final ResourceManagerFactory<?> resourceManagerFactory;
     private final ResourceManagerProcessContext rmProcessContext;
 
+    /**
+     * HA模式为：DefaultLeaderElectionService，非HA为：StandaloneLeaderElectionService
+     */
     private final LeaderElectionService leaderElectionService;
     private final FatalErrorHandler fatalErrorHandler;
     private final Executor ioExecutor;
@@ -266,6 +269,7 @@ public class ResourceManagerServiceImpl implements ResourceManagerService, Leade
                 .thenComposeAsync(
                         (ignore) -> {
                             synchronized (lock) {
+                                // 开启ResourceManager
                                 return startResourceManagerIfIsLeader(newLeaderResourceManager);
                             }
                         },
@@ -288,6 +292,7 @@ public class ResourceManagerServiceImpl implements ResourceManagerService, Leade
     private CompletableFuture<Boolean> startResourceManagerIfIsLeader(
             ResourceManager<?> resourceManager) {
         if (isLeader(resourceManager)) {
+            //开启
             resourceManager.start();
             forwardTerminationFuture(resourceManager);
             return resourceManager.getStartedFuture().thenApply(ignore -> true);

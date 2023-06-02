@@ -68,7 +68,7 @@ class DefaultDeclareResourceRequirementServiceConnectionManager
             checkNotClosed();
             if (isConnected()) {
                 currentResourceRequirements = resourceRequirements;
-
+                //step.20;
                 triggerResourceRequirementsSubmission(
                         Duration.ofMillis(1L),
                         Duration.ofMillis(10000L),
@@ -84,7 +84,9 @@ class DefaultDeclareResourceRequirementServiceConnectionManager
             ResourceRequirements resourceRequirementsToSend) {
 
         FutureUtils.retryWithDelay(
-                () -> sendResourceRequirements(resourceRequirementsToSend),
+                () ->
+                        //step.21;
+                        sendResourceRequirements(resourceRequirementsToSend),
                 new ExponentialBackoffRetryStrategy(
                         Integer.MAX_VALUE, sleepOnError, maxSleepOnError),
                 throwable -> !(throwable instanceof CancellationException),
@@ -96,6 +98,7 @@ class DefaultDeclareResourceRequirementServiceConnectionManager
         synchronized (lock) {
             if (isConnected()) {
                 if (resourceRequirementsToSend == currentResourceRequirements) {
+                    //step.22;
                     return service.declareResourceRequirements(resourceRequirementsToSend);
                 } else {
                     LOG.debug("Newer resource requirements found. Stop sending old requirements.");

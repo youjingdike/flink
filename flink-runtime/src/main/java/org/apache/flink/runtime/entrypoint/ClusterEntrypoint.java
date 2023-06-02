@@ -287,7 +287,6 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
              1. Dispatcher = DefaultDispatcherRunnerFactory 内部引用 JobDispatcherLeaderProcessFactoryFactory，
                 生产DispatcherRunnerLeaderElectionLifecycleManager 内部引用
                    DefaultDispatcherRunner
-
              2. ResourceManager = YarnResourceManagerFactory， 生产YarnResourceManagerDriver
              3. WebMonitorEndpoint = JobRestEndpointFactory，生产 MiniDispatcherRestEndpoint
              */
