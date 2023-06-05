@@ -51,6 +51,7 @@ public class JobDispatcherLeaderProcessFactoryFactory
         final JobGraph jobGraph;
 
         try {
+            //TODO 从文件中恢复jobGraph
             jobGraph =
                     jobGraphRetriever.retrieveJobGraph(
                             partialDispatcherServices.getConfiguration());

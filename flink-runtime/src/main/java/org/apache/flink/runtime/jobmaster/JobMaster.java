@@ -387,7 +387,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
     @Override
     protected void onStart() throws JobMasterException {
         try {
-            //step.1;
+            // TODO step.1; 开始调度作业
             startJobExecution();
         } catch (Exception e) {
             final JobMasterException jobMasterException =

@@ -736,6 +736,7 @@ public class Task
             FlinkSecurityManager.monitorUserSystemExitForCurrentThread();
             try {
                 // now load and instantiate the task's invokable code
+                //step.12;
                 invokable =
                         loadAndInstantiateInvokable(
                                 userCodeClassLoader.asClassLoader(), nameOfInvokableClass, env);
@@ -763,6 +764,7 @@ public class Task
             // make sure the user code classloader is accessible thread-locally
             executingThread.setContextClassLoader(userCodeClassLoader.asClassLoader());
 
+            //step.13;
             restoreAndInvoke(invokable);
 
             // make sure, we enter the catch block if the task leaves the invoke() method due
