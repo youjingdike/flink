@@ -58,6 +58,7 @@ class DefaultDispatcherGatewayServiceFactory
 
         final Dispatcher dispatcher;
         try {
+            // TODO JobDispatcherFactory，创建MiniDispatcher
             dispatcher =
                     dispatcherFactory.createDispatcher(
                             rpcService,

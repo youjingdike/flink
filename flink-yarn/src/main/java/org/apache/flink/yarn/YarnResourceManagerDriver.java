@@ -269,6 +269,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
             // make sure we transmit the request fast and receive fast news of granted allocations
             resourceManagerClient.setHeartbeatInterval(containerRequestHeartbeatIntervalMillis);
 
+            //这里保存taskExecutorProcessSpec与requestResourceFuture的一个队列关系
             requestResourceFutures
                     .computeIfAbsent(taskExecutorProcessSpec, ignore -> new LinkedList<>())
                     .add(requestResourceFuture);
@@ -335,6 +336,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
                     pendingContainerRequestIterator.next();
             final ResourceID resourceId = getContainerResourceId(container);
 
+            //step.39; 这里获取到CompletableFuture传入startTaskExecutorInContainerAsync(),后续会处理该CompletableFuture
             final CompletableFuture<YarnWorkerNode> requestResourceFuture =
                     pendingRequestResourceFutures.poll();
             Preconditions.checkState(requestResourceFuture != null);
@@ -397,7 +399,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
                 containerLaunchContextFuture.handleAsync(
                         (context, exception) -> {
                             if (exception == null) {
-                                //step.38; 通过YARN NM Client发送请求，启动container运行TaskManager进程
+                                //step.38; 通过YARN NM Client发送请求，启动container运行TaskManager进程，申请结束；
                                 nodeManagerClient.startContainerAsync(container, context);
                                 requestResourceFuture.complete(
                                         new YarnWorkerNode(container, resourceId));

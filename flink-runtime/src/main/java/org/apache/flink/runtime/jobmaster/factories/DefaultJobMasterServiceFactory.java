@@ -91,6 +91,7 @@ public class DefaultJobMasterServiceFactory implements JobMasterServiceFactory {
 
         return CompletableFuture.supplyAsync(
                 FunctionUtils.uncheckedSupplier(
+                        // TODO
                         () -> internalCreateJobMasterService(leaderSessionId, onCompletionActions)),
                 executor);
     }
@@ -120,7 +121,7 @@ public class DefaultJobMasterServiceFactory implements JobMasterServiceFactory {
                         new DefaultExecutionDeploymentTracker(),
                         DefaultExecutionDeploymentReconciler::new,
                         initializationTimestamp);
-
+        // TODO 开启JobMaster,开始调度task作业；
         jobMaster.start();
 
         return jobMaster;

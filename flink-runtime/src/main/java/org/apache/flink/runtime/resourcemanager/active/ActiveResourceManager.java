@@ -284,7 +284,7 @@ public class ActiveResourceManager<WorkerType extends ResourceIDRetrievable>
         // which keeps the main thread busy.
         final CompletableFuture<WorkerType> requestResourceFuture =
                 startWorkerCoolDown.thenCompose(
-                        //step.32;
+                        //step.32;YarnResourceManagerDriver
                         (ignore) -> resourceManagerDriver.requestResource(taskExecutorProcessSpec));
         FutureUtils.assertNoException(
                 requestResourceFuture.handle(

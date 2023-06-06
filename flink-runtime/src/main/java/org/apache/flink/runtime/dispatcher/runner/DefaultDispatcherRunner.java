@@ -116,9 +116,11 @@ public final class DefaultDispatcherRunner implements DispatcherRunner, LeaderCo
     private void startNewDispatcherLeaderProcess(UUID leaderSessionID) {
         stopDispatcherLeaderProcess();
 
+        //JobDispatcherLeaderProcess
         dispatcherLeaderProcess = createNewDispatcherLeaderProcess(leaderSessionID);
 
         final DispatcherLeaderProcess newDispatcherLeaderProcess = dispatcherLeaderProcess;
+        // TODO 在这里启动JobDispatcherLeaderProcess,调用到JobDispatcherLeaderProcess.onStart()
         FutureUtils.assertNoException(
                 previousDispatcherLeaderProcessTerminationFuture.thenRun(
                         newDispatcherLeaderProcess::start));
@@ -134,6 +136,7 @@ public final class DefaultDispatcherRunner implements DispatcherRunner, LeaderCo
     }
 
     private DispatcherLeaderProcess createNewDispatcherLeaderProcess(UUID leaderSessionID) {
+        // JobDispatcherLeaderProcess
         final DispatcherLeaderProcess newDispatcherLeaderProcess =
                 dispatcherLeaderProcessFactory.create(leaderSessionID);
 

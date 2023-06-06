@@ -50,7 +50,7 @@ public class DefaultDispatcherRunnerFactory implements DispatcherRunnerFactory {
             PartialDispatcherServices partialDispatcherServices)
             throws Exception {
 
-        //JobDispatcherLeaderProcessFactory
+        //TODO 创建JobDispatcherLeaderProcessFactory, 在这个过程里从文件中恢复jobGraph
         final DispatcherLeaderProcessFactory dispatcherLeaderProcessFactory =
                 dispatcherLeaderProcessFactoryFactory.createFactory(
                         jobGraphStoreFactory,

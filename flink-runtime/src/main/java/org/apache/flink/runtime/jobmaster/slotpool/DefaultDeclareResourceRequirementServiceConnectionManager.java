@@ -98,7 +98,7 @@ class DefaultDeclareResourceRequirementServiceConnectionManager
         synchronized (lock) {
             if (isConnected()) {
                 if (resourceRequirementsToSend == currentResourceRequirements) {
-                    //step.22;
+                    //step.22; 在这里判断是否停止申请资源
                     return service.declareResourceRequirements(resourceRequirementsToSend);
                 } else {
                     LOG.debug("Newer resource requirements found. Stop sending old requirements.");

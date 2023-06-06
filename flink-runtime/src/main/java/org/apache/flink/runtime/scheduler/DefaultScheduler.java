@@ -210,7 +210,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
                 "Starting scheduling with scheduling strategy [{}]",
                 schedulingStrategy.getClass().getName());
         transitionToRunning();
-        //step.5;
+        //step.5;PipelinedRegionSchedulingStrategy
         schedulingStrategy.startScheduling();
     }
 
@@ -407,7 +407,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
                         slotExecutionVertexAssignments);
 
         // TODO 在step9;申请好slots资源后，开始部署Task
-        //step.1;
+        //step.1; 部署task
         waitForAllSlotsAndDeploy(deploymentHandles);
     }
 
@@ -438,7 +438,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
 
     private List<SlotExecutionVertexAssignment> allocateSlots(
             final List<ExecutionVertexDeploymentOption> executionVertexDeploymentOptions) {
-        //step.10;
+        //step.10;SlotSharingExecutionSlotAllocator
         return executionSlotAllocator.allocateSlotsFor(
                 executionVertexDeploymentOptions.stream()
                         .map(ExecutionVertexDeploymentOption::getExecutionVertexId)

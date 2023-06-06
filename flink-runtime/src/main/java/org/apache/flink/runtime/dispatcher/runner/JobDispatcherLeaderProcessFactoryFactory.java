@@ -51,7 +51,7 @@ public class JobDispatcherLeaderProcessFactoryFactory
         final JobGraph jobGraph;
 
         try {
-            //TODO 从文件中恢复jobGraph
+            //TODO FileJobGraphRetriever从文件中恢复jobGraph
             jobGraph =
                     jobGraphRetriever.retrieveJobGraph(
                             partialDispatcherServices.getConfiguration());
@@ -59,6 +59,7 @@ public class JobDispatcherLeaderProcessFactoryFactory
             throw new FlinkRuntimeException("Could not retrieve the JobGraph.", e);
         }
 
+        //TODO 使用DefaultDispatcherGatewayServiceFactory，内部持有JobDispatcherFactory对象，用于创建MiniDispatcher对象
         final DefaultDispatcherGatewayServiceFactory defaultDispatcherServiceFactory =
                 new DefaultDispatcherGatewayServiceFactory(
                         JobDispatcherFactory.INSTANCE, rpcService, partialDispatcherServices);

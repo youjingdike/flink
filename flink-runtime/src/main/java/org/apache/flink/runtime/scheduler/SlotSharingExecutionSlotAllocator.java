@@ -212,7 +212,7 @@ class SlotSharingExecutionSlotAllocator implements ExecutionSlotAllocator {
                                     physicalSlotRequestId,
                                     slotProfile,
                                     slotWillBeOccupiedIndefinitely);
-                    //step.12;
+                    //step.12;PhysicalSlotProviderImpl
                     CompletableFuture<PhysicalSlot> physicalSlotFuture =
                             slotProvider
                                     .allocatePhysicalSlot(physicalSlotRequest)

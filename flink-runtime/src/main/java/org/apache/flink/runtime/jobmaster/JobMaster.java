@@ -731,6 +731,8 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
                                 }
 
                                 slotPoolService.registerTaskManager(taskManagerId);
+
+                                //TODO 将taskManager注册进来
                                 registeredTaskManagers.put(
                                         taskManagerId,
                                         Tuple2.of(taskManagerLocation, taskExecutorGateway));
@@ -964,7 +966,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
     }
 
     private void startScheduling() {
-        //step.3;
+        //step.3;SchedulerBase
         schedulerNG.startScheduling();
     }
 

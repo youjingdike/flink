@@ -49,6 +49,7 @@ public enum JobDispatcherFactory implements DispatcherFactory {
         final ClusterEntrypoint.ExecutionMode executionMode =
                 ClusterEntrypoint.ExecutionMode.valueOf(executionModeValue);
 
+        //TODO 设置JobMasterServiceLeadershipRunnerFactory
         return new MiniDispatcher(
                 rpcService,
                 fencingToken,

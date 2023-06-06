@@ -420,6 +420,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
     public CompletableFuture<RegistrationResponse> registerTaskExecutor(
             final TaskExecutorRegistration taskExecutorRegistration, final Time timeout) {
 
+        // TODO 获取taskExecutorGateway对象
         CompletableFuture<TaskExecutorGateway> taskExecutorGatewayFuture =
                 getRpcService()
                         .connect(
@@ -515,7 +516,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
 
         if (null != jobManagerRegistration) {
             if (Objects.equals(jobMasterId, jobManagerRegistration.getJobMasterId())) {
-                //step.24;
+                //step.24;我们看DeclarativeSlotManager
                 slotManager.processResourceRequirements(resourceRequirements);
 
                 return CompletableFuture.completedFuture(Acknowledge.get());
@@ -1253,7 +1254,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
         @Override
         public boolean allocateResource(WorkerResourceSpec workerResourceSpec) {
             validateRunsInMainThread();
-            //step.30;
+            //step.30;ActiveResourceManager
             return startNewWorker(workerResourceSpec);
         }
 

@@ -292,7 +292,7 @@ public class DeclarativeSlotPoolBridge extends DeclarativeSlotPoolService implem
 
     private void internalRequestNewAllocatedSlot(PendingRequest pendingRequest) {
         pendingRequests.put(pendingRequest.getSlotRequestId(), pendingRequest);
-        //step.18;
+        //step.18;DefaultDeclarativeSlotPool
         getDeclarativeSlotPool()
                 .increaseResourceRequirementsBy(
                         ResourceCounter.withResource(pendingRequest.getResourceProfile(), 1));

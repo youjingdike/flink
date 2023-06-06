@@ -140,6 +140,7 @@ public class SlotManagerConfiguration {
                 configuration.getBoolean(
                         ResourceManagerOptions.TASK_MANAGER_RELEASE_WHEN_RESULT_CONSUMED);
 
+        // TODO slots 分配策略
         boolean evenlySpreadOutSlots =
                 configuration.getBoolean(ClusterOptions.EVENLY_SPREAD_OUT_SLOTS_STRATEGY);
         final SlotMatchingStrategy slotMatchingStrategy =

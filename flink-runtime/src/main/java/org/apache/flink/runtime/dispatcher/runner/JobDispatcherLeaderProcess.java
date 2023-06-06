@@ -45,6 +45,7 @@ public class JobDispatcherLeaderProcess extends AbstractDispatcherLeaderProcess 
 
     @Override
     protected void onStart() {
+        //TODO DefaultDispatcherGatewayServiceFactory，创建MiniDispatcher，并调用start()启动
         final DispatcherGatewayService dispatcherService =
                 dispatcherGatewayServiceFactory.create(
                         DispatcherId.fromUuid(getLeaderSessionId()),
