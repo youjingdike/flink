@@ -134,6 +134,7 @@ public class DefaultJobLeaderIdService implements JobLeaderIdService {
         LOG.debug("Add job {} to job leader id monitoring.", jobId);
 
         if (!jobLeaderIdListeners.containsKey(jobId)) {
+            // DefaultLeaderRetrievalService
             LeaderRetrievalService leaderRetrievalService =
                     highAvailabilityServices.getJobManagerLeaderRetriever(jobId);
 

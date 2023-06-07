@@ -206,6 +206,7 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
     @Override
     public void onStart() throws Exception {
         try {
+            // TODO 启动Dispatcher基础服务,只启动了一个Metric服务
             startDispatcherServices();
         } catch (Throwable t) {
             final DispatcherException exception =
@@ -215,7 +216,7 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
             throw exception;
         }
 
-        // TODO 开始正式的启动任务
+        // TODO 启动待恢复的Job,开始正式的启动任务
         startRecoveredJobs();
         this.dispatcherBootstrap =
                 this.dispatcherBootstrapFactory.create(
@@ -248,6 +249,7 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
     private void runRecoveredJob(final JobGraph recoveredJob) {
         checkNotNull(recoveredJob);
         try {
+            // TODO
             runJob(recoveredJob, ExecutionType.RECOVERY);
         } catch (Throwable throwable) {
             onFatalError(

@@ -114,6 +114,7 @@ public final class DefaultDispatcherRunner implements DispatcherRunner, LeaderCo
     }
 
     private void startNewDispatcherLeaderProcess(UUID leaderSessionID) {
+        // 如果当前有DispatcherLeader则先关闭
         stopDispatcherLeaderProcess();
 
         //JobDispatcherLeaderProcess

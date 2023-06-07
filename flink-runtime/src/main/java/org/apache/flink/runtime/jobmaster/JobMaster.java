@@ -737,6 +737,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
                                         taskManagerId,
                                         Tuple2.of(taskManagerLocation, taskExecutorGateway));
 
+                                // TODO 将taskManager作为心跳目标监视
                                 // monitor the task manager as heartbeat target
                                 taskManagerHeartbeatManager.monitorTarget(
                                         taskManagerId,
@@ -875,6 +876,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
         JobShuffleContext context = new JobShuffleContextImpl(jobGraph.getJobID(), this);
         shuffleMaster.registerJob(context);
 
+        //TODO
         startJobMasterServices();
 
         log.info(
@@ -888,7 +890,9 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
 
     private void startJobMasterServices() throws Exception {
         try {
+            //TODO 创建与taskManager的心跳管理器
             this.taskManagerHeartbeatManager = createTaskManagerHeartbeatManager(heartbeatServices);
+            //TODO 创建与resourceManager的心跳管理器
             this.resourceManagerHeartbeatManager =
                     createResourceManagerHeartbeatManager(heartbeatServices);
 
@@ -899,6 +903,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
             //   - activate leader retrieval for the resource manager
             //   - on notification of the leader, the connection will be established and
             //     the slot pool will start requesting slots
+            // TODO 最后会回调listener的notifyLeaderAddress()
             resourceManagerLeaderRetriever.start(new ResourceManagerLeaderListener());
         } catch (Exception e) {
             handleStartJobMasterServicesError(e);
@@ -1016,7 +1021,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
             final String newResourceManagerAddress, final ResourceManagerId resourceManagerId) {
         resourceManagerAddress =
                 createResourceManagerAddress(newResourceManagerAddress, resourceManagerId);
-
+        //TODO
         reconnectToResourceManager(
                 new FlinkException(
                         String.format(
@@ -1038,12 +1043,15 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
     }
 
     private void reconnectToResourceManager(Exception cause) {
+        //TODO 关掉之前的连接
         closeResourceManagerConnection(cause);
+        // TODO
         tryConnectToResourceManager();
     }
 
     private void tryConnectToResourceManager() {
         if (resourceManagerAddress != null) {
+            // TODO
             connectToResourceManager();
         }
     }
@@ -1055,6 +1063,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
 
         log.info("Connecting to ResourceManager {}", resourceManagerAddress);
 
+        //TODO RegisteredRpcConnection的子类:JobMaster.ResourceManagerConnection
         resourceManagerConnection =
                 new ResourceManagerConnection(
                         log,
@@ -1066,6 +1075,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
                         resourceManagerAddress.getResourceManagerId(),
                         futureExecutor);
 
+        // TODO 调用父类RegisteredRpcConnection的start()
         resourceManagerConnection.start();
     }
 
@@ -1203,6 +1213,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
         public void notifyLeaderAddress(final String leaderAddress, final UUID leaderSessionID) {
             runAsync(
                     () ->
+                            //TODO
                             notifyOfNewResourceManagerLeader(
                                     leaderAddress,
                                     ResourceManagerId.fromUuidOrNull(leaderSessionID)));
@@ -1274,6 +1285,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
                         long timeoutMillis) {
                     Time timeout = Time.milliseconds(timeoutMillis);
 
+                    // TODO 向resourceManager注册jobMaster
                     return gateway.registerJobManager(
                             jobMasterId,
                             jobManagerResourceID,

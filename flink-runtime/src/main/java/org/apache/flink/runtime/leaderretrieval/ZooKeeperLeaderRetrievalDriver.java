@@ -97,6 +97,7 @@ public class ZooKeeperLeaderRetrievalDriver implements LeaderRetrievalDriver {
         this.leaderInformationClearancePolicy = leaderInformationClearancePolicy;
         this.fatalErrorHandler = checkNotNull(fatalErrorHandler);
 
+        //TODO 开启之后，回进行listener的回调;都会调用到this.retrieveLeaderInformationFromZooKeeper();
         cache.start();
 
         client.getConnectionStateListenable().addListener(connectionStateListener);
@@ -133,6 +134,7 @@ public class ZooKeeperLeaderRetrievalDriver implements LeaderRetrievalDriver {
 
                     final String leaderAddress = ois.readUTF();
                     final UUID leaderSessionID = (UUID) ois.readObject();
+                    // TODO DefaultLeaderRetrievalService
                     leaderRetrievalEventHandler.notifyLeaderAddress(
                             LeaderInformation.known(leaderSessionID, leaderAddress));
                     return;
@@ -161,6 +163,7 @@ public class ZooKeeperLeaderRetrievalDriver implements LeaderRetrievalDriver {
             case RECONNECTED:
                 LOG.info(
                         "Connection to ZooKeeper was reconnected. Leader retrieval can be restarted.");
+                // TODO
                 onReconnectedConnectionState();
                 break;
             case LOST:

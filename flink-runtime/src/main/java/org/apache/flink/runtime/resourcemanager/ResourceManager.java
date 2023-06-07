@@ -229,6 +229,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
 
     private void startResourceManagerServices() throws Exception {
         try {
+            //DefaultJobLeaderIdService设置JobLeaderIdActions
             jobLeaderIdService.start(new JobLeaderIdActionsImpl());
 
             registerMetrics();
@@ -312,6 +313,9 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
     //  RPC methods
     // ------------------------------------------------------------------------
 
+    /**
+     * TODO JobMaster向ResourceManager注册时会调用该方法
+     */
     @Override
     public CompletableFuture<RegistrationResponse> registerJobManager(
             final JobMasterId jobMasterId,
@@ -327,6 +331,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
 
         if (!jobLeaderIdService.containsJob(jobId)) {
             try {
+                //TODO 添加jobId
                 jobLeaderIdService.addJob(jobId);
             } catch (Exception e) {
                 ResourceManagerException exception =
@@ -365,6 +370,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
             return FutureUtils.completedExceptionally(exception);
         }
 
+        //TODO 获取JobMasterGateway
         CompletableFuture<JobMasterGateway> jobMasterGatewayFuture =
                 getRpcService().connect(jobManagerAddress, jobMasterId, JobMasterGateway.class);
 
@@ -373,6 +379,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
                         jobMasterIdFuture,
                         (JobMasterGateway jobMasterGateway, JobMasterId leadingJobMasterId) -> {
                             if (Objects.equals(leadingJobMasterId, jobMasterId)) {
+                                //TODO 注册
                                 return registerJobMasterInternal(
                                         jobMasterGateway,
                                         jobId,
@@ -516,7 +523,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
 
         if (null != jobManagerRegistration) {
             if (Objects.equals(jobMasterId, jobManagerRegistration.getJobMasterId())) {
-                //step.24;我们看DeclarativeSlotManager
+                //step.24;DeclarativeSlotManager
                 slotManager.processResourceRequirements(resourceRequirements);
 
                 return CompletableFuture.completedFuture(Acknowledge.get());

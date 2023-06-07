@@ -91,7 +91,11 @@ public class DefaultLeaderRetrievalService
                 "DefaultLeaderRetrievalService can " + "only be started once.");
 
         synchronized (lock) {
+            //TODO 传入不同的子类,在notifyLeaderAddress()被回调时，调用listener的方法;
             leaderListener = listener;
+
+            //TODO ZooKeeperLeaderRetrievalDriverFactory创建ZooKeeperLeaderRetrievalDriver
+            // driver最后会回调到该类的notifyLeaderAddress()
             leaderRetrievalDriver =
                     leaderRetrievalDriverFactory.createLeaderRetrievalDriver(
                             this, new LeaderRetrievalFatalErrorHandler());
@@ -146,6 +150,7 @@ public class DefaultLeaderRetrievalService
                     lastLeaderSessionID = newLeaderSessionID;
 
                     // Notify the listener only when the leader is truly changed.
+                    // TODO 调用传入的不同listener的方法,如果是JobMaster.ResourceManagerLeaderListener
                     leaderListener.notifyLeaderAddress(newLeaderAddress, newLeaderSessionID);
                 }
             } else {
