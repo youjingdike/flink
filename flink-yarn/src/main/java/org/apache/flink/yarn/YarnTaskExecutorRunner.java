@@ -82,14 +82,14 @@ public class YarnTaskExecutorRunner {
 
             final String currDir = ENV.get(Environment.PWD.key());
             LOG.info("Current working Directory: {}", currDir);
-
+            // TODO 解析args和flink-conf.yaml文件得到配置信息
             configuration = TaskManagerRunner.loadConfiguration(args);
             setupAndModifyConfiguration(configuration, currDir, ENV);
         } catch (Throwable t) {
             LOG.error("YARN TaskManager initialization failed.", t);
             System.exit(INIT_ERROR_EXIT_CODE);
         }
-
+        // TODO 启动
         TaskManagerRunner.runTaskManagerProcessSecurely(Preconditions.checkNotNull(configuration));
     }
 

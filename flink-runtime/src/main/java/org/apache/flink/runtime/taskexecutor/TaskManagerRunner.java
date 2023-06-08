@@ -142,12 +142,13 @@ public class TaskManagerRunner implements FatalErrorHandler {
         rpcSystem = RpcSystem.load(configuration);
 
         timeout = Time.fromDuration(configuration.get(AkkaOptions.ASK_TIMEOUT_DURATION));
-
+        // TODO TaskManager 内部线程池,用来处理从节点内部各个组件的Io的线程池
+        // TODO 线程池大小为当前节点的cpu核心数
         this.executor =
                 java.util.concurrent.Executors.newScheduledThreadPool(
                         Hardware.getNumberCPUCores(),
                         new ExecutorThreadFactory("taskmanager-future"));
-
+        // TODO 高可用服务
         highAvailabilityServices =
                 HighAvailabilityServicesUtils.createHighAvailabilityServices(
                         configuration,
@@ -155,15 +156,15 @@ public class TaskManagerRunner implements FatalErrorHandler {
                         AddressResolution.NO_ADDRESS_RESOLUTION,
                         rpcSystem,
                         this);
-
+        // TODO 1.12 新功能 JMX服务,提供监控信息
         JMXService.startInstance(configuration.getString(JMXServerOptions.JMX_SERVER_PORT));
-
+        // TODO 启动RPC服务,内部为Akka模型的ActorSystem
         rpcService = createRpcService(configuration, highAvailabilityServices, rpcSystem);
-
+        // TODO 为TaskManager生成了一个ResourceID
         this.resourceId =
                 getTaskManagerResourceID(
                         configuration, rpcService.getAddress(), rpcService.getPort());
-
+        // TODO 初始化心跳服务,主要是初始化心跳间隔和心跳超时参数配置
         HeartbeatServices heartbeatServices = HeartbeatServices.fromConfiguration(configuration);
 
         metricRegistry =
@@ -178,6 +179,8 @@ public class TaskManagerRunner implements FatalErrorHandler {
                         configuration, rpcService.getAddress(), rpcSystem);
         metricRegistry.startQueryService(metricQueryServiceRpcService, resourceId);
 
+        // TODO 在主节点启动的时候,事实上已经启动了有个BolbServer,
+        // TODO 从节点启动的时候,会启动一个BlobCacheService,做文件缓存的服务
         blobCacheService =
                 new BlobCacheService(
                         configuration, highAvailabilityServices.createBlobStore(), null);
@@ -187,6 +190,7 @@ public class TaskManagerRunner implements FatalErrorHandler {
                         configuration, pluginManager);
 
         // 调用createTaskExecutorService()创建TaskManagerRunner.TaskExecutorService,内部持有创建的TaskExecutor的实例
+        // TODO 创建得到一个TaskExecutorService,内部封装了TaskExecutor,同时TaskExecutor的构建也在内部完成
         taskExecutorService =
                 taskExecutorServiceFactory.createTaskExecutor(
                         this.configuration,
@@ -378,12 +382,14 @@ public class TaskManagerRunner implements FatalErrorHandler {
         final TaskManagerRunner taskManagerRunner;
 
         try {
-            // TODO 进行一些服务的初始化
+            // TODO 构建一个TaskManagerRunner,启动的所有准备工作，都是在这个TaskManagerRunner中完成的
             taskManagerRunner =
                     new TaskManagerRunner(
                             configuration,
                             pluginManager,
+                            // TODO 真正创建TaskExecutor的地方
                             TaskManagerRunner::createTaskExecutorService);
+            // TODO 启动TaskManagerRunner
             taskManagerRunner.start();
         } catch (Exception exception) {
             throw new FlinkException("Failed to start the TaskManagerRunner.", exception);
@@ -413,6 +419,7 @@ public class TaskManagerRunner implements FatalErrorHandler {
 
     public static void runTaskManagerProcessSecurely(Configuration configuration) {
         FlinkSecurityManager.setFromConfiguration(configuration);
+        // TODO 启动插件管理器
         final PluginManager pluginManager =
                 PluginUtils.createPluginManagerFromRootFolder(configuration);
         FileSystem.initialize(configuration, pluginManager);
@@ -425,7 +432,7 @@ public class TaskManagerRunner implements FatalErrorHandler {
         ClusterEntrypointUtils.configureUncaughtExceptionHandler(configuration);
         try {
             SecurityUtils.install(new SecurityConfiguration(configuration));
-
+            // TODO 启动TaskManager
             exitCode =
                     SecurityUtils.getInstalledContext()
                             .runSecured(() -> runTaskManager(configuration, pluginManager));
