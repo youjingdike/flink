@@ -141,6 +141,7 @@ public class HeartbeatManagerImpl<I, O> implements HeartbeatManager<I, O> {
                         "The target with resource ID {} is already been monitored.",
                         resourceID.getStringWithMetadata());
             } else {
+                // TODO 创建HeartbeatMonitor,并记录下来
                 HeartbeatMonitor<O> heartbeatMonitor =
                         heartbeatMonitorFactory.createHeartbeatMonitor(
                                 resourceID,

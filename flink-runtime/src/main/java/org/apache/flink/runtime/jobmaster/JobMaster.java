@@ -876,7 +876,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
         JobShuffleContext context = new JobShuffleContextImpl(jobGraph.getJobID(), this);
         shuffleMaster.registerJob(context);
 
-        //TODO
+        //TODO 创建心跳管理器，并向resourceManager注册自己
         startJobMasterServices();
 
         log.info(
@@ -903,7 +903,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
             //   - activate leader retrieval for the resource manager
             //   - on notification of the leader, the connection will be established and
             //     the slot pool will start requesting slots
-            // TODO 最后会回调listener的notifyLeaderAddress()
+            // TODO 最后会回调listener的notifyLeaderAddress(),这里会完成与ResourceManager建立连接并注册JobMaster，及心跳监控注入；
             resourceManagerLeaderRetriever.start(new ResourceManagerLeaderListener());
         } catch (Exception e) {
             handleStartJobMasterServicesError(e);
@@ -1102,6 +1102,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
 
             slotPoolService.connectToResourceManager(resourceManagerGateway);
 
+            // TODO resourceManager的注册心跳监控
             resourceManagerHeartbeatManager.monitorTarget(
                     resourceManagerResourceId,
                     new ResourceManagerHeartbeatTarget(resourceManagerGateway));

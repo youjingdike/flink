@@ -172,6 +172,7 @@ public class ClusterOptions {
     }
 
     public static boolean isFineGrainedResourceManagementEnabled(Configuration configuration) {
+        // TODO 判断slotManager的类型条件
         if (configuration.contains(ENABLE_FINE_GRAINED_RESOURCE_MANAGEMENT)) {
             return configuration.get(ENABLE_FINE_GRAINED_RESOURCE_MANAGEMENT);
         } else {

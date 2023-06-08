@@ -110,8 +110,12 @@ public class DeclarativeSlotManager implements SlotManager {
         this.slotTracker = Preconditions.checkNotNull(slotTracker);
         slotTracker.registerSlotStatusUpdateListener(createSlotStatusUpdateListener());
 
+        //LeastUtilizationSlotMatchingStrategy.INSTANCE
+        // or
+        // AnyMatchingSlotMatchingStrategy.INSTANCE;
         slotMatchingStrategy = slotManagerConfiguration.getSlotMatchingStrategy();
 
+        // TODO 创建TaskExecutorManager
         taskExecutorManagerFactory =
                 (executor, resourceActions) ->
                         new TaskExecutorManager(
@@ -640,7 +644,7 @@ public class DeclarativeSlotManager implements SlotManager {
             JobID jobId,
             Collection<Map.Entry<ResourceProfile, Integer>> missingResources,
             ResourceCounter pendingSlots) {
-        // 遍历missingResource
+        // TODO 遍历missingResource,在这里进行一个循环调用的处理
         for (Map.Entry<ResourceProfile, Integer> missingResource : missingResources) {
             ResourceProfile profile = missingResource.getKey();
             for (int i = 0; i < missingResource.getValue(); i++) {

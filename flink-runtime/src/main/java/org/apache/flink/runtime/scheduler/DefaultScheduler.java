@@ -406,8 +406,8 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
                         deploymentOptionsByVertex,
                         slotExecutionVertexAssignments);
 
-        // TODO 在step9;申请好slots资源后，开始部署Task
-        //step.1; 部署task
+        //TODO 在step9;申请好slots资源后，开始部署Task
+        // step.1; 部署task
         waitForAllSlotsAndDeploy(deploymentHandles);
     }
 

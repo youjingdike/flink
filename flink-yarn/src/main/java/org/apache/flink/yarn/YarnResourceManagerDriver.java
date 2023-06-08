@@ -264,12 +264,13 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
             final Priority priority = priorityAndResourceOpt.get().getPriority();
             final Resource resource = priorityAndResourceOpt.get().getResource();
             //step.33;请求获取container资源,申请成功后，回调：YarnContainerEventHandler.onContainersAllocated
+            //在回调里面启动taskExecutor
             resourceManagerClient.addContainerRequest(getContainerRequest(resource, priority));
 
             // make sure we transmit the request fast and receive fast news of granted allocations
             resourceManagerClient.setHeartbeatInterval(containerRequestHeartbeatIntervalMillis);
 
-            //这里保存taskExecutorProcessSpec与requestResourceFuture的一个队列关系
+            //这里保存taskExecutorProcessSpec与requestResourceFuture的一个队列关系，启动taskExecutor的时候使用
             requestResourceFutures
                     .computeIfAbsent(taskExecutorProcessSpec, ignore -> new LinkedList<>())
                     .add(requestResourceFuture);
@@ -296,6 +297,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
     // ------------------------------------------------------------------------
 
     private void onContainersOfPriorityAllocated(Priority priority, List<Container> containers) {
+        //taskExecutor的启动资源设置
         final Optional<
                         TaskExecutorProcessSpecContainerResourcePriorityAdapter
                                 .TaskExecutorProcessSpecAndResource>
@@ -308,7 +310,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
                 "Receive %s containers with unrecognized priority %s. This should not happen.",
                 containers.size(),
                 priority.getPriority());
-
+        //taskExecutor的启动资源设置
         final TaskExecutorProcessSpec taskExecutorProcessSpec =
                 taskExecutorProcessSpecAndResourceOpt.get().getTaskExecutorProcessSpec();
         final Resource resource = taskExecutorProcessSpecAndResourceOpt.get().getResource();
@@ -329,7 +331,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
                         .iterator();
 
         int numAccepted = 0;
-        ////step.35; 遍历containers
+        ////step.35; 遍历优先级相等的这组containers
         while (containerIterator.hasNext() && pendingContainerRequestIterator.hasNext()) {
             final Container container = containerIterator.next();
             final AMRMClient.ContainerRequest pendingRequest =
@@ -612,9 +614,10 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
                         checkInitialized();
                         log.info("Received {} containers.", containers.size());
 
+                        //TODO 按优先级进行分组，进行遍历
                         for (Map.Entry<Priority, List<Container>> entry :
                                 groupContainerByPriority(containers).entrySet()) {
-                            //step.34;
+                            //step.34;启动taskExecutor
                             onContainersOfPriorityAllocated(entry.getKey(), entry.getValue());
                         }
 

@@ -65,9 +65,11 @@ public class ResourceManagerRuntimeServices {
             ScheduledExecutor scheduledExecutor,
             SlotManagerMetricGroup slotManagerMetricGroup) {
 
+        // TODO DeclarativeSlotManager
         final SlotManager slotManager =
                 createSlotManager(configuration, scheduledExecutor, slotManagerMetricGroup);
 
+        // TODO
         final JobLeaderIdService jobLeaderIdService =
                 new DefaultJobLeaderIdService(
                         highAvailabilityServices, scheduledExecutor, configuration.getJobTimeout());
