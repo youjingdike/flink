@@ -186,6 +186,7 @@ public class TaskManagerRunner implements FatalErrorHandler {
                 ExternalResourceUtils.createStaticExternalResourceInfoProviderFromConfig(
                         configuration, pluginManager);
 
+        // 调用createTaskExecutorService创建TaskManagerRunner.TaskExecutorService,内部持有创建的TaskExecutor的实例
         taskExecutorService =
                 taskExecutorServiceFactory.createTaskExecutor(
                         this.configuration,
@@ -228,6 +229,7 @@ public class TaskManagerRunner implements FatalErrorHandler {
     // --------------------------------------------------------------------------------------------
 
     public void start() throws Exception {
+        //TaskExecutorToServiceAdapter
         taskExecutorService.start();
     }
 
@@ -376,6 +378,7 @@ public class TaskManagerRunner implements FatalErrorHandler {
         final TaskManagerRunner taskManagerRunner;
 
         try {
+            // TODO 进行一些服务的初始化
             taskManagerRunner =
                     new TaskManagerRunner(
                             configuration,
