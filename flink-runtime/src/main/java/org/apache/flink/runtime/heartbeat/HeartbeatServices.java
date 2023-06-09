@@ -78,6 +78,13 @@ public class HeartbeatServices {
             ScheduledExecutor mainThreadExecutor,
             Logger log) {
 
+        /*
+         TODO
+          1.主节点中的心跳管理器为HeartbeatManagerSenderImpl 心跳请求发送器 client
+                在HeartbeatManagerSenderImpl内部构建了一个定时服务
+                每10秒 向所有的心跳目标对象,发送心跳请求
+          2.从节点(当前)为HeartbeatManagerImpl 心跳请求处理器 Server
+         */
         return new HeartbeatManagerImpl<>(
                 heartbeatTimeout,
                 failedRpcRequestsUntilUnreachable,

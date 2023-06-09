@@ -466,7 +466,7 @@ public class TaskManagerRunner implements FatalErrorHandler {
             ExternalResourceInfoProvider externalResourceInfoProvider,
             FatalErrorHandler fatalErrorHandler)
             throws Exception {
-
+        // TODO 创建TaskExecutor
         final TaskExecutor taskExecutor =
                 startTaskManager(
                         configuration,
@@ -479,7 +479,11 @@ public class TaskManagerRunner implements FatalErrorHandler {
                         localCommunicationOnly,
                         externalResourceInfoProvider,
                         fatalErrorHandler);
-
+        /*
+         TODO 封装了一下TaskExecutor
+          TaskExecutor是TaskExecutorToServiceAdapter的成员变量
+          TaskExecutorToServiceAdapter是TaskManagerRunner的成员变量
+         */
         return TaskExecutorToServiceAdapter.createFor(taskExecutor);
     }
 
@@ -505,9 +509,11 @@ public class TaskManagerRunner implements FatalErrorHandler {
 
         String externalAddress = rpcService.getAddress();
 
+        // TODO 初始化资源配置,获取硬件资源配置
         final TaskExecutorResourceSpec taskExecutorResourceSpec =
                 TaskExecutorResourceUtils.resourceSpecFromConfig(configuration);
 
+        // TODO 获取配置(args和flink-conf)
         TaskManagerServicesConfiguration taskManagerServicesConfiguration =
                 TaskManagerServicesConfiguration.fromConfiguration(
                         configuration,
@@ -528,6 +534,7 @@ public class TaskManagerRunner implements FatalErrorHandler {
                         taskManagerServicesConfiguration.getNumIoThreads(),
                         new ExecutorThreadFactory("flink-taskexecutor-io"));
 
+        // TODO 初始化了一些核心服务
         TaskManagerServices taskManagerServices =
                 TaskManagerServices.fromConfiguration(
                         taskManagerServicesConfiguration,

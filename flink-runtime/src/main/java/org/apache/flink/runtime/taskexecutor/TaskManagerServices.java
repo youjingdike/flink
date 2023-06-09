@@ -272,12 +272,14 @@ public class TaskManagerServices {
         // pre-start checks
         checkTempDirs(taskManagerServicesConfiguration.getTmpDirPaths());
 
+        // TODO 状态机  事件分发器
         final TaskEventDispatcher taskEventDispatcher = new TaskEventDispatcher();
 
         // start the I/O manager, it will create some temp directories.
         final IOManager ioManager =
                 new IOManagerAsync(taskManagerServicesConfiguration.getTmpDirPaths());
 
+        // TODO 作业执行期间shuffle相关操作工作,后面讲作业执行时再细聊
         final ShuffleEnvironment<?, ?> shuffleEnvironment =
                 createShuffleEnvironment(
                         taskManagerServicesConfiguration,
@@ -286,6 +288,7 @@ public class TaskManagerServices {
                         ioExecutor);
         final int listeningDataPort = shuffleEnvironment.start();
 
+        // TODO state管理服务
         final KvStateService kvStateService =
                 KvStateService.fromConfiguration(taskManagerServicesConfiguration);
         kvStateService.start();
@@ -300,8 +303,11 @@ public class TaskManagerServices {
                                 ? taskManagerServicesConfiguration.getExternalDataPort()
                                 : listeningDataPort);
 
+        // TODO 广播变量管理服务
         final BroadcastVariableManager broadcastVariableManager = new BroadcastVariableManager();
 
+        // TODO TaskExecutor内部,最重要的一个成员变量
+        // TODO 一张存放TaskSlot的表
         final TaskSlotTable<Task> taskSlotTable =
                 createTaskSlotTable(
                         taskManagerServicesConfiguration.getNumberOfSlots(),
@@ -312,6 +318,7 @@ public class TaskManagerServices {
 
         final JobTable jobTable = DefaultJobTable.create();
 
+        // TODO 监控主节点Leader地址
         final JobLeaderService jobLeaderService =
                 new DefaultJobLeaderService(
                         unresolvedTaskManagerLocation,

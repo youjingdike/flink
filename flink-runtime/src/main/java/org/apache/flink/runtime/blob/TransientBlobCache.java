@@ -82,8 +82,10 @@ public class TransientBlobCache extends AbstractBlobCache implements TransientBl
         // Initializing the clean up task
         this.cleanupTimer = new Timer(true);
 
+        // TODO 1小时
         this.cleanupInterval = blobClientConfig.getLong(BlobServerOptions.CLEANUP_INTERVAL) * 1000;
         this.cleanupTimer.schedule(
+                // TODO 定时服务
                 new TransientBlobCleanupTask(
                         blobExpiryTimes, readWriteLock.writeLock(), storageDir, log),
                 cleanupInterval,

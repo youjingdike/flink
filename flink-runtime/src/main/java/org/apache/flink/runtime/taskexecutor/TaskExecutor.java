@@ -284,6 +284,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
             FatalErrorHandler fatalErrorHandler,
             TaskExecutorPartitionTracker partitionTracker) {
 
+        // TaskExecutor为RPCEndpoint的子类,这个构造器调用的RPCEndpoint的构造器
         super(rpcService, RpcServiceUtils.createRandomName(TASK_MANAGER_NAME));
 
         checkArgument(
@@ -324,8 +325,12 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
 
         final ResourceID resourceId =
                 taskExecutorServices.getUnresolvedTaskManagerLocation().getResourceID();
+
+        // TODO 初始化了两个心跳管理器
+        // TODO TaskExecutor维持和JobMaster的心跳
         this.jobManagerHeartbeatManager =
                 createJobManagerHeartbeatManager(heartbeatServices, resourceId);
+        // TODO TaskExecutor维持和ResourceManager的心跳
         this.resourceManagerHeartbeatManager =
                 createResourceManagerHeartbeatManager(heartbeatServices, resourceId);
 
@@ -391,6 +396,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
     @Override
     public void onStart() throws Exception {
         try {
+            // TODO 启动从节点相关服务,会进行相关服务的注册
             startTaskExecutorServices();
         } catch (Throwable t) {
             final TaskManagerException exception =
@@ -400,6 +406,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
             throw exception;
         }
 
+        // TODO 开启了一个注册超时服务,如果上面的服务注册成功,则会回调stopRegistrationTimeout
         startRegistrationTimeout();
     }
 
@@ -1434,6 +1441,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
         if (maxRegistrationDuration != null) {
             final UUID newRegistrationTimeoutId = UUID.randomUUID();
             currentRegistrationTimeoutId = newRegistrationTimeoutId;
+            // TODO 提交了一个异步定时任务,如果在时间到达时没有取消,则会执行该任务
             scheduleRunAsync(
                     () -> registrationTimeout(newRegistrationTimeoutId), maxRegistrationDuration);
         }
@@ -1447,7 +1455,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
         if (registrationTimeoutId.equals(currentRegistrationTimeoutId)) {
             final Time maxRegistrationDuration =
                     taskManagerConfiguration.getMaxRegistrationDuration();
-
+            // TODO 注册超时则 报错:致命错误
             onFatalError(
                     new RegistrationTimeoutException(
                             String.format(

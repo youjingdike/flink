@@ -127,6 +127,8 @@ public class TaskSlotTableImpl<T extends TaskSlotPayload> implements TaskSlotTab
         this.defaultSlotResourceProfile = Preconditions.checkNotNull(defaultSlotResourceProfile);
         this.memoryPageSize = memoryPageSize;
 
+        // TODO 所有的slot
+        // TODO 在TaskManager启动时会将自身的slot汇报给ResourceManager,并将slot封装为taskSlot
         this.taskSlots = new HashMap<>(numberSlots);
 
         this.timerService = Preconditions.checkNotNull(timerService);
@@ -135,6 +137,7 @@ public class TaskSlotTableImpl<T extends TaskSlotPayload> implements TaskSlotTab
                 new ResourceBudgetManager(
                         Preconditions.checkNotNull(totalAvailableResourceProfile));
 
+        // TODO 所有已被分配的slot,维护着分配ID和TaskSlot之间的关系
         allocatedSlots = new HashMap<>(numberSlots);
 
         taskSlotMappings = new HashMap<>(4 * numberSlots);

@@ -51,9 +51,17 @@ public class BlobCacheService implements BlobService {
             final BlobView blobView,
             @Nullable final InetSocketAddress serverAddress)
             throws IOException {
-
+        /*
+           TODO 初始化了两个文件服务:
+           1. 持久化Blob缓存服务
+           2. 临时Blob缓存服务
+           在这两个服务的内部都会在启动的时候启动一个定时服务
+           就是把过期的某个Job的对应资源都删除掉
+         */
         this(
+                // TODO 持久化
                 new PermanentBlobCache(blobClientConfig, blobView, serverAddress),
+                // TODO 缓存
                 new TransientBlobCache(blobClientConfig, serverAddress));
     }
 

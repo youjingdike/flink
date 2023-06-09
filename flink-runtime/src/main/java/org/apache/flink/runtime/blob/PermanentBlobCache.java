@@ -122,7 +122,9 @@ public class PermanentBlobCache extends AbstractBlobCache implements PermanentBl
         // Initializing the clean up task
         this.cleanupTimer = new Timer(true);
 
+        // TODO 配置过期时间为1小时
         this.cleanupInterval = blobClientConfig.getLong(BlobServerOptions.CLEANUP_INTERVAL) * 1000;
+        // TODO 启动定时任务,每1小时清理一次
         this.cleanupTimer.schedule(
                 new PermanentBlobCleanupTask(), cleanupInterval, cleanupInterval);
 
@@ -380,15 +382,18 @@ public class PermanentBlobCache extends AbstractBlobCache implements PermanentBl
         /** Cleans up BLOBs which are not referenced anymore. */
         @Override
         public void run() {
+            // TODO 通过引用计数的方式获取所有Job引用的文件
             synchronized (jobRefCounters) {
                 Iterator<Map.Entry<JobID, RefCount>> entryIter =
                         jobRefCounters.entrySet().iterator();
                 final long currentTimeMillis = System.currentTimeMillis();
 
+                // TODO 遍历所有文件
                 while (entryIter.hasNext()) {
                     Map.Entry<JobID, RefCount> entry = entryIter.next();
                     RefCount ref = entry.getValue();
 
+                    // TODO 判断是否过期
                     if (ref.references <= 0
                             && ref.keepUntil > 0
                             && currentTimeMillis >= ref.keepUntil) {
@@ -409,6 +414,8 @@ public class PermanentBlobCache extends AbstractBlobCache implements PermanentBl
                         boolean success = false;
                         try {
                             blobCacheSizeTracker.untrackAll(jobId);
+
+                            // TODO 删除该资源文件夹
                             FileUtils.deleteDirectory(localFile);
                             success = true;
                         } catch (Throwable t) {

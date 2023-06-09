@@ -891,8 +891,10 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
     private void startJobMasterServices() throws Exception {
         try {
             //TODO 创建与taskManager的心跳管理器
+            // 其为主节点，心跳管理器为HeartbeatManagerSenderImpl(HeartbeatManagerImpl的子类) 心跳请求发送器 Client
             this.taskManagerHeartbeatManager = createTaskManagerHeartbeatManager(heartbeatServices);
-            //TODO 创建与resourceManager的心跳管理器
+
+            //TODO 创建与resourceManager的心跳管理器，其为从节点，心跳管理器为HeartbeatManagerImpl 心跳请求处理器 Server
             this.resourceManagerHeartbeatManager =
                     createResourceManagerHeartbeatManager(heartbeatServices);
 
