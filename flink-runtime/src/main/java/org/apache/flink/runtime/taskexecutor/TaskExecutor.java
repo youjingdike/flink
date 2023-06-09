@@ -413,15 +413,28 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
     private void startTaskExecutorServices() throws Exception {
         try {
             // start by connecting to the ResourceManager
+            // TODO 监控ResourceManager
+            /*
+            TODO
+             1.从代码的字面意思能够得知,这就是为了获取ResourceManager的地址,同时添加监听
+             2.获取到ResourceManager的地址之后,当前启动的TaskExecutor就可以注册了
+             3. 注册之后会收到注册相应(成功: ,失败则直接关闭JVM)
+             4. 如果注册成功则:
+                维持和ResourceManager之间的心跳
+                做slot资源汇报
+             */
             resourceManagerLeaderRetriever.start(new ResourceManagerLeaderListener());
 
             // tell the task slot table who's responsible for the task slot actions
+            // TODO 启动taskSlotTable
             taskSlotTable.start(new SlotActionsImpl(), getMainThreadExecutor());
 
             // start the job leader service
+            // TODO 监控JobMaster
             jobLeaderService.start(
                     getAddress(), getRpcService(), haServices, new JobLeaderListenerImpl());
 
+            // TODO 文件缓存服务
             fileCache =
                     new FileCache(
                             taskManagerConfiguration.getTmpDirectories(),
@@ -935,6 +948,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
 
     @Override
     public CompletableFuture<Void> heartbeatFromResourceManager(ResourceID resourceID) {
+        // TODO TaskExecutor接收到ResourceManager发送过来的心跳请求
         return resourceManagerHeartbeatManager.requestHeartbeat(resourceID, null);
     }
 
@@ -1286,8 +1300,12 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
 
     private void notifyOfNewResourceManagerLeader(
             String newLeaderAddress, ResourceManagerId newResourceManagerId) {
+        // TODO 将从zk中拿到的数据封装为真正的ResourceManager地址
         resourceManagerAddress =
                 createResourceManagerAddress(newLeaderAddress, newResourceManagerId);
+        // TODO 连接这个地址
+        // TODO 此处命名为reconnect的原因是,只要ResourceManager的地址发生改变,这里就会调用一次
+        // TODO 先关闭和旧ResourceManager的连接,在启动和新ResourceManager的连接
         reconnectToResourceManager(
                 new FlinkException(
                         String.format(
@@ -1307,8 +1325,11 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
     }
 
     private void reconnectToResourceManager(Exception cause) {
+        // TODO 关闭和旧ResourceManager的连接
         closeResourceManagerConnection(cause);
+        // TODO 开启注册超时定时任务
         startRegistrationTimeout();
+        // TODO 连接新的ResourceManager
         tryConnectToResourceManager();
     }
 
@@ -1325,6 +1346,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
 
         log.info("Connecting to ResourceManager {}.", resourceManagerAddress);
 
+        // TODO 封装从节点的一些信息,准备将封装好的信息发送给主节点去注册,但这个对象并不是注册时发送的对象
         final TaskExecutorRegistration taskExecutorRegistration =
                 new TaskExecutorRegistration(
                         getAddress(),
@@ -1336,6 +1358,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
                         taskManagerConfiguration.getDefaultSlotResourceProfile(),
                         taskManagerConfiguration.getTotalResourceProfile());
 
+        // TODO 连接ResourceManager
         resourceManagerConnection =
                 new TaskExecutorToResourceManagerConnection(
                         log,
@@ -1346,6 +1369,8 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
                         getMainThreadExecutor(),
                         new ResourceManagerRegistrationListener(),
                         taskExecutorRegistration);
+
+        // TODO 开始注册
         resourceManagerConnection.start();
     }
 
@@ -1355,10 +1380,13 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
             InstanceID taskExecutorRegistrationId,
             ClusterInformation clusterInformation) {
 
+        // TODO 发送Slot信息汇报给ResourceManager
         final CompletableFuture<Acknowledge> slotReportResponseFuture =
+                //进入该方法
                 resourceManagerGateway.sendSlotReport(
                         getResourceID(),
                         taskExecutorRegistrationId,
+                        // TODO 生成注册报告,由TaskSlotTable完成
                         taskSlotTable.createSlotReport(getResourceID()),
                         taskManagerConfiguration.getRpcTimeout());
 
@@ -1374,9 +1402,11 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
                 getMainThreadExecutor());
 
         // monitor the resource manager as heartbeat target
+        // TODO 维持心跳
         resourceManagerHeartbeatManager.monitorTarget(
                 resourceManagerResourceId,
-                new ResourceManagerHeartbeatTarget(resourceManagerGateway));
+                new ResourceManagerHeartbeatTarget(resourceManagerGateway)// TODO
+        );
 
         // set the propagated blob server address
         final InetSocketAddress blobServerAddress =
@@ -1386,12 +1416,14 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
 
         blobCacheService.setBlobServerAddress(blobServerAddress);
 
+        // TODO 构建TaskExecutor和ResourceManager之间的连接对象
         establishedResourceManagerConnection =
                 new EstablishedResourceManagerConnection(
                         resourceManagerGateway,
                         resourceManagerResourceId,
                         taskExecutorRegistrationId);
 
+        // TODO 停止超时计时任务,因为注册成功
         stopRegistrationTimeout();
     }
 
@@ -2177,6 +2209,11 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
             this.resourceManagerGateway = resourceManagerGateway;
         }
 
+        /**
+         * TODO 当TaskExecutor收到ResourceManager的心跳后,会进行回复
+         *  此处与hdfs的心跳机制不通,hdfs的主节点只管收心跳,不会发心跳
+         *  而flink的主节点也会向从节点发送心跳
+         */
         @Override
         public CompletableFuture<Void> receiveHeartbeat(
                 ResourceID resourceID, TaskExecutorHeartbeatPayload heartbeatPayload) {
@@ -2278,6 +2315,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
                         //noinspection ObjectEquality
                         if (resourceManagerConnection == connection) {
                             try {
+                                // TODO 完成和ResourceManager的连接
                                 establishResourceManagerConnection(
                                         resourceManagerGateway,
                                         resourceManagerId,

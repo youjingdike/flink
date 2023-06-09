@@ -106,7 +106,7 @@ public abstract class RegisteredRpcConnection<
         final RetryingRegistration<F, G, S, R> newRegistration = createNewRegistration();
 
         if (REGISTRATION_UPDATER.compareAndSet(this, null, newRegistration)) {
-            //TODO
+            //TODO 开始注册,注册完成后的回调代码在上面的createNewRegistration()方法内
             newRegistration.startRegistration();
         } else {
             // concurrent start operation
@@ -242,34 +242,41 @@ public abstract class RegisteredRpcConnection<
     // ------------------------------------------------------------------------
 
     private RetryingRegistration<F, G, S, R> createNewRegistration() {
-        //TODO
+        // TODO 构建注册对象
         RetryingRegistration<F, G, S, R> newRegistration = checkNotNull(generateRegistration());
 
         CompletableFuture<RetryingRegistration.RetryingRegistrationResult<G, S, R>> future =
                 newRegistration.getFuture();
 
+        // TODO 完成注册后回调,不论成功或是失败
         future.whenCompleteAsync(
                 (RetryingRegistration.RetryingRegistrationResult<G, S, R> result,
                         Throwable failure) -> {
+                    // TODO 如果注册失败
                     if (failure != null) {
+                        // TODO 如果失败原因的因为取消注册
                         if (failure instanceof CancellationException) {
                             // we ignore cancellation exceptions because they originate from
                             // cancelling
                             // the RetryingRegistration
+                            // TODO 则不报错,只打印debug日志
                             log.debug(
                                     "Retrying registration towards {} was cancelled.",
                                     targetAddress);
                         } else {
                             // this future should only ever fail if there is a bug, not if the
                             // registration is declined
+                            // TODO 如果是其他原因失败,回调这个方法
                             onRegistrationFailure(failure);
                         }
                     } else {
+                        // TODO 注册成功
                         if (result.isSuccess()) {
                             targetGateway = result.getGateway();
                             // TODO 成功后调用该方法进行心跳注册
                             onRegistrationSuccess(result.getSuccess());
                         } else if (result.isRejection()) {
+                            // TODO 拒接后调用该方法
                             onRegistrationRejection(result.getRejection());
                         } else {
                             throw new IllegalArgumentException(

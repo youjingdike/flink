@@ -136,7 +136,9 @@ public class HeartbeatMonitorImpl<O> implements HeartbeatMonitor<O>, Runnable {
 
     @Override
     public void reportHeartbeat() {
+        // TODO 记录最后一次心跳时间
         lastHeartbeat = System.currentTimeMillis();
+        // TODO 重置心跳超时时间
         resetHeartbeatTimeout(heartbeatTimeoutIntervalMs);
     }
 
@@ -161,9 +163,12 @@ public class HeartbeatMonitorImpl<O> implements HeartbeatMonitor<O>, Runnable {
     }
 
     void resetHeartbeatTimeout(long heartbeatTimeout) {
+        // TODO 判断当前HeartBeatMonitor的状态是否是Running
         if (state.get() == State.RUNNING) {
+            // TODO 先取消超时任务
             cancelTimeout();
 
+            // TODO 重新进行延时调度
             futureTimeout =
                     scheduledExecutor.schedule(this, heartbeatTimeout, TimeUnit.MILLISECONDS);
 

@@ -85,7 +85,7 @@ public class HeartbeatManagerSenderImpl<I, O> extends HeartbeatManagerImpl<I, O>
             log.debug("Trigger heartbeat request.");
             // 详细说明待后面解析完从节点后在介绍，其他类会调用注册动作
             for (HeartbeatMonitor<O> heartbeatMonitor : getHeartbeatTargets().values()) {
-                // TODO 发送心跳
+                // TODO 向所有已注册的从节点封装后的heartbeatMonitor对象发送心跳Rpc请求
                 requestHeartbeat(heartbeatMonitor);
             }
             //等heartbeatPeriod=10s之后,再次执行this的run方法,来控制上面的for循环每隔10s执行一次,实现心跳的无限循环

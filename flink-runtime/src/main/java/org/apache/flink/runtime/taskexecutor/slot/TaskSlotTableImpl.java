@@ -162,7 +162,7 @@ public class TaskSlotTableImpl<T extends TaskSlotPayload> implements TaskSlotTab
         this.mainThreadExecutor = Preconditions.checkNotNull(mainThreadExecutor);
 
         timerService.start(this);
-
+        // TODO 修改状态标识
         state = State.RUNNING;
     }
 

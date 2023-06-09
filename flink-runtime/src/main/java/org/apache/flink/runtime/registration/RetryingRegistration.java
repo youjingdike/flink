@@ -144,6 +144,7 @@ public abstract class RetryingRegistration<
             // trigger resolution of the target address to a callable gateway
             final CompletableFuture<G> rpcGatewayFuture;
 
+            // TODO 这里的RPCGateway相当于主节点的一个引用(ActorRef),后续的注册使用的是这个引用
             if (FencedRpcGateway.class.isAssignableFrom(targetType)) {
                 rpcGatewayFuture =
                         (CompletableFuture<G>)
@@ -152,15 +153,19 @@ public abstract class RetryingRegistration<
                                         fencingToken,
                                         targetType.asSubclass(FencedRpcGateway.class));
             } else {
+                // TODO 可以是TaskExecutor连接ResourceManager
                 rpcGatewayFuture = rpcService.connect(targetAddress, targetType);
             }
 
             // upon success, start the registration attempts
+            // TODO 如果连接建立成功,获取到了RPCGateWay,接下来会有三次回调
             CompletableFuture<Void> rpcGatewayAcceptFuture =
+
+                    // TODO 异步注册
                     rpcGatewayFuture.thenAcceptAsync(
                             (G rpcGateway) -> {
                                 log.info("Resolved {} address, beginning registration", targetName);
-                                // TODO 注册rpcGateway
+                                // TODO 使用这个RpcGateway引用对象进行注册
                                 register(
                                         rpcGateway,
                                         1,
@@ -170,8 +175,10 @@ public abstract class RetryingRegistration<
                             rpcService.getScheduledExecutor());
 
             // upon failure, retry, unless this is cancelled
+            // TODO 异步注册的回调
             rpcGatewayAcceptFuture.whenCompleteAsync(
                     (Void v, Throwable failure) -> {
+                        // TODO 如果失败,且并非手动取消
                         if (failure != null && !canceled) {
                             final Throwable strippedFailure =
                                     ExceptionUtils.stripCompletionException(failure);
@@ -190,7 +197,7 @@ public abstract class RetryingRegistration<
                                         retryingRegistrationConfiguration.getErrorDelayMillis(),
                                         strippedFailure.getMessage());
                             }
-
+                            // TODO 如果注册失败,尝试再次注册,延时调度,时长通过cluster.registration.error-delay参数进行配置,默认10s
                             startRegistrationLater(
                                     retryingRegistrationConfiguration.getErrorDelayMillis());
                         }
@@ -219,34 +226,43 @@ public abstract class RetryingRegistration<
                     targetName,
                     attempt,
                     timeoutMillis);
+            // TODO 真正开始注册
             // TODO 调用子类的实现方法
             CompletableFuture<RegistrationResponse> registrationFuture =
                     invokeRegistration(gateway, fencingToken, timeoutMillis);
 
             // if the registration was successful, let the TaskExecutor know
+            // TODO registrationFuture成功获取到返回结果，没有报错
             CompletableFuture<Void> registrationAcceptFuture =
                     registrationFuture.thenAcceptAsync(
                             (RegistrationResponse result) -> {
                                 if (!isCanceled()) {
+                                    // TODO 注册成功
                                     if (result instanceof RegistrationResponse.Success) {
                                         log.debug(
                                                 "Registration with {} at {} was successful.",
                                                 targetName,
                                                 targetAddress);
                                         S success = (S) result;
+                                        // TODO 此方法执行完将触发回调:onRegistrationSuccess方法
+                                        // 回调方法触发的地方在我们之前构建TaskExecutor注册对象的方法createNewRegistration()中
                                         completionFuture.complete(
                                                 RetryingRegistrationResult.success(
                                                         gateway, success));
+                                    // TODO 拒绝注册
                                     } else if (result instanceof RegistrationResponse.Rejection) {
                                         log.debug(
                                                 "Registration with {} at {} was rejected.",
                                                 targetName,
                                                 targetAddress);
                                         R rejection = (R) result;
+                                        // TODO 此方法执行完将触发回调:onRegistrationFailure方法
+                                        //回调方法触发的地方在我们之前构建TaskExecutor注册对象的方法createNewRegistration()中
                                         completionFuture.complete(
                                                 RetryingRegistrationResult.rejection(rejection));
                                     } else {
                                         // registration failure
+                                        // TODO 其他原因注册失败
                                         if (result instanceof RegistrationResponse.Failure) {
                                             RegistrationResponse.Failure failure =
                                                     (RegistrationResponse.Failure) result;
@@ -264,6 +280,8 @@ public abstract class RetryingRegistration<
                                                 "Pausing and re-attempting registration in {} ms",
                                                 retryingRegistrationConfiguration
                                                         .getRefusedDelayMillis());
+
+                                        // TODO 重试
                                         registerLater(
                                                 gateway,
                                                 1,
@@ -277,9 +295,11 @@ public abstract class RetryingRegistration<
                             rpcService.getScheduledExecutor());
 
             // upon failure, retry
+            // TODO 如果注册失败
             registrationAcceptFuture.whenCompleteAsync(
                     (Void v, Throwable failure) -> {
                         if (failure != null && !isCanceled()) {
+                            // TODO 如果因为超时
                             if (ExceptionUtils.stripCompletionException(failure)
                                     instanceof TimeoutException) {
                                 // we simply have not received a response in time. maybe the timeout
@@ -295,12 +315,14 @@ public abstract class RetryingRegistration<
                                             attempt,
                                             timeoutMillis);
                                 }
-
+                                // TODO 每超时一次,超时时间*2,
+                                //  但是不能超过retryingRegistrationConfiguration.getMaxRegistrationTimeoutMillis()
                                 long newTimeoutMillis =
                                         Math.min(
                                                 2 * timeoutMillis,
                                                 retryingRegistrationConfiguration
                                                         .getMaxRegistrationTimeoutMillis());
+                                // TODO 重试次数+1
                                 register(gateway, attempt + 1, newTimeoutMillis);
                             } else {
                                 // a serious failure occurred. we still should not give up, but keep

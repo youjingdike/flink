@@ -145,7 +145,10 @@ public class DefaultSlotTracker implements SlotTracker {
     public boolean notifySlotStatus(Iterable<SlotStatus> slotStatuses) {
         Preconditions.checkNotNull(slotStatuses);
         boolean anyStatusChanged = false;
+
+        // TODO 进行TaskExecutor的所有Slot的状态汇报
         for (SlotStatus slotStatus : slotStatuses) {
+            // TODO 更新slot状态
             anyStatusChanged |=
                     slotStatusStateReconciler.executeStateTransition(
                             slots.get(slotStatus.getSlotID()), slotStatus.getJobID());
@@ -277,13 +280,16 @@ public class DefaultSlotTracker implements SlotTracker {
                         // don't do anything because we expect the slot to be allocated soon
                         return false;
                     case ALLOCATED:
+                        // TODO this::transitionSlotToFree()
                         toFreeSlot.accept(slot);
                         return true;
                 }
             } else {
                 switch (trackedSlotState) {
                     case FREE:
+                        // TODO this::transitionSlotToPending()
                         toPendingSlot.accept(slot, jobId);
+                        // TODO this::transitionSlotToAllocated()
                         toAllocatedSlot.accept(slot, jobId);
                         return true;
                     case PENDING:

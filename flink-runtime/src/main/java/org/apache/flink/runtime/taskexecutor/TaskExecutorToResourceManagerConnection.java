@@ -85,6 +85,7 @@ public class TaskExecutorToResourceManagerConnection
                     TaskExecutorRegistrationSuccess,
                     TaskExecutorRegistrationRejection>
             generateRegistration() {
+        // TODO 生成真正的注册对象
         return new TaskExecutorToResourceManagerConnection.ResourceManagerRegistration(
                 log,
                 rpcService,
@@ -101,6 +102,7 @@ public class TaskExecutorToResourceManagerConnection
                 getTargetAddress(),
                 success.getRegistrationId());
 
+        // TODO
         registrationListener.onRegistrationSuccess(this, success);
     }
 
@@ -156,6 +158,7 @@ public class TaskExecutorToResourceManagerConnection
                 throws Exception {
 
             Time timeout = Time.milliseconds(timeoutMillis);
+            // TODO 发送RPC请求:注册
             return resourceManager.registerTaskExecutor(taskExecutorRegistration, timeout);
         }
     }

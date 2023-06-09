@@ -322,6 +322,7 @@ public class DeclarativeSlotManager implements SlotManager {
             LOG.debug(
                     "Task executor {} was already registered.",
                     taskExecutorConnection.getResourceID());
+            // TODO 汇报slot状态
             reportSlotStatus(taskExecutorConnection.getInstanceID(), initialSlotReport);
             return false;
         } else {
@@ -385,6 +386,7 @@ public class DeclarativeSlotManager implements SlotManager {
         LOG.debug("Received slot report from instance {}: {}.", instanceId, slotReport);
 
         if (taskExecutorManager.isTaskManagerRegistered(instanceId)) {
+            // TODO 在notifySlotStatus()进行TaskExecutor的所有Slot的状态汇报
             if (slotTracker.notifySlotStatus(slotReport)) {
                 checkResourceRequirements();
             }

@@ -427,8 +427,9 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
     @Override
     public CompletableFuture<RegistrationResponse> registerTaskExecutor(
             final TaskExecutorRegistration taskExecutorRegistration, final Time timeout) {
+        //TODO 处理远程rpc注册调用；
 
-        // TODO 获取taskExecutorGateway对象
+        // TODO 获取taskExecutorGateway的代理,准备回复注册响应
         CompletableFuture<TaskExecutorGateway> taskExecutorGatewayFuture =
                 getRpcService()
                         .connect(
@@ -445,6 +446,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
                         if (throwable != null) {
                             return new RegistrationResponse.Failure(throwable);
                         } else {
+                            // TODO 内部注册具体实现
                             return registerTaskExecutorInternal(
                                     taskExecutorGateway, taskExecutorRegistration);
                         }
@@ -465,10 +467,16 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
             InstanceID taskManagerRegistrationId,
             SlotReport slotReport,
             Time timeout) {
+        //接收taskExecutor的rpc调用
+
+        // TODO 之前在注册时会将注册信息和ResourceID的映射关系保存在taskExecutors这个map里,
+        // TODO 所以这里直接获取节点注册对象
         final WorkerRegistration<WorkerType> workerTypeWorkerRegistration =
                 taskExecutors.get(taskManagerResourceId);
 
+        // TODO 看注册对象的ResourceID和我们的注册Id是否一样
         if (workerTypeWorkerRegistration.getInstanceID().equals(taskManagerRegistrationId)) {
+            // TODO 完成资源汇报,注册该TaskManager上的所有Slot
             if (slotManager.registerTaskManager(
                     workerTypeWorkerRegistration,
                     slotReport,
@@ -478,6 +486,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
             }
             return CompletableFuture.completedFuture(Acknowledge.get());
         } else {
+            // TODO 不一样则报错
             return FutureUtils.completedExceptionally(
                     new ResourceManagerException(
                             String.format(
@@ -493,6 +502,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
     @Override
     public CompletableFuture<Void> heartbeatFromTaskManager(
             final ResourceID resourceID, final TaskExecutorHeartbeatPayload heartbeatPayload) {
+        // TODO 收到taskExecutor的心跳回复
         return taskManagerHeartbeatManager.receiveHeartbeat(resourceID, heartbeatPayload);
     }
 
@@ -881,9 +891,12 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
     private RegistrationResponse registerTaskExecutorInternal(
             TaskExecutorGateway taskExecutorGateway,
             TaskExecutorRegistration taskExecutorRegistration) {
+        // TODO TaskExecutor的ResourceId
         ResourceID taskExecutorResourceId = taskExecutorRegistration.getResourceId();
         WorkerRegistration<WorkerType> oldRegistration =
                 taskExecutors.remove(taskExecutorResourceId);
+
+        // TODO 如果有旧注册信息
         if (oldRegistration != null) {
             // TODO :: suggest old taskExecutor to stop itself
             log.debug(
@@ -891,6 +904,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
                     taskExecutorResourceId.getStringWithMetadata());
 
             // remove old task manager registration from slot manager
+            // TODO 则先取消旧的TaskManager的注册,再进行新TaskManager的注册
             slotManager.unregisterTaskManager(
                     oldRegistration.getInstanceID(),
                     new ResourceManagerException(
@@ -911,6 +925,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
             return new TaskExecutorRegistrationRejection(
                     "The ResourceManager does not recognize this TaskExecutor.");
         } else {
+            // TODO 生成注册对象
             WorkerRegistration<WorkerType> registration =
                     new WorkerRegistration<>(
                             taskExecutorGateway,
@@ -926,11 +941,16 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
                     "Registering TaskManager with ResourceID {} ({}) at ResourceManager",
                     taskExecutorResourceId.getStringWithMetadata(),
                     taskExecutorAddress);
+            // TODO 完成注册,这个taskExecutors是一个map,维护着ResourceID和注册对象的关系
             taskExecutors.put(taskExecutorResourceId, registration);
 
+            // TODO 从节点心跳管理器,保存了注册进来的TaskExecutor的ResourceID和包装的该TaskExecutor的心跳对象
             taskManagerHeartbeatManager.monitorTarget(
-                    taskExecutorResourceId, new TaskExecutorHeartbeatTarget(taskExecutorGateway));
+                    taskExecutorResourceId,
+                    new TaskExecutorHeartbeatTarget(taskExecutorGateway)// TODO
+            );
 
+            // TODO 返回注册成功消息给TaskExecutor的引用
             return new TaskExecutorRegistrationSuccess(
                     registration.getInstanceID(), resourceId, clusterInformation);
         }
@@ -1250,6 +1270,8 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
 
         @Override
         public CompletableFuture<Void> requestHeartbeat(ResourceID resourceID, Void payload) {
+            // TODO 该方法在HeartbeatManagerSenderImpl里面定时调用，发起心跳请求
+            // TODO ResourceManager发送心跳Rpc请求给TaskExecutor
             return taskExecutorGateway.heartbeatFromResourceManager(resourceID);
         }
     }
@@ -1367,6 +1389,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
         public void reportPayload(
                 final ResourceID resourceID, final TaskExecutorHeartbeatPayload payload) {
             validateRunsInMainThread();
+            // TODO 获取TaskExecutor的注册信息
             final WorkerRegistration<WorkerType> workerRegistration = taskExecutors.get(resourceID);
 
             if (workerRegistration == null) {
@@ -1376,6 +1399,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
             } else {
                 InstanceID instanceId = workerRegistration.getInstanceID();
 
+                // TODO 进行TaskExecutor的slot状态汇报
                 slotManager.reportSlotStatus(instanceId, payload.getSlotReport());
                 clusterPartitionTracker.processTaskExecutorClusterPartitionReport(
                         resourceID, payload.getClusterPartitionReport());

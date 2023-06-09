@@ -85,8 +85,13 @@ public class ZooKeeperLeaderRetrievalDriver implements LeaderRetrievalDriver {
             LeaderInformationClearancePolicy leaderInformationClearancePolicy,
             FatalErrorHandler fatalErrorHandler)
             throws Exception {
+        /*
+        TODO
+            1. CuratorFramework 为zkAPI框架Curator,内部封装了一个zookeeper类
+         */
         this.client = checkNotNull(client, "CuratorFramework client");
         this.connectionInformationPath = ZooKeeperUtils.generateConnectionInformationPath(path);
+        // TODO Curator框架的TreeCache相当于zk中的Watcher(监听的是znode节点的数据变化)
         this.cache =
                 ZooKeeperUtils.createTreeCache(
                         client,
@@ -97,7 +102,9 @@ public class ZooKeeperLeaderRetrievalDriver implements LeaderRetrievalDriver {
         this.leaderInformationClearancePolicy = leaderInformationClearancePolicy;
         this.fatalErrorHandler = checkNotNull(fatalErrorHandler);
 
-        //TODO 开启之后，回进行listener的回调;都会调用到this.retrieveLeaderInformationFromZooKeeper();
+        // TODO 开启监听
+        // TODO cache为TreeCache,维护着节点数据的缓存,当发现缓存中的数据和zk上的数据不同是,会回调listener的childEvent()方法
+        //TODO 开启之后，会进行listener的childEvent()方法回调;会调用到上面传入的this.retrieveLeaderInformationFromZooKeeper();
         cache.start();
 
         client.getConnectionStateListenable().addListener(connectionStateListener);
@@ -124,8 +131,10 @@ public class ZooKeeperLeaderRetrievalDriver implements LeaderRetrievalDriver {
         try {
             LOG.debug("Leader node has changed.");
 
+            // TODO 获取znode 节点数据
             final ChildData childData = cache.getCurrentData(connectionInformationPath);
 
+            // TODO 如果有数据
             if (childData != null) {
                 final byte[] data = childData.getData();
                 if (data != null && data.length > 0) {
@@ -135,11 +144,13 @@ public class ZooKeeperLeaderRetrievalDriver implements LeaderRetrievalDriver {
                     final String leaderAddress = ois.readUTF();
                     final UUID leaderSessionID = (UUID) ois.readObject();
                     // TODO DefaultLeaderRetrievalService
+                    // TODO 通知我们拿到了地址
                     leaderRetrievalEventHandler.notifyLeaderAddress(
                             LeaderInformation.known(leaderSessionID, leaderAddress));
                     return;
                 }
             }
+            // TODO 如果没有数据,则通知empty
             notifyNoLeader();
         } catch (Exception e) {
             fatalErrorHandler.onFatalError(

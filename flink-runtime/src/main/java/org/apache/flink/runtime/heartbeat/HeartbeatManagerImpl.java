@@ -141,7 +141,7 @@ public class HeartbeatManagerImpl<I, O> implements HeartbeatManager<I, O> {
                         "The target with resource ID {} is already been monitored.",
                         resourceID.getStringWithMetadata());
             } else {
-                // TODO 创建HeartbeatMonitor,并记录下来
+                // TODO 根据HeartbeatTarget 创建 HeartbeatMonitor并注册到heartbeatTargets map中
                 HeartbeatMonitor<O> heartbeatMonitor =
                         heartbeatMonitorFactory.createHeartbeatMonitor(
                                 resourceID,
@@ -151,9 +151,11 @@ public class HeartbeatManagerImpl<I, O> implements HeartbeatManager<I, O> {
                                 heartbeatTimeoutIntervalMs,
                                 failedRpcRequestsUntilUnreachable);
 
+                // TODO 加入心跳目标对象集合
                 heartbeatTargets.put(resourceID, heartbeatMonitor);
 
                 // check if we have stopped in the meantime (concurrent stop operation)
+                // TODO 如果心跳机制HeartbeatManagerImpl已关闭,则取消心跳超时任务
                 if (stopped) {
                     heartbeatMonitor.cancel();
 
@@ -209,8 +211,11 @@ public class HeartbeatManagerImpl<I, O> implements HeartbeatManager<I, O> {
             ResourceID heartbeatOrigin, I heartbeatPayload) {
         if (!stopped) {
             log.debug("Received heartbeat from {}.", heartbeatOrigin);
+            // TODO 接收到TaskExecutor的心跳汇报
             reportHeartbeat(heartbeatOrigin);
 
+            // TODO 如果TaskExecutor本次汇报的负载信息为空,则还以上次汇报的负载信息为准
+            // TODO 如果不为空则记录
             if (heartbeatPayload != null) {
                 heartbeatListener.reportPayload(heartbeatOrigin, heartbeatPayload);
             }
@@ -225,6 +230,8 @@ public class HeartbeatManagerImpl<I, O> implements HeartbeatManager<I, O> {
         if (!stopped) {
             log.debug("Received heartbeat request from {}.", requestOrigin);
 
+            // TODO 汇报心跳
+            // TODO 当TaskExecutor调用此方法,其实就是TaskExecutor自己记录,最近一次和ResourceManager之间的心跳时间
             final HeartbeatTarget<O> heartbeatTarget = reportHeartbeat(requestOrigin);
 
             if (heartbeatTarget != null) {
@@ -232,6 +239,8 @@ public class HeartbeatManagerImpl<I, O> implements HeartbeatManager<I, O> {
                     heartbeatListener.reportPayload(requestOrigin, heartbeatPayload);
                 }
 
+                // TODO 给主节点回复心跳,并做负载汇报
+                //要看是什么具体的心跳对象，选择进入不同的实现类
                 heartbeatTarget
                         .receiveHeartbeat(
                                 getOwnResourceID(),
@@ -280,6 +289,9 @@ public class HeartbeatManagerImpl<I, O> implements HeartbeatManager<I, O> {
     HeartbeatTarget<O> reportHeartbeat(ResourceID resourceID) {
         if (heartbeatTargets.containsKey(resourceID)) {
             HeartbeatMonitor<O> heartbeatMonitor = heartbeatTargets.get(resourceID);
+            // TODO 记录心跳
+            // TODO 当从节点回复主节点心跳时,当前HeartbeatMonitor为主节点
+            // TODO 当主节点回复从节点心跳时,当前HeartbeatMonitor为从节点
             heartbeatMonitor.reportHeartbeat();
 
             return heartbeatMonitor.getHeartbeatTarget();
