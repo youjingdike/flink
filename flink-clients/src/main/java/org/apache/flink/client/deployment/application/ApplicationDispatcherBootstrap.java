@@ -109,6 +109,7 @@ public class ApplicationDispatcherBootstrap implements DispatcherBootstrap {
         this.application = checkNotNull(application);
         this.errorHandler = checkNotNull(errorHandler);
 
+        // TODO
         this.applicationCompletionFuture =
                 fixJobIdAndRunApplicationAsync(dispatcherGateway, scheduledExecutor);
 
@@ -194,6 +195,7 @@ public class ApplicationDispatcherBootstrap implements DispatcherBootstrap {
 
         if (!HighAvailabilityMode.isHighAvailabilityModeActivated(configuration)
                 && !configuredJobId.isPresent()) {
+            // TODO
             return runApplicationAsync(dispatcherGateway, scheduledExecutor, false);
         }
 
@@ -221,6 +223,7 @@ public class ApplicationDispatcherBootstrap implements DispatcherBootstrap {
         applicationExecutionTask =
                 scheduledExecutor.schedule(
                         () ->
+                                // TODO
                                 runApplicationEntryPoint(
                                         applicationExecutionFuture,
                                         tolerateMissingResult,
@@ -258,6 +261,7 @@ public class ApplicationDispatcherBootstrap implements DispatcherBootstrap {
                     new EmbeddedExecutorServiceLoader(
                             applicationJobIds, dispatcherGateway, scheduledExecutor);
 
+            // TODO 执行用户代码
             ClientUtils.executeProgram(
                     executorServiceLoader,
                     configuration,

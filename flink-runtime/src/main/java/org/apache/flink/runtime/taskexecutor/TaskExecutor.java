@@ -580,7 +580,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
 
     @Override
     /**
-     *  RPC服务端响应
+     *  jobMaster发送Rpc提交task的服务端响应
      */
     public CompletableFuture<Acknowledge> submitTask(
             TaskDeploymentDescriptor tdd, JobMasterId jobMasterId, Time timeout) {
@@ -727,7 +727,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
             } catch (SlotNotFoundException e) {
                 throw new TaskSubmissionException("Could not submit task.", e);
             }
-            // step.10;Task implements Runnable
+            // TODO step.10;Task implements Runnable
             Task task =
                     new Task(
                             jobInformation,

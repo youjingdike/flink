@@ -736,7 +736,7 @@ public class Task
             FlinkSecurityManager.monitorUserSystemExitForCurrentThread();
             try {
                 // now load and instantiate the task's invokable code
-                //step.12;
+                // TODO step.12; 获取执行TaskInvokable
                 invokable =
                         loadAndInstantiateInvokable(
                                 userCodeClassLoader.asClassLoader(), nameOfInvokableClass, env);
@@ -764,7 +764,7 @@ public class Task
             // make sure the user code classloader is accessible thread-locally
             executingThread.setContextClassLoader(userCodeClassLoader.asClassLoader());
 
-            //step.13;
+            // TODO step.13;
             restoreAndInvoke(invokable);
 
             // make sure, we enter the catch block if the task leaves the invoke() method due
@@ -926,6 +926,7 @@ public class Task
 
     private void restoreAndInvoke(TaskInvokable finalInvokable) throws Exception {
         try {
+            // TODO
             runWithSystemExitMonitoring(finalInvokable::restore);
 
             if (!transitionState(ExecutionState.INITIALIZING, ExecutionState.RUNNING)) {
@@ -936,6 +937,7 @@ public class Task
             taskManagerActions.updateTaskExecutionState(
                     new TaskExecutionState(executionId, ExecutionState.RUNNING));
 
+            // TODO step.14;调用invoke(),启动task
             runWithSystemExitMonitoring(finalInvokable::invoke);
         } catch (Throwable throwable) {
             try {
@@ -945,6 +947,7 @@ public class Task
             }
             throw throwable;
         }
+        // TODO 进行资源清理，至此一个subTask的启动就完成了
         runWithSystemExitMonitoring(() -> finalInvokable.cleanUp(null));
     }
 

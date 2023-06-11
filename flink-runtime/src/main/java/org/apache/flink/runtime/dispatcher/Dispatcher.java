@@ -325,6 +325,7 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
                                 "Currently jobs is not supported if parts of the vertices have "
                                         + "resources configured. The limitation will be removed in future versions."));
             } else {
+                // TODO
                 return internalSubmitJob(jobGraph);
             }
         } catch (FlinkException e) {
@@ -384,7 +385,7 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
     private CompletableFuture<Acknowledge> internalSubmitJob(JobGraph jobGraph) {
         log.info("Submitting job '{}' ({}).", jobGraph.getName(), jobGraph.getJobID());
 
-        // TODO
+        // TODO  this::persistAndRunJob
         final CompletableFuture<Acknowledge> persistAndRunFuture =
                 waitForTerminatingJob(jobGraph.getJobID(), jobGraph, this::persistAndRunJob)
                         .thenApply(ignored -> Acknowledge.get());
