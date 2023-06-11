@@ -727,7 +727,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
             } catch (SlotNotFoundException e) {
                 throw new TaskSubmissionException("Could not submit task.", e);
             }
-            // TODO step.10;Task implements Runnable
+            // TODO step.8;Task implements Runnable
             Task task =
                     new Task(
                             jobInformation,
@@ -776,7 +776,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
             }
 
             if (taskAdded) {
-                // step.11;
+                // TODO step.9;
                 task.startTaskThread();
 
                 setupResultPartitionBookkeeping(
