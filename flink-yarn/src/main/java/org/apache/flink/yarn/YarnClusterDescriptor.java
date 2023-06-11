@@ -456,6 +456,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
         Preconditions.checkArgument(pipelineJars.size() == 1, "Should only have one jar");
 
         try {
+            // TODO 设置启动入口类：YarnApplicationClusterEntryPoint
             return deployInternal(
                     clusterSpecification,
                     "Flink Application Cluster",
@@ -555,6 +556,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
         // --------------
 
         // Create application via yarnClient
+        // TODO 创建application
         final YarnClientApplication yarnApplication = yarnClient.createApplication();
         final GetNewApplicationResponse appResponse = yarnApplication.getNewApplicationResponse();
 
@@ -603,6 +605,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
         flinkConfiguration.setString(
                 ClusterEntrypoint.INTERNAL_CLUSTER_EXECUTION_MODE, executionMode.toString());
 
+        // TODO 启动applicationMaster
         ApplicationReport report =
                 startAppMaster(
                         flinkConfiguration,
@@ -1088,6 +1091,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
         final JobManagerProcessSpec processSpec =
                 JobManagerProcessUtils.processSpecFromConfigWithNewOptionToInterpretLegacyHeap(
                         flinkConfiguration, JobManagerOptions.TOTAL_PROCESS_MEMORY);
+        // TODO 设置启动Container的上下文
         final ContainerLaunchContext amContainer =
                 setupApplicationMasterContainer(yarnClusterEntrypoint, hasKrb5, processSpec);
 
@@ -1193,6 +1197,8 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
                 new DeploymentFailureHook(yarnApplication, fileUploader.getApplicationDir());
         Runtime.getRuntime().addShutdownHook(deploymentFailureHook);
         LOG.info("Submitting application master " + appId);
+
+        // TODO 启动ApplicationMaster
         yarnClient.submitApplication(appContext);
 
         LOG.info("Waiting for the cluster to be allocated");

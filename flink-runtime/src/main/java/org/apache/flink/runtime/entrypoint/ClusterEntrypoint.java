@@ -282,8 +282,8 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
             configuration.setInteger(JobManagerOptions.PORT, commonRpcService.getPort());
 
             /*
-            TODO 此处核心方法，初始化了一个DispatcherResourceManagerComponentFactory 工厂实例，
-             内部初始化了三大核心组件的工厂实例：
+            TODO 此处核心方法，初始化了一个DefaultDispatcherResourceManagerComponentFactory 工厂实例，
+             内部初始化了三大核心组件的工厂实例，不同模式使用的组件有可能不同：
              1. Dispatcher = DefaultDispatcherRunnerFactory 内部引用 JobDispatcherLeaderProcessFactoryFactory，
                 生产DispatcherRunnerLeaderElectionLifecycleManager 内部引用
                    DefaultDispatcherRunner

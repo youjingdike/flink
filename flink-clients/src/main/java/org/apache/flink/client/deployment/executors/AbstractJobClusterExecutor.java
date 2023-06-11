@@ -69,6 +69,7 @@ public class AbstractJobClusterExecutor<
             throws Exception {
         final JobGraph jobGraph = PipelineExecutorUtils.getJobGraph(pipeline, configuration);
 
+        // TODO YarnClusterClientFactory创建YarnClusterDescriptor
         try (final ClusterDescriptor<ClusterID> clusterDescriptor =
                 clusterClientFactory.createClusterDescriptor(configuration)) {
             final ExecutionConfigAccessor configAccessor =
@@ -77,6 +78,7 @@ public class AbstractJobClusterExecutor<
             final ClusterSpecification clusterSpecification =
                     clusterClientFactory.getClusterSpecification(configuration);
 
+            // TODO 部署per-job作业
             final ClusterClientProvider<ClusterID> clusterClientProvider =
                     clusterDescriptor.deployJobCluster(
                             clusterSpecification, jobGraph, configAccessor.getDetachedMode());

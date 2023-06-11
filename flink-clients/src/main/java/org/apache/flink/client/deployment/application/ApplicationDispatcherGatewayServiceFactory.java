@@ -89,6 +89,7 @@ public class ApplicationDispatcherGatewayServiceFactory
 
         final Dispatcher dispatcher;
         try {
+            // TODO SessionDispatcherFactory,创建StandaloneDispatcher
             dispatcher =
                     dispatcherFactory.createDispatcher(
                             rpcService,

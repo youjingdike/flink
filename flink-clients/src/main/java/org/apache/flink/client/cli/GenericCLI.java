@@ -117,6 +117,7 @@ public class GenericCLI implements CustomCommandLine {
             resultConfiguration.setString(DeploymentOptions.TARGET, executorName);
         }
 
+        // TODO 设置提交的类型：yarn-application/yarn-per-job
         final String targetName = commandLine.getOptionValue(targetOption.getOpt());
         if (targetName != null) {
             resultConfiguration.setString(DeploymentOptions.TARGET, targetName);

@@ -384,6 +384,7 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
     private CompletableFuture<Acknowledge> internalSubmitJob(JobGraph jobGraph) {
         log.info("Submitting job '{}' ({}).", jobGraph.getName(), jobGraph.getJobID());
 
+        // TODO
         final CompletableFuture<Acknowledge> persistAndRunFuture =
                 waitForTerminatingJob(jobGraph.getJobID(), jobGraph, this::persistAndRunJob)
                         .thenApply(ignored -> Acknowledge.get());

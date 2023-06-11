@@ -219,6 +219,7 @@ public class PackagedProgram implements AutoCloseable {
     public void invokeInteractiveModeForExecution() throws ProgramInvocationException {
         FlinkSecurityManager.monitorUserSystemExitForCurrentThread();
         try {
+            // TODO
             callMainMethod(mainClass, args);
         } finally {
             FlinkSecurityManager.unmonitorUserSystemExitForCurrentThread();
@@ -329,6 +330,7 @@ public class PackagedProgram implements AutoCloseable {
         }
 
         try {
+            // TODO 通过反射调用main(),接下来看StreamExecutionEnvironment.execute()
             mainMethod = entryClass.getMethod("main", String[].class);
         } catch (NoSuchMethodException e) {
             throw new ProgramInvocationException(

@@ -69,6 +69,7 @@ public class ApplicationClusterEntryPoint extends ClusterEntrypoint {
     @Override
     protected DispatcherResourceManagerComponentFactory
             createDispatcherResourceManagerComponentFactory(final Configuration configuration) {
+        // TODO SessionDispatcherFactory
         return new DefaultDispatcherResourceManagerComponentFactory(
                 new DefaultDispatcherRunnerFactory(
                         ApplicationDispatcherLeaderProcessFactoryFactory.create(

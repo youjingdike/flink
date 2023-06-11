@@ -1927,6 +1927,7 @@ public class StreamExecutionEnvironment {
      */
     @Internal
     public JobExecutionResult execute(StreamGraph streamGraph) throws Exception {
+        // TODO 进行作业提交
         final JobClient jobClient = executeAsync(streamGraph);
 
         try {
@@ -2028,6 +2029,8 @@ public class StreamExecutionEnvironment {
                 configuration.get(DeploymentOptions.TARGET),
                 "No execution.target specified in your configuration file.");
 
+        // TODO yarn-session/yarn-per-job, 这里为DefaultExecutorServiceLoader
+        //  yarn-application, 这里为EmbeddedExecutorServiceLoader
         final PipelineExecutorFactory executorFactory =
                 executorServiceLoader.getExecutorFactory(configuration);
 
@@ -2035,7 +2038,10 @@ public class StreamExecutionEnvironment {
                 executorFactory,
                 "Cannot find compatible factory for specified execution.target (=%s)",
                 configuration.get(DeploymentOptions.TARGET));
-
+        // TODO 重点逻辑：
+        // TODO per-job:YarnJobClusterExecutorFactory创建YarnJobClusterExecutor；
+        //  session:YarnSessionClusterExecutorFactory创建YarnSessionClusterExecutor；
+        //  yarn-application:EmbeddedExecutorFactory创建EmbeddedExecutor
         CompletableFuture<JobClient> jobClientFuture =
                 executorFactory
                         .getExecutor(configuration)

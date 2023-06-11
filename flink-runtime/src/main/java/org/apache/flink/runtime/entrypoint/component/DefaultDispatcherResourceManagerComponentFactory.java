@@ -183,18 +183,18 @@ public class DefaultDispatcherResourceManagerComponentFactory
 
             final String hostname = RpcUtils.getHostname(rpcService);
 
-            /*step5:
-            TODO 创建ResourceManager实例
-             三个要点:
-             1. ResourceManager是一个RpcEndpoint(Actor),当构建好对象后启动时会触发onStart(Actor的perStart生命周期方法)方法
-             2. ResourceManager也是一个LeaderContender,也会执行竞选, 会执行竞选结果方法
-             3. ResourceManagerService 具有两个心跳服务和两个定时服务:
-                    两个心跳服务:
-                        从节点  和   主节点之间的心跳
-                        Job的主控程序 和 主节点之间的心跳
-                    两个定时服务:
-                        TaskManager 的超时检查服务
-                        Slot申请的 超时检查服务
+            /* step5:
+             TODO 创建ResourceManager实例
+                 三个要点:
+                 1. ResourceManager是一个RpcEndpoint(Actor),当构建好对象后启动时会触发onStart(Actor的perStart生命周期方法)方法
+                 2. ResourceManager也是一个LeaderContender,也会执行竞选, 会执行竞选结果方法
+                 3. ResourceManagerService 具有两个心跳服务和两个定时服务:
+                        两个心跳服务:
+                            从节点  和   主节点之间的心跳
+                            Job的主控程序 和 主节点之间的心跳
+                        两个定时服务:
+                            TaskManager 的超时检查服务
+                            Slot申请的 超时检查服务
              */
             resourceManagerService =
                     ResourceManagerServiceImpl.create(

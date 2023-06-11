@@ -57,13 +57,17 @@ public class ApplicationClusterDeployer implements ApplicationDeployer {
 
         LOG.info("Submitting application in 'Application Mode'.");
 
+        // TODO YarnClusterClientFactory
         final ClusterClientFactory<ClusterID> clientFactory =
                 clientServiceLoader.getClusterClientFactory(configuration);
+
+        // TODO YarnClusterDescriptor
         try (final ClusterDescriptor<ClusterID> clusterDescriptor =
                 clientFactory.createClusterDescriptor(configuration)) {
             final ClusterSpecification clusterSpecification =
                     clientFactory.getClusterSpecification(configuration);
 
+            // TODO
             clusterDescriptor.deployApplicationCluster(
                     clusterSpecification, applicationConfiguration);
         }

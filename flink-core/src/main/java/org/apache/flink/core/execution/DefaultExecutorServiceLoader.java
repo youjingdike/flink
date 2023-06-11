@@ -62,6 +62,9 @@ public class DefaultExecutorServiceLoader implements PipelineExecutorServiceLoad
         while (factories.hasNext()) {
             try {
                 final PipelineExecutorFactory factory = factories.next();
+                // TODO 判断提交类型，加载相应的类
+                // YarnJobClusterExecutorFactory
+                // YarnSessionClusterExecutorFactory
                 if (factory != null && factory.isCompatibleWith(configuration)) {
                     compatibleFactories.add(factory);
                 }

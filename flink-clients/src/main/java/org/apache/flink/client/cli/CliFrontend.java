@@ -177,6 +177,7 @@ public class CliFrontend {
             return;
         }
 
+        // TODO 获取激活的CustomCommandLine,参数设置了-t,这里为GenericCLI
         final CustomCommandLine activeCommandLine =
                 validateAndGetActiveCommandLine(checkNotNull(commandLine));
 
@@ -199,6 +200,7 @@ public class CliFrontend {
             programOptions = new ProgramOptions(commandLine);
             programOptions.validate();
             final URI uri = PackagedProgramUtils.resolveURI(programOptions.getJarFilePath());
+            // TODO 这里面指定了提交的类型：yarn-application
             effectiveConfiguration =
                     getEffectiveConfiguration(
                             activeCommandLine,
@@ -230,6 +232,8 @@ public class CliFrontend {
             return;
         }
 
+        // TODO 获取激活的CustomCommandLine,参数设置了-t,这里为GenericCLI(yarn-per-job,yarn-application)
+        //  没设置-t,为FlinkYarnSessionCli(yarn-session)
         final CustomCommandLine activeCommandLine =
                 validateAndGetActiveCommandLine(checkNotNull(commandLine));
 
@@ -237,12 +241,14 @@ public class CliFrontend {
 
         final List<URL> jobJars = getJobJarAndDependencies(programOptions);
 
+        // TODO 这里面指定了提交的类型：
         final Configuration effectiveConfiguration =
                 getEffectiveConfiguration(activeCommandLine, commandLine, programOptions, jobJars);
 
         LOG.debug("Effective executor configuration: {}", effectiveConfiguration);
 
         try (PackagedProgram program = getPackagedProgram(programOptions, effectiveConfiguration)) {
+            // TODO 执行用户代码的main(),进行作业提交
             executeProgram(effectiveConfiguration, program);
         }
     }
@@ -282,6 +288,7 @@ public class CliFrontend {
 
         final Configuration effectiveConfiguration = new Configuration(configuration);
 
+        // TODO
         final Configuration commandLineConfiguration =
                 checkNotNull(activeCustomCommandLine).toConfiguration(commandLine);
 
@@ -297,6 +304,7 @@ public class CliFrontend {
             final List<T> jobJars)
             throws FlinkException {
 
+        // TODO
         final Configuration effectiveConfiguration =
                 getEffectiveConfiguration(activeCustomCommandLine, commandLine);
 
@@ -1051,9 +1059,11 @@ public class CliFrontend {
             // do action
             switch (action) {
                 case ACTION_RUN:
+                    // TODO yarn-session/yarn-per-job
                     run(params);
                     return 0;
                 case ACTION_RUN_APPLICATION:
+                    // TODO yarn-application
                     runApplication(params);
                     return 0;
                 case ACTION_LIST:

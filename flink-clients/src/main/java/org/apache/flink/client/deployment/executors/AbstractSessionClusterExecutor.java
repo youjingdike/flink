@@ -73,7 +73,9 @@ public class AbstractSessionClusterExecutor<
 
             final ClusterClientProvider<ClusterID> clusterClientProvider =
                     clusterDescriptor.retrieve(clusterID);
+            // TODO 创建RestClusterClient
             ClusterClient<ClusterID> clusterClient = clusterClientProvider.getClusterClient();
+            // TODO 通过RestClusterClient提交作业;
             return clusterClient
                     .submitJob(jobGraph)
                     .thenApplyAsync(

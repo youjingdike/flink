@@ -394,6 +394,7 @@ public class FlinkYarnSessionCli extends AbstractYarnCli {
         applyDescriptorOptionToConfig(commandLine, effectiveConfiguration);
 
         final ApplicationId applicationId = getApplicationId(commandLine);
+        // TODO 判断applicationId是否为空，确定提交的类型：yarn-session/yarn-per-job
         if (applicationId != null) {
             final String zooKeeperNamespace;
             if (commandLine.hasOption(zookeeperNamespace.getOpt())) {
@@ -406,9 +407,11 @@ public class FlinkYarnSessionCli extends AbstractYarnCli {
             effectiveConfiguration.setString(HA_CLUSTER_ID, zooKeeperNamespace);
             effectiveConfiguration.setString(
                     YarnConfigOptions.APPLICATION_ID, ConverterUtils.toString(applicationId));
+            // TODO
             effectiveConfiguration.setString(
                     DeploymentOptions.TARGET, YarnSessionClusterExecutor.NAME);
         } else {
+            // TODO
             effectiveConfiguration.setString(DeploymentOptions.TARGET, YarnJobClusterExecutor.NAME);
         }
 

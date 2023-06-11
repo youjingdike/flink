@@ -101,6 +101,7 @@ public class EmbeddedExecutor implements PipelineExecutor {
             return getJobClientFuture(optJobId.get(), userCodeClassloader);
         }
 
+        // TODO
         return submitAndGetJobClientFuture(pipeline, configuration, userCodeClassloader);
     }
 
@@ -119,6 +120,7 @@ public class EmbeddedExecutor implements PipelineExecutor {
         final Time timeout =
                 Time.milliseconds(configuration.get(ClientOptions.CLIENT_TIMEOUT).toMillis());
 
+        // TODO 获取jobGraph
         final JobGraph jobGraph = PipelineExecutorUtils.getJobGraph(pipeline, configuration);
         final JobID actualJobId = jobGraph.getJobID();
 
@@ -129,6 +131,7 @@ public class EmbeddedExecutor implements PipelineExecutor {
             LOG.debug("Effective Configuration: {}", configuration);
         }
 
+        // TODO
         final CompletableFuture<JobID> jobSubmissionFuture =
                 submitJob(configuration, dispatcherGateway, jobGraph, timeout);
 
@@ -173,13 +176,14 @@ public class EmbeddedExecutor implements PipelineExecutor {
                 .thenCompose(
                         blobServerAddress -> {
                             try {
+                                // TODO 提取并且上传JobGraph
                                 ClientUtils.extractAndUploadJobGraphFiles(
                                         jobGraph,
                                         () -> new BlobClient(blobServerAddress, configuration));
                             } catch (FlinkException e) {
                                 throw new CompletionException(e);
                             }
-
+                            // TODO
                             return dispatcherGateway.submitJob(jobGraph, rpcTimeout);
                         })
                 .thenApply(ack -> jobGraph.getJobID());
