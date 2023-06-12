@@ -302,6 +302,7 @@ public class StreamGraphGenerator {
     }
 
     public StreamGraph generate() {
+        // TODO 创建StreamGraph
         streamGraph = new StreamGraph(executionConfig, checkpointConfig, savepointRestoreSettings);
         streamGraph.setEnableCheckpointsAfterTasksFinish(
                 configuration.get(
@@ -311,6 +312,7 @@ public class StreamGraphGenerator {
 
         alreadyTransformed = new HashMap<>();
 
+        // TODO 在这里面转换成StreamNode
         for (Transformation<?> transformation : transformations) {
             transform(transformation);
         }
@@ -548,6 +550,7 @@ public class StreamGraphGenerator {
 
         Collection<Integer> transformedIds;
         if (translator != null) {
+            // TODO
             transformedIds = translate(translator, transform);
         } else {
             transformedIds = legacyTransform(transform);
@@ -797,6 +800,8 @@ public class StreamGraphGenerator {
         checkNotNull(translator);
         checkNotNull(transform);
 
+        // TODO SourceTransformation是在这里转换的，没有放在StreamExecutionEnvironment的transformations里面,其实每个Transformation进来都会转换其输入的Transformation
+        // TODO 只有source会在这里被转化,其他的Transformation在后面的Transformation转换其输入Transformation时，已经转换完毕；
         final List<Collection<Integer>> allInputIds = getParentInputIds(transform.getInputs());
 
         // the recursive call might have already transformed this
@@ -839,6 +844,7 @@ public class StreamGraphGenerator {
         }
 
         for (Transformation<?> transformation : parentTransformations) {
+            // TODO
             allInputIds.add(transform(transformation));
         }
         return allInputIds;

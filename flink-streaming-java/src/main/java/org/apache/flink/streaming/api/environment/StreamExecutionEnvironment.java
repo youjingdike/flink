@@ -2085,6 +2085,7 @@ public class StreamExecutionEnvironment {
      */
     @Internal
     public StreamGraph getStreamGraph(boolean clearTransformations) {
+        // TODO generate()
         final StreamGraph streamGraph = getStreamGraphGenerator(transformations).generate();
         if (clearTransformations) {
             transformations.clear();
