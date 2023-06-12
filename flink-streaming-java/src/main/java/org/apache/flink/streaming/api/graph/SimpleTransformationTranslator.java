@@ -58,6 +58,7 @@ public abstract class SimpleTransformationTranslator<OUT, T extends Transformati
         checkNotNull(transformation);
         checkNotNull(context);
 
+        // TODO 以SourceTransformationTranslator为例
         final Collection<Integer> transformedIds =
                 translateForStreamingInternal(transformation, context);
         configure(transformation, context);

@@ -308,6 +308,7 @@ public class StreamGraph implements Pipeline {
             TypeInformation<IN> inTypeInfo,
             TypeInformation<OUT> outTypeInfo,
             String operatorName) {
+        // TODO
         addOperator(
                 vertexID,
                 slotSharingGroup,
@@ -394,7 +395,7 @@ public class StreamGraph implements Pipeline {
             TypeInformation<OUT> outTypeInfo,
             String operatorName,
             Class<? extends TaskInvokable> invokableClass) {
-
+        // TODO
         addNode(
                 vertexID,
                 slotSharingGroup,
@@ -499,6 +500,7 @@ public class StreamGraph implements Pipeline {
             throw new RuntimeException("Duplicate vertexID " + vertexID);
         }
 
+        // TODO 创建StreamNode，并保存到streamNodes map中
         StreamNode vertex =
                 new StreamNode(
                         vertexID,

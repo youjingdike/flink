@@ -70,6 +70,7 @@ public class SourceTransformationTranslator<OUT, SplitT extends SourceSplit, Enu
         final int transformationId = transformation.getId();
         final ExecutionConfig executionConfig = streamGraph.getExecutionConfig();
 
+        // TODO 创建SourceOperatorFactory
         SourceOperatorFactory<OUT> operatorFactory =
                 new SourceOperatorFactory<>(
                         transformation.getSource(),
@@ -78,6 +79,7 @@ public class SourceTransformationTranslator<OUT, SplitT extends SourceSplit, Enu
 
         operatorFactory.setChainingStrategy(transformation.getChainingStrategy());
 
+        // TODO
         streamGraph.addSource(
                 transformationId,
                 slotSharingGroup,

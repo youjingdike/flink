@@ -183,6 +183,7 @@ public abstract class OperatorChain<OUT, OP extends StreamOperator<OUT>>
             // we create the chain of operators and grab the collector that leads into the chain
             List<StreamOperatorWrapper<?, ?>> allOpWrappers =
                     new ArrayList<>(chainedConfigs.size());
+            // TODO
             this.mainOperatorOutput =
                     createOutputCollector(
                             containingTask,
@@ -194,6 +195,7 @@ public abstract class OperatorChain<OUT, OP extends StreamOperator<OUT>>
                             containingTask.getMailboxExecutorFactory());
 
             if (operatorFactory != null) {
+                // TODO
                 Tuple2<OP, Optional<ProcessingTimeService>> mainOperatorAndTimeService =
                         StreamOperatorFactoryUtil.createOperator(
                                 operatorFactory,
@@ -226,6 +228,7 @@ public abstract class OperatorChain<OUT, OP extends StreamOperator<OUT>>
                 this.tailOperatorWrapper = null;
             }
 
+            // TODO
             this.chainedSources =
                     createChainedSources(
                             containingTask,
@@ -622,6 +625,7 @@ public abstract class OperatorChain<OUT, OP extends StreamOperator<OUT>>
             int outputId = outputEdge.getTargetId();
             StreamConfig chainedOpConfig = chainedConfigs.get(outputId);
 
+            // TODO
             WatermarkGaugeExposingOutput<StreamRecord<T>> output =
                     createOperatorChain(
                             containingTask,
@@ -672,6 +676,7 @@ public abstract class OperatorChain<OUT, OP extends StreamOperator<OUT>>
             MailboxExecutorFactory mailboxExecutorFactory) {
         // create the output that the operator writes to first. this may recursively create more
         // operators
+        // TODO
         WatermarkGaugeExposingOutput<StreamRecord<OUT>> chainedOperatorOutput =
                 createOutputCollector(
                         containingTask,
@@ -682,6 +687,7 @@ public abstract class OperatorChain<OUT, OP extends StreamOperator<OUT>>
                         allOperatorWrappers,
                         mailboxExecutorFactory);
 
+        // TODO
         OneInputStreamOperator<IN, OUT> chainedOperator =
                 createOperator(
                         containingTask,
@@ -708,6 +714,7 @@ public abstract class OperatorChain<OUT, OP extends StreamOperator<OUT>>
             boolean isHead) {
 
         // now create the operator and give it the output collector to write its output to
+        // TODO
         Tuple2<OP, Optional<ProcessingTimeService>> chainedOperatorAndTimeService =
                 StreamOperatorFactoryUtil.createOperator(
                         operatorConfig.getStreamOperatorFactory(userCodeClassloader),

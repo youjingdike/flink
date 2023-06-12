@@ -659,6 +659,11 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
         closedOperators = false;
         LOG.debug("Initializing {}.", getName());
 
+        // TODO 构建OperatorChain,将StreamTask的this传入,用OperatorChain来驱动StreamTask的执行
+        /*
+         * TODO OperatorChain包含了在一个StreamTask中作为一条链执行的所有操作符。
+         *   这个链的主要入口点是它的mainOperator。mainOperator通过从网络输入和/或源输入中提取记录，并将生成的记录推送到剩余的链式操作符，来驱动StreamTask的执行。
+         */
         operatorChain =
                 getEnvironment().getTaskStateManager().isTaskDeployedAsFinished()
                         ? new FinishedOperatorChain<>(this, recordWriter)
