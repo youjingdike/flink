@@ -200,7 +200,9 @@ public class TaskDeploymentDescriptorFactory {
         return new TaskDeploymentDescriptorFactory(
                 executionVertex.getCurrentExecutionAttempt().getAttemptId(),
                 attemptNumber,
+                // TODO 创建JobInformation
                 getSerializedJobInformation(internalExecutionGraphAccessor),
+                // TODO 创建TaskInformation
                 getSerializedTaskInformation(
                         executionVertex.getJobVertex().getTaskInformationOrBlobKey()),
                 internalExecutionGraphAccessor.getJobID(),

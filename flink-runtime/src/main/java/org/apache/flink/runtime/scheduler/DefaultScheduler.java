@@ -177,6 +177,8 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
         this.executionFailureHandler =
                 new ExecutionFailureHandler(
                         getSchedulingTopology(), failoverStrategy, restartBackoffTimeStrategy);
+
+        // TODO PipelinedRegionSchedulingStrategy
         this.schedulingStrategy =
                 schedulingStrategyFactory.createInstance(this, getSchedulingTopology());
 
@@ -657,7 +659,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
     private void deployTaskSafe(final ExecutionVertexID executionVertexId) {
         try {
             final ExecutionVertex executionVertex = getExecutionVertex(executionVertexId);
-            // TODO step.6;
+            // TODO step.6;DefaultExecutionVertexOperations
             executionVertexOperations.deploy(executionVertex);
         } catch (Throwable e) {
             handleTaskDeploymentFailure(executionVertexId, e);

@@ -566,7 +566,7 @@ public class Execution
                     getAssignedResourceLocation(),
                     slot.getAllocationId());
 
-            // TODO 创建task部署描述
+            // TODO 创建TaskDeploymentDescriptor部署描述
             final TaskDeploymentDescriptor deployment =
                     TaskDeploymentDescriptorFactory.fromExecutionVertex(vertex, attemptNumber)
                             .createDeploymentDescriptor(

@@ -197,6 +197,7 @@ public abstract class SchedulerBase implements SchedulerNG, CheckpointScheduling
                         mainThreadExecutor,
                         jobStatusListener);
 
+        // TODO DefaultExecutionTopology
         this.schedulingTopology = executionGraph.getSchedulingTopology();
 
         stateLocationRetriever =

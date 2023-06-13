@@ -772,6 +772,7 @@ public class DefaultExecutionGraph implements ExecutionGraph, InternalExecutionG
 
         final long createTimestamp = System.currentTimeMillis();
 
+        // TODO *
         for (JobVertex jobVertex : topologicallySorted) {
 
             if (jobVertex.isInputVertex() && !jobVertex.isStoppable()) {
@@ -820,6 +821,7 @@ public class DefaultExecutionGraph implements ExecutionGraph, InternalExecutionG
         registerExecutionVerticesAndResultPartitions(this.verticesInCreationOrder);
 
         // the topology assigning should happen before notifying new vertices to failoverStrategy
+        // TODO DefaultExecutionTopology
         executionTopology = DefaultExecutionTopology.fromExecutionGraph(this);
 
         partitionGroupReleaseStrategy =
