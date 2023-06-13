@@ -175,6 +175,7 @@ public class StreamingJobGraphGenerator {
             legacyHashes.add(hasher.traverseStreamGraphAndGenerateHashes(streamGraph));
         }
 
+        // TODO 在这里将StreamNode转换为JobVertex
         setChaining(hashes, legacyHashes);
 
         setPhysicalEdges();

@@ -374,6 +374,7 @@ public class JobManagerOptions {
                     .defaultValue(HeartbeatManagerOptions.HEARTBEAT_TIMEOUT.defaultValue())
                     .withDescription("The timeout in milliseconds for a idle slot in Slot Pool.");
 
+    // TODO 调度模式，选择不同的调度器
     /** Config parameter determining the scheduler implementation. */
     @Documentation.ExcludeFromDocumentation("SchedulerNG is still in development.")
     public static final ConfigOption<SchedulerType> SCHEDULER =

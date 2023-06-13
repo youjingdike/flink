@@ -101,6 +101,7 @@ public class DefaultExecutionGraphBuilder {
         final String jobName = jobGraph.getName();
         final JobID jobId = jobGraph.getJobID();
 
+        // TODO 构建JobInformation
         final JobInformation jobInformation =
                 new JobInformation(
                         jobId,
@@ -118,6 +119,7 @@ public class DefaultExecutionGraphBuilder {
                         jobManagerConfig);
 
         // create a new execution graph, if none exists so far
+        // TODO 创建ExecutionGraph
         final DefaultExecutionGraph executionGraph;
         try {
             executionGraph =
@@ -171,6 +173,7 @@ public class DefaultExecutionGraphBuilder {
             }
 
             try {
+                // TODO 初始化JobVertex
                 vertex.initializeOnMaster(classLoader);
             } catch (Throwable t) {
                 throw new JobExecutionException(
@@ -193,6 +196,8 @@ public class DefaultExecutionGraphBuilder {
                     jobName,
                     jobId);
         }
+
+        // TODO 将JobVertex转换成ExecutionJobVertex
         executionGraph.attachJobGraph(sortedTopology);
 
         if (log.isDebugEnabled()) {
@@ -312,6 +317,7 @@ public class DefaultExecutionGraphBuilder {
             final CheckpointCoordinatorConfiguration chkConfig =
                     snapshotSettings.getCheckpointCoordinatorConfiguration();
 
+            // TODO 在这里会创建CheckpointCoordinator
             executionGraph.enableCheckpointing(
                     chkConfig,
                     hooks,

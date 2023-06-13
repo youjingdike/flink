@@ -209,6 +209,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
         log.info(
                 "Starting scheduling with scheduling strategy [{}]",
                 schedulingStrategy.getClass().getName());
+        // TODO 启动scheduler,在这里面会启动CheckpointCoordinator
         transitionToRunning();
         //step.5;PipelinedRegionSchedulingStrategy
         schedulingStrategy.startScheduling();

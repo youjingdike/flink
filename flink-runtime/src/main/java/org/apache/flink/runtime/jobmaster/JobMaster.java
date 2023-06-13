@@ -319,7 +319,8 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
 
         this.jobManagerJobMetricGroup = jobMetricGroupFactory.create(jobGraph);
         this.jobStatusListener = new JobManagerJobStatusListener();
-        // jobmanager.scheduler 默认值为Ng，因此创建的SchedulerNG为DefaultScheduler
+        // TODO jobmanager.scheduler 默认值为Ng，因此创建的SchedulerNG为DefaultScheduler
+        // TODO **这里面会将JobGraph转换成ExecutionGraph
         this.schedulerNG =
                 createScheduler(
                         slotPoolServiceSchedulerFactory,
@@ -343,6 +344,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
             JobManagerJobMetricGroup jobManagerJobMetricGroup,
             JobStatusListener jobStatusListener)
             throws Exception {
+        // TODO DefaultSlotPoolServiceSchedulerFactory
         final SchedulerNG scheduler =
                 slotPoolServiceSchedulerFactory.createScheduler(
                         log,

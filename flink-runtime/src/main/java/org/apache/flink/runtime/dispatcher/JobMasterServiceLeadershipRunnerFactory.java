@@ -66,10 +66,13 @@ public enum JobMasterServiceLeadershipRunnerFactory implements JobManagerRunnerF
 
         final RunningJobsRegistry runningJobsRegistry =
                 highAvailabilityServices.getRunningJobsRegistry();
-        // 高可用为：DefaultLeaderElectionService
+        // TODO 高可用为：DefaultLeaderElectionService
         final LeaderElectionService jobManagerLeaderElectionService =
                 highAvailabilityServices.getJobManagerLeaderElectionService(jobGraph.getJobID());
 
+        // TODO DefaultSlotPoolServiceSchedulerFactory
+        // schedulerNGFactory = new DefaultSchedulerFactory();
+        // slotPoolServiceFactory = new DeclarativeSlotPoolBridgeServiceFactory
         final SlotPoolServiceSchedulerFactory slotPoolServiceSchedulerFactory =
                 DefaultSlotPoolServiceSchedulerFactory.fromConfiguration(
                         configuration, jobGraph.getJobType());

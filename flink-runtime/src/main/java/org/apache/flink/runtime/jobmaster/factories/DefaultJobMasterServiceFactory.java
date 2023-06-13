@@ -99,6 +99,7 @@ public class DefaultJobMasterServiceFactory implements JobMasterServiceFactory {
     private JobMasterService internalCreateJobMasterService(
             UUID leaderSessionId, OnCompletionActions onCompletionActions) throws Exception {
 
+        // TODO 创建JobMaster,在构造函数中做了很多初始化的内容，其中就包含将JobGraph转换成ExecutionGraph的过程(包含创建CheckpointCoordinator)
         final JobMaster jobMaster =
                 new JobMaster(
                         rpcService,

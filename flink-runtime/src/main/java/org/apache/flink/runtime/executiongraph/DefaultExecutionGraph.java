@@ -434,6 +434,7 @@ public class DefaultExecutionGraph implements ExecutionGraph, InternalExecutionG
                                 Thread.currentThread().getThreadGroup(), "Checkpoint Timer"));
 
         // create the coordinator that triggers and commits checkpoints and holds the state
+        // TODO 创建checkpointCoordinator
         checkpointCoordinator =
                 new CheckpointCoordinator(
                         jobInformation.getJobId(),
@@ -465,6 +466,7 @@ public class DefaultExecutionGraph implements ExecutionGraph, InternalExecutionG
         if (checkpointCoordinator.isPeriodicCheckpointingConfigured()) {
             // the periodic checkpoint scheduler is activated and deactivated as a result of
             // job status changes (running -> on, all other states -> off)
+            // TODO 注册Listener用于启动checkpointCoordinator
             registerJobStatusListener(checkpointCoordinator.createActivatorDeactivator());
         }
 
@@ -826,6 +828,7 @@ public class DefaultExecutionGraph implements ExecutionGraph, InternalExecutionG
 
     @Override
     public void transitionToRunning() {
+        // TODO
         if (!transitionState(JobStatus.CREATED, JobStatus.RUNNING)) {
             throw new IllegalStateException(
                     "Job may only be scheduled from state " + JobStatus.CREATED);
@@ -1043,6 +1046,7 @@ public class DefaultExecutionGraph implements ExecutionGraph, InternalExecutionG
                     error);
 
             stateTimestamps[newState.ordinal()] = System.currentTimeMillis();
+            // TODO
             notifyJobStatusChange(newState, error);
             return true;
         } else {
@@ -1442,6 +1446,7 @@ public class DefaultExecutionGraph implements ExecutionGraph, InternalExecutionG
 
             for (JobStatusListener listener : jobStatusListeners) {
                 try {
+                    // TODO 这里会调用listener，其中CheckpointCoordinatorDeActivator会启动CheckpointCoordinator
                     listener.jobStatusChanges(getJobID(), newState, timestamp, serializedError);
                 } catch (Throwable t) {
                     LOG.warn("Error while notifying JobStatusListener", t);

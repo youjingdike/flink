@@ -115,6 +115,7 @@ public class DefaultSchedulerFactory implements SchedulerNGFactory {
                         shuffleMaster,
                         partitionTracker);
 
+        // TODO 在父类SchedulerBase的构造函数里面进行转换
         return new DefaultScheduler(
                 log,
                 jobGraph,
