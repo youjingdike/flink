@@ -196,6 +196,7 @@ public class MailboxProcessor implements Closeable {
 
         final MailboxController defaultActionContext = new MailboxController(this);
 
+        // TODO 循环执行mailboxDefaultAction(this::processInput)
         while (isNextLoopPossible()) {
             // The blocking `processMail` call will not return until default action is available.
             processMail(localMailbox, false);

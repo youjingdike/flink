@@ -65,6 +65,7 @@ public class StreamTaskSourceInput<T> implements StreamTaskInput<T>, Checkpointa
          * DataInputStatus.NOTHING_AVAILABLE}.
          */
         if (isBlockedAvailability.isApproximatelyAvailable()) {
+            // TODO SourceOperator
             return operator.emitNext(output);
         }
         return DataInputStatus.NOTHING_AVAILABLE;

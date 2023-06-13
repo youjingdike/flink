@@ -374,6 +374,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
         this.configuration = new StreamConfig(environment.getTaskConfiguration());
         this.recordWriter = createRecordWriterDelegate(configuration, environment);
         this.actionExecutor = Preconditions.checkNotNull(actionExecutor);
+        // TODO 传入this::processInput
         this.mailboxProcessor = new MailboxProcessor(this::processInput, mailbox, actionExecutor);
         this.mainMailboxExecutor = mailboxProcessor.getMainMailboxExecutor();
         this.asyncExceptionHandler = new StreamTaskAsyncExceptionHandler(environment);
@@ -492,6 +493,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
      * @throws Exception on any problems in the action.
      */
     protected void processInput(MailboxDefaultAction.Controller controller) throws Exception {
+        // TODO StreamOneInputProcessor
         DataInputStatus status = inputProcessor.processInput();
         switch (status) {
             case MORE_AVAILABLE:
@@ -689,6 +691,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
         CompletableFuture<Void> allGatesRecoveredFuture = actionExecutor.call(this::restoreGates);
 
         // Run mailbox until all gates will be recovered.
+        // TODO 执行this::processInput
         mailboxProcessor.runMailboxLoop();
 
         ensureNotCanceled();

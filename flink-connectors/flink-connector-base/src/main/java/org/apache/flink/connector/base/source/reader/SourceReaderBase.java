@@ -140,6 +140,7 @@ public abstract class SourceReaderBase<E, T, SplitT extends SourceSplit, SplitSt
             if (record != null) {
                 // emit the record.
                 numRecordsInCounter.inc(1);
+                // TODO RecordEmitter的子类实现，比如：KafkaRecordEmitter
                 recordEmitter.emitRecord(record, currentSplitOutput, currentSplitContext.state);
                 LOG.trace("Emitted record: {}", record);
 
