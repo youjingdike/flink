@@ -230,6 +230,10 @@ public class OneInputStreamTask<IN, OUT> extends StreamTask<OUT, OneInputStreamO
         public void emitRecord(StreamRecord<IN> record) throws Exception {
             numRecordsIn.inc();
             operator.setKeyContextElement(record);
+            // TODO 持有了OneInputStreamOperator对输入进行处理，而OneInputStreamOperator我们在之前已经介绍过，
+            //  它其实就是用户的UDF业务逻辑的封装，比如是map算子，在这里就进入的是Map的调用栈，
+            //  所以，运行时的实例是StreamMap，所以继续进入这个类的处理元素的方法
+            //  StreamMap
             operator.processElement(record);
         }
 

@@ -86,6 +86,7 @@ public class RecordWriterOutput<OUT> implements WatermarkGaugeExposingOutput<Str
             return;
         }
 
+        // TODO
         pushToRecordWriter(record);
     }
 
@@ -100,6 +101,7 @@ public class RecordWriterOutput<OUT> implements WatermarkGaugeExposingOutput<Str
         serializationDelegate.setInstance(record);
 
         try {
+            // TODO ChannelSelectorRecordWriter
             recordWriter.emit(serializationDelegate);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);

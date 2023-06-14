@@ -754,6 +754,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
         // Allow invoking method 'invoke' without having to call 'restore' before it.
         if (!isRunning) {
             LOG.debug("Restoring during invoke will be called.");
+            // TODO
             restoreInternal();
         }
 
@@ -763,6 +764,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
         scheduleBufferDebloater();
 
         // let the task do its work
+        // TODO 让任务完成它的工作
         runMailboxLoop();
 
         // if this left the run() method cleanly despite the fact that this was canceled,

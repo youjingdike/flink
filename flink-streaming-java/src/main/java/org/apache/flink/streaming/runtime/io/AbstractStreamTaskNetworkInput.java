@@ -92,6 +92,7 @@ public abstract class AbstractStreamTaskNetworkInput<
             if (currentRecordDeserializer != null) {
                 RecordDeserializer.DeserializationResult result;
                 try {
+                    // TODO 获取数据
                     result = currentRecordDeserializer.getNextRecord(deserializationDelegate);
                 } catch (IOException e) {
                     throw new IOException(
@@ -102,11 +103,13 @@ public abstract class AbstractStreamTaskNetworkInput<
                 }
 
                 if (result.isFullRecord()) {
+                    // TODO 处理数据
                     processElement(deserializationDelegate.getInstance(), output);
                     return DataInputStatus.MORE_AVAILABLE;
                 }
             }
 
+            // TODO 处理checkpoint barrier
             Optional<BufferOrEvent> bufferOrEvent = checkpointedInputGate.pollNext();
             if (bufferOrEvent.isPresent()) {
                 // return to the mailbox after receiving a checkpoint barrier to avoid processing of
@@ -130,7 +133,13 @@ public abstract class AbstractStreamTaskNetworkInput<
     }
 
     private void processElement(StreamElement recordOrMark, DataOutput<T> output) throws Exception {
+        // TODO 这里把流数据元素的抽象StreamElement划分为了四类,与我们在之前介绍的一致：
+        //  1.Record
+        //  2.Watermark
+        //  3.LatencyMarker
+        //  4.StreamStatus
         if (recordOrMark.isRecord()) {
+            // TODO StreamTaskNetworkOutput in OneInputStreamTask
             output.emitRecord(recordOrMark.asRecord());
         } else if (recordOrMark.isWatermark()) {
             statusWatermarkValve.inputWatermark(

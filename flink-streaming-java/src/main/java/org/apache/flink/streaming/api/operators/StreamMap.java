@@ -35,6 +35,7 @@ public class StreamMap<IN, OUT> extends AbstractUdfStreamOperator<OUT, MapFuncti
 
     @Override
     public void processElement(StreamRecord<IN> element) throws Exception {
+        // TODO 调用用户代码，并发送数据，有很多种Output，我们看RecordWriterOutput
         output.collect(element.replace(userFunction.map(element.getValue())));
     }
 }

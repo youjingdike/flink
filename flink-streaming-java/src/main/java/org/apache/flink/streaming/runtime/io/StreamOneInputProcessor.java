@@ -62,7 +62,9 @@ public final class StreamOneInputProcessor<IN> implements StreamInputProcessor {
 
     @Override
     public DataInputStatus processInput() throws Exception {
-        // TODO StreamTaskSourceInput
+        // TODO StreamTaskInput的两种主要实现：
+        //  1.StreamTaskSourceInput：使用Source读取数据
+        //  2.StreamTaskNetworkInput:使用InputGate读取数据
         DataInputStatus status = input.emitNext(output);
 
         if (status == DataInputStatus.END_OF_DATA) {

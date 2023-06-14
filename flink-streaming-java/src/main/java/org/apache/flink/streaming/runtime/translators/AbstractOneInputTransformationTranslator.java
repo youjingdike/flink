@@ -60,6 +60,7 @@ abstract class AbstractOneInputTransformationTranslator<IN, OUT, OP extends Tran
         final int transformationId = transformation.getId();
         final ExecutionConfig executionConfig = streamGraph.getExecutionConfig();
 
+        // TODO 添加节点，节点对应transformation
         streamGraph.addOperator(
                 transformationId,
                 slotSharingGroup,
@@ -81,6 +82,7 @@ abstract class AbstractOneInputTransformationTranslator<IN, OUT, OP extends Tran
         streamGraph.setParallelism(transformationId, parallelism);
         streamGraph.setMaxParallelism(transformationId, transformation.getMaxParallelism());
 
+        // TODO
         final List<Transformation<?>> parentTransformations = transformation.getInputs();
         checkState(
                 parentTransformations.size() == 1,
@@ -88,6 +90,7 @@ abstract class AbstractOneInputTransformationTranslator<IN, OUT, OP extends Tran
                         + parentTransformations.size());
 
         for (Integer inputId : context.getStreamNodeIds(parentTransformations.get(0))) {
+            // TODO 添加边，包含上游所有输入边
             streamGraph.addEdge(inputId, transformationId, 0);
         }
 
