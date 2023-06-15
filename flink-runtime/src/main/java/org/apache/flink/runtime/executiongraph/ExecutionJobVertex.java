@@ -135,6 +135,7 @@ public class ExecutionJobVertex
         this.graph = graph;
         this.jobVertex = jobVertex;
 
+        // TODO 获取并行度信息
         this.parallelismInfo = parallelismInfo;
 
         // verify that our parallelism is not higher than the maximum parallelism
@@ -159,9 +160,11 @@ public class ExecutionJobVertex
         this.coLocationGroup = jobVertex.getCoLocationGroup();
 
         // create the intermediate results
+        // TODO 通过 JobVertex 的 IntermediateDateaSets数量 初始化 intermediateResult的空集合
         this.producedDataSets =
                 new IntermediateResult[jobVertex.getNumberOfProducedIntermediateDataSets()];
 
+        // TODO 对 IntermediateDataSet 构建一个IntermediateDateSets
         for (int i = 0; i < jobVertex.getProducedDataSets().size(); i++) {
             final IntermediateDataSet result = jobVertex.getProducedDataSets().get(i);
 
@@ -174,6 +177,7 @@ public class ExecutionJobVertex
         }
 
         // create all task vertices
+        // TODO 根据并行度生成对应数量的ExecutionVertex
         for (int i = 0; i < this.parallelismInfo.getParallelism(); i++) {
             ExecutionVertex vertex =
                     new ExecutionVertex(
@@ -374,6 +378,7 @@ public class ExecutionJobVertex
             Map<IntermediateDataSetID, IntermediateResult> intermediateDataSets)
             throws JobException {
 
+        // TODO 获取JobVertex的输入
         List<JobEdge> inputs = jobVertex.getInputs();
 
         if (LOG.isDebugEnabled()) {
@@ -419,6 +424,7 @@ public class ExecutionJobVertex
 
             this.inputs.add(ires);
 
+            // TODO 构建ConsumedPartitionGroup和ConsumedVertexGroup
             EdgeManagerBuildUtil.connectVertexToResult(this, ires, edge.getDistributionPattern());
         }
     }

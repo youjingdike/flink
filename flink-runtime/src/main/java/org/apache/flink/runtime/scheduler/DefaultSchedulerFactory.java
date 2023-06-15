@@ -116,6 +116,7 @@ public class DefaultSchedulerFactory implements SchedulerNGFactory {
                         partitionTracker);
 
         // TODO 在父类SchedulerBase的构造函数里面进行转换
+        // TODO 返回一个DefaultScheduler对象,在该对象内部,会保存JobGraph,同时也会生成ExecutionGraph
         return new DefaultScheduler(
                 log,
                 jobGraph,

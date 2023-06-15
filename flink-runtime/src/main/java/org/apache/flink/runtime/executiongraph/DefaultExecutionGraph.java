@@ -772,7 +772,7 @@ public class DefaultExecutionGraph implements ExecutionGraph, InternalExecutionG
 
         final long createTimestamp = System.currentTimeMillis();
 
-        // TODO *
+        // TODO 遍历JobGraph的端点集合
         for (JobVertex jobVertex : topologicallySorted) {
 
             if (jobVertex.isInputVertex() && !jobVertex.isStoppable()) {
@@ -783,6 +783,7 @@ public class DefaultExecutionGraph implements ExecutionGraph, InternalExecutionG
                     parallelismStore.getParallelismInfo(jobVertex.getID());
 
             // create the execution job vertex and attach it to the graph
+            // TODO 为每一个JobVertex生成一个ExecutionJobVertex
             ExecutionJobVertex ejv =
                     new ExecutionJobVertex(
                             this,
@@ -793,6 +794,9 @@ public class DefaultExecutionGraph implements ExecutionGraph, InternalExecutionG
                             parallelismInfo,
                             initialAttemptCounts.getAttemptCounts(jobVertex.getID()));
 
+            // TODO 在Flink 1.13中 ExecutionEdge的概念被优化,将由ConsumedPartitionGroup和ConsumedVertexGroup来代替
+            //  此处为构建ConsumedPartitionGroup和ConsumedVertexGroup
+            //  详情见 https://flink.apache.org/2022/01/04/scheduler-performance-part-two.html
             ejv.connectToPredecessors(this.intermediateResults);
 
             ExecutionJobVertex previousTask = this.tasks.putIfAbsent(jobVertex.getID(), ejv);

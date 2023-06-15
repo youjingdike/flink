@@ -188,6 +188,7 @@ public abstract class SchedulerBase implements SchedulerNG, CheckpointScheduling
                         jobGraph, checkNotNull(checkpointRecoveryFactory));
 
         //TODO JobGraph -> ExecutionGraph,将JobGraph转换成ExecutionGraph
+        // TODO 此处入参没有JobGraph是因为JobGraph已经是实例内部的一个成员变量了
         this.executionGraph =
                 createAndRestoreExecutionGraph(
                         completedCheckpointStore,
@@ -333,7 +334,7 @@ public abstract class SchedulerBase implements SchedulerNG, CheckpointScheduling
             JobStatusListener jobStatusListener)
             throws Exception {
 
-        // TODO
+        // TODO 创建或恢复ExecutionGraph
         final ExecutionGraph newExecutionGraph =
                 executionGraphFactory.createAndRestoreExecutionGraph(
                         jobGraph,

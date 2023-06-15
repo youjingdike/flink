@@ -83,6 +83,7 @@ public class EdgeManagerBuildUtil {
     private static void connectAllToAll(
             ExecutionVertex[] taskVertices, IntermediateResult intermediateResult) {
 
+        // TODO 遍历 intermediateResultPartition 来构建ConsumedPartitionGroup
         List<IntermediateResultPartitionID> consumedPartitions =
                 Arrays.stream(intermediateResult.getPartitions())
                         .map(IntermediateResultPartition::getPartitionId)
@@ -90,6 +91,8 @@ public class EdgeManagerBuildUtil {
         ConsumedPartitionGroup consumedPartitionGroup =
                 createAndRegisterConsumedPartitionGroupToEdgeManager(
                         consumedPartitions, intermediateResult);
+
+        // TODO 将ConsumedPartitionGroup连接到下游ExecutionVertex
         for (ExecutionVertex ev : taskVertices) {
             ev.addConsumedPartitionGroup(consumedPartitionGroup);
         }
@@ -98,8 +101,11 @@ public class EdgeManagerBuildUtil {
                 Arrays.stream(taskVertices)
                         .map(ExecutionVertex::getID)
                         .collect(Collectors.toList());
+        // TODO 将下游ExecutionVertex构建为ConsumerVertexGroup
         ConsumerVertexGroup consumerVertexGroup =
                 ConsumerVertexGroup.fromMultipleVertices(consumerVertices);
+
+        // TODO 将每一个IntermediateResultPartition 连接至下游ConsumerVertexGroup
         for (IntermediateResultPartition partition : intermediateResult.getPartitions()) {
             partition.addConsumers(consumerVertexGroup);
         }

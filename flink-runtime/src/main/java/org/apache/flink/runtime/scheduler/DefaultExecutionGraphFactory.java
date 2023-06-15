@@ -103,7 +103,7 @@ public class DefaultExecutionGraphFactory implements ExecutionGraphFactory {
                     }
                 };
 
-        // TODO
+        // TODO 将JobGraph转换成ExecutionGraph
         final ExecutionGraph newExecutionGraph =
                 DefaultExecutionGraphBuilder.buildGraph(
                         jobGraph,
@@ -130,6 +130,7 @@ public class DefaultExecutionGraphFactory implements ExecutionGraphFactory {
         final CheckpointCoordinator checkpointCoordinator =
                 newExecutionGraph.getCheckpointCoordinator();
 
+        // TODO 恢复ExecutionGraph
         if (checkpointCoordinator != null) {
             // check whether we find a valid checkpoint
             if (!checkpointCoordinator.restoreInitialCheckpointIfPresent(

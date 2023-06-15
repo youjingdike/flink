@@ -135,6 +135,16 @@ public class ExecutionVertex
 
         this.priorExecutions = new EvictingBoundedList<>(maxPriorExecutionHistoryLength);
 
+        // TODO ExecutionVertex 和 Execution
+        //  部署也分为两方面:
+        //  1.JobMaster把要部署的Task的必要信息都封装在一个对象中,然后发送给TaskExecutor
+        //  2.TaskExecutor接收到这个对象的时候,再次封装得到一个Task对象
+        //  部署:
+        //  JobMaster 在拿到一个对应节点上的slot资源的时候,把要部署的Task的必要信息,都封装成一个Execution
+        //  然后执行Execution的deploy()执行部署
+        //  在该方法的内部就会调用Rpc请求,把必要的信息发送给TaskExecutor
+        //  TaskExecutor在接收到这些必要的信息的时候,把这些信息封装成一个Task对象
+        //  然后启动这个Task就完成了部署
         this.currentExecution =
                 new Execution(
                         getExecutionGraphAccessor().getFutureExecutor(),

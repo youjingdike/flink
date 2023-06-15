@@ -119,7 +119,7 @@ public class DefaultExecutionGraphBuilder {
                         jobManagerConfig);
 
         // create a new execution graph, if none exists so far
-        // TODO 创建ExecutionGraph
+        // TODO 构建ExecutionGraph的空壳
         final DefaultExecutionGraph executionGraph;
         try {
             executionGraph =
@@ -147,6 +147,7 @@ public class DefaultExecutionGraphBuilder {
         // set the basic properties
 
         try {
+            // TODO 将JobGraph变成Json形式
             executionGraph.setJsonPlan(JsonPlanGenerator.generatePlan(jobGraph));
         } catch (Throwable t) {
             log.warn("Cannot create JSON plan for job", t);
@@ -160,9 +161,11 @@ public class DefaultExecutionGraphBuilder {
         final long initMasterStart = System.nanoTime();
         log.info("Running initialization on master for job {} ({}).", jobName, jobId);
 
+        // TODO 遍历JobGraph中的所有端点,看是否有启动类
         for (JobVertex vertex : jobGraph.getVertices()) {
             String executableClass = vertex.getInvokableClassName();
             if (executableClass == null || executableClass.isEmpty()) {
+                // TODO 没有则抛异常
                 throw new JobSubmissionException(
                         jobId,
                         "The vertex "
@@ -188,6 +191,7 @@ public class DefaultExecutionGraphBuilder {
                 (System.nanoTime() - initMasterStart) / 1_000_000);
 
         // topologically sort the job vertices and attach the graph to the existing one
+        // TODO 按顺序将JobGraph中的端点放入集合中
         List<JobVertex> sortedTopology = jobGraph.getVerticesSortedTopologicallyFromSources();
         if (log.isDebugEnabled()) {
             log.debug(
@@ -197,7 +201,7 @@ public class DefaultExecutionGraphBuilder {
                     jobId);
         }
 
-        // TODO 将JobVertex转换成ExecutionJobVertex
+        // TODO ***最重要的工作,生成ExecutionJobVertex,以及并行化,根据并行度生成多个ExecutionVertex ***
         executionGraph.attachJobGraph(sortedTopology);
 
         if (log.isDebugEnabled()) {
@@ -206,6 +210,7 @@ public class DefaultExecutionGraphBuilder {
         }
 
         // configure the state checkpointing
+        // TODO 解析checkpoint参数,构建checkpoint相关组件
         if (isCheckpointingEnabled(jobGraph)) {
             JobCheckpointingSettings snapshotSettings = jobGraph.getCheckpointingSettings();
 
