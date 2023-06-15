@@ -572,6 +572,7 @@ public class Task
     @Override
     public void run() {
         try {
+            // TODO
             doRun();
         } finally {
             terminationFuture.complete(executionState);
@@ -736,7 +737,7 @@ public class Task
             FlinkSecurityManager.monitorUserSystemExitForCurrentThread();
             try {
                 // now load and instantiate the task's invokable code
-                // TODO step.10; 获取执行TaskInvokable
+                // TODO *step.10; 获取执行TaskInvokable
                 invokable =
                         loadAndInstantiateInvokable(
                                 userCodeClassLoader.asClassLoader(), nameOfInvokableClass, env);
@@ -764,7 +765,7 @@ public class Task
             // make sure the user code classloader is accessible thread-locally
             executingThread.setContextClassLoader(userCodeClassLoader.asClassLoader());
 
-            // TODO step.11;
+            // TODO *step.11;调用task的restore()及invoke();
             restoreAndInvoke(invokable);
 
             // make sure, we enter the catch block if the task leaves the invoke() method due
@@ -926,7 +927,7 @@ public class Task
 
     private void restoreAndInvoke(TaskInvokable finalInvokable) throws Exception {
         try {
-            // TODO
+            // TODO *step.12;调用restore(),启动task
             runWithSystemExitMonitoring(finalInvokable::restore);
 
             if (!transitionState(ExecutionState.INITIALIZING, ExecutionState.RUNNING)) {
@@ -937,7 +938,7 @@ public class Task
             taskManagerActions.updateTaskExecutionState(
                     new TaskExecutionState(executionId, ExecutionState.RUNNING));
 
-            // TODO step.12;调用invoke(),启动task
+            // TODO *step.13;调用invoke(),启动task
             runWithSystemExitMonitoring(finalInvokable::invoke);
         } catch (Throwable throwable) {
             try {
@@ -947,7 +948,7 @@ public class Task
             }
             throw throwable;
         }
-        // TODO 进行资源清理，至此一个subTask的启动就完成了
+        // TODO *step.14;进行资源清理，至此一个subTask的启动就完成了,End
         runWithSystemExitMonitoring(() -> finalInvokable.cleanUp(null));
     }
 

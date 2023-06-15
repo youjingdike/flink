@@ -390,6 +390,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
     protected void onStart() throws JobMasterException {
         try {
             // TODO step.1; 开始调度作业
+            // TODO JobMaster向 ResourceManager注册,开始申请Slot并且调度部署StreamTask
             startJobExecution();
         } catch (Exception e) {
             final JobMasterException jobMasterException =
@@ -886,12 +887,13 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
                 jobGraph.getName(),
                 jobGraph.getJobID(),
                 getFencingToken());
-        //step.2;
+        // TODO step.2; 解析ExecutionGraph,申请Slot,部署Task到TaskExecutor
         startScheduling();
     }
 
     private void startJobMasterServices() throws Exception {
         try {
+            // TODO 启动两个心跳服务
             //TODO 创建与taskManager的心跳管理器
             // 其为主节点，心跳管理器为HeartbeatManagerSenderImpl(HeartbeatManagerImpl的子类) 心跳请求发送器 Client
             this.taskManagerHeartbeatManager = createTaskManagerHeartbeatManager(heartbeatServices);
@@ -901,12 +903,14 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
                     createResourceManagerHeartbeatManager(heartbeatServices);
 
             // start the slot pool make sure the slot pool now accepts messages for this leader
+            // TODO 启动Slot管理服务,内部启动了3个定时任务
             slotPoolService.start(getFencingToken(), getAddress(), getMainThreadExecutor());
 
             // job is ready to go, try to establish connection with resource manager
             //   - activate leader retrieval for the resource manager
             //   - on notification of the leader, the connection will be established and
             //     the slot pool will start requesting slots
+            // TODO 监听ResourceManager的地址更改
             // TODO 最后会回调listener的notifyLeaderAddress(),这里会完成与ResourceManager建立连接并注册JobMaster，及心跳监控注入；
             resourceManagerLeaderRetriever.start(new ResourceManagerLeaderListener());
         } catch (Exception e) {
@@ -975,7 +979,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
     }
 
     private void startScheduling() {
-        //step.3;SchedulerBase
+        // TODO step.3;SchedulerBase
         schedulerNG.startScheduling();
     }
 

@@ -301,6 +301,7 @@ public class RestClient implements AutoCloseableAsync {
                     R request,
                     Collection<FileUpload> fileUploads)
                     throws IOException {
+        // TODO 继续提交
         return sendRequest(
                 targetAddress,
                 targetPort,
@@ -347,7 +348,9 @@ public class RestClient implements AutoCloseableAsync {
                                     .map(RestAPIVersion::getURLVersionPrefix)
                                     .collect(Collectors.joining(","))));
         }
-
+        /*
+        TODO 处理得到url,然后决定使用WebMonitorEndpoint中的哪个Handler来执行处理
+         */
         String versionedHandlerURL =
                 "/" + apiVersion.getURLVersionPrefix() + messageHeaders.getTargetRestEndpointURL();
         String targetUrl = MessageParameters.resolveUrl(versionedHandlerURL, messageParameters);
@@ -363,7 +366,7 @@ public class RestClient implements AutoCloseableAsync {
         objectMapper.writeValue(sw, request);
         ByteBuf payload =
                 Unpooled.wrappedBuffer(sw.toString().getBytes(ConfigConstants.DEFAULT_CHARSET));
-
+        // TODO 构建一个http Request对象
         Request httpRequest =
                 createRequest(
                         targetAddress + ':' + targetPort,
@@ -386,7 +389,7 @@ public class RestClient implements AutoCloseableAsync {
                                     messageHeaders.getResponseClass(),
                                     typeParameters.toArray(new Class<?>[typeParameters.size()]));
         }
-
+        // TODO 提交请求
         return submitRequest(targetAddress, targetPort, httpRequest, responseType);
     }
 
@@ -464,6 +467,9 @@ public class RestClient implements AutoCloseableAsync {
 
     private <P extends ResponseBody> CompletableFuture<P> submitRequest(
             String targetAddress, int targetPort, Request httpRequest, JavaType responseType) {
+        /*
+        TODO 通过netty客户端发送请求给netty服务端
+         */
         final ChannelFuture connectFuture = bootstrap.connect(targetAddress, targetPort);
 
         final CompletableFuture<Channel> channelFuture = new CompletableFuture<>();
@@ -490,6 +496,7 @@ public class RestClient implements AutoCloseableAsync {
                                     throw new IOException(
                                             "Netty pipeline was not properly initialized.");
                                 } else {
+                                    // TODO 发送请求数据包到服务端
                                     httpRequest.writeTo(channel);
                                     future = handler.getJsonFuture();
                                     success = true;

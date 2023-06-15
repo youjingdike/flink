@@ -95,7 +95,7 @@ public enum ClientUtils {
             LOG.info(
                     "Starting program (detached: {})",
                     !configuration.getBoolean(DeploymentOptions.ATTACHED));
-
+            // TODO 配置执行环境
             ContextEnvironment.setAsContext(
                     executorServiceLoader,
                     configuration,
@@ -111,7 +111,7 @@ public enum ClientUtils {
                     suppressSysout);
 
             try {
-                // TODO
+                // TODO 真正提交执行
                 program.invokeInteractiveModeForExecution();
             } finally {
                 ContextEnvironment.unsetAsContext();

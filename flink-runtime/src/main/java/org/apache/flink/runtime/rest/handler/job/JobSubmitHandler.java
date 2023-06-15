@@ -78,11 +78,15 @@ public final class JobSubmitHandler
         this.configuration = configuration;
     }
 
+    /*
+    TODO 从磁盘文件反序列化得到JobGraph, 并转交给Dispatcher
+     */
     @Override
     protected CompletableFuture<JobSubmitResponseBody> handleRequest(
             @Nonnull HandlerRequest<JobSubmitRequestBody, EmptyMessageParameters> request,
             @Nonnull DispatcherGateway gateway)
             throws RestHandlerException {
+        // TODO 从请求中获取文件: 包含JobGraph序列化文件nameToFile
         final Collection<File> uploadedFiles = request.getUploadedFiles();
         final Map<String, Path> nameToFile =
                 uploadedFiles.stream()
@@ -97,7 +101,7 @@ public final class JobSubmitHandler
                             uploadedFiles.size()),
                     HttpResponseStatus.BAD_REQUEST);
         }
-
+        // TODO 拿到请求体
         final JobSubmitRequestBody requestBody = request.getRequestBody();
 
         if (requestBody.jobGraphFileName == null) {
@@ -108,18 +112,22 @@ public final class JobSubmitHandler
                     HttpResponseStatus.BAD_REQUEST);
         }
 
+        // TODO 反序列化得到JobGraph
+        // TODO 由此可见,服务端接收到客户端提交的,其实就是一个JobGraph
         CompletableFuture<JobGraph> jobGraphFuture = loadJobGraph(requestBody, nameToFile);
-
+        // TODO 获取Job本体jar
         Collection<Path> jarFiles = getJarFilesToUpload(requestBody.jarFileNames, nameToFile);
-
+        // TODO 获取job的依赖Jar
         Collection<Tuple2<String, Path>> artifacts =
                 getArtifactFilesToUpload(requestBody.artifactFileNames, nameToFile);
-
+        // TODO 将JobGraph + 程序Jar + 依赖Jar 上传至BlobServer
         CompletableFuture<JobGraph> finalizedJobGraphFuture =
                 uploadJobGraphFiles(gateway, jobGraphFuture, jarFiles, artifacts, configuration);
-
+        // TODO 转交给Dispatcher
         CompletableFuture<Acknowledge> jobSubmissionFuture =
                 finalizedJobGraphFuture.thenCompose(
+                        // TODO 由JobSubmitHandler转交给Dispatcher来执行处理
+                        // TODO 此处的Gateway为Dispatcher的代理对象
                         jobGraph -> gateway.submitJob(jobGraph, timeout));
 
         return jobSubmissionFuture.thenCombine(
@@ -133,7 +141,7 @@ public final class JobSubmitHandler
         final Path jobGraphFile =
                 getPathAndAssertUpload(
                         requestBody.jobGraphFileName, FILE_TYPE_JOB_GRAPH, nameToFile);
-
+        // TODO 从文件中反序列化JobGraph
         return CompletableFuture.supplyAsync(
                 () -> {
                     JobGraph jobGraph;
@@ -192,6 +200,7 @@ public final class JobSubmitHandler
                     final InetSocketAddress address =
                             new InetSocketAddress(gateway.getHostname(), blobServerPort);
                     try {
+                        // TODO BIO通信,BlobClient => BlobServer
                         ClientUtils.uploadJobGraphFiles(
                                 jobGraph,
                                 jarFiles,

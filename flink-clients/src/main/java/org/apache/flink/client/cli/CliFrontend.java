@@ -224,9 +224,11 @@ public class CliFrontend {
         LOG.info("Running 'run' command.");
 
         final Options commandOptions = CliFrontendParser.getRunCommandOptions();
+        // TODO 真正开始解析命令行参数
         final CommandLine commandLine = getCommandLine(commandOptions, args, true);
 
         // evaluate help flag
+        // TODO 如果是 flink -h,则打印flink帮助文档
         if (commandLine.hasOption(HELP_OPTION.getOpt())) {
             CliFrontendParser.printHelpForRun(customCommandLines);
             return;
@@ -237,16 +239,17 @@ public class CliFrontend {
         final CustomCommandLine activeCommandLine =
                 validateAndGetActiveCommandLine(checkNotNull(commandLine));
 
+        // 创建程序参数对象
         final ProgramOptions programOptions = ProgramOptions.create(commandLine);
-
+        // TODO 获取job的jar包和其他依赖jar
         final List<URL> jobJars = getJobJarAndDependencies(programOptions);
 
-        // TODO 这里面指定了提交的类型：
+        // TODO 将解析出来的参数封装为配置对象,这里面指定了提交的类型,决定后面怎么提交任务
         final Configuration effectiveConfiguration =
                 getEffectiveConfiguration(activeCommandLine, commandLine, programOptions, jobJars);
 
         LOG.debug("Effective executor configuration: {}", effectiveConfiguration);
-
+        // TODO 获取打包的程序
         try (PackagedProgram program = getPackagedProgram(programOptions, effectiveConfiguration)) {
             // TODO 执行用户代码的main(),进行作业提交
             executeProgram(effectiveConfiguration, program);
@@ -1043,6 +1046,7 @@ public class CliFrontend {
     public int parseAndRun(String[] args) {
 
         // check for action
+        // TODO 检查命令参数正确性
         if (args.length < 1) {
             CliFrontendParser.printHelp(customCommandLines);
             System.out.println("Please specify an action.");
@@ -1050,6 +1054,7 @@ public class CliFrontend {
         }
 
         // get action
+        // TODO 从命令行flink 后面的参数解析要执行的动作,例如flink run,动作就是run
         String action = args[0];
 
         // remove action from parameters
@@ -1058,10 +1063,12 @@ public class CliFrontend {
         try {
             // do action
             switch (action) {
+                // TODO 如果是run
                 case ACTION_RUN:
                     // TODO yarn-session/yarn-per-job
                     run(params);
                     return 0;
+                // TODO 如果是run-application
                 case ACTION_RUN_APPLICATION:
                     // TODO yarn-application
                     runApplication(params);
@@ -1124,13 +1131,16 @@ public class CliFrontend {
         EnvironmentInformation.logEnvironmentInfo(LOG, "Command Line Client", args);
 
         // 1. find the configuration directory
+        // TODO 获取配置目录
         final String configurationDirectory = getConfigurationDirectoryFromEnv();
 
         // 2. load the global configuration
+        // TODO 解析配置文件 flink-conf
         final Configuration configuration =
                 GlobalConfiguration.loadConfiguration(configurationDirectory);
 
         // 3. load the custom command lines
+        // TODO 构造解析args命令行的对象,里面构建了三种对象
         final List<CustomCommandLine> customCommandLines =
                 loadCustomCommandLines(configuration, configurationDirectory);
 
@@ -1138,6 +1148,7 @@ public class CliFrontend {
         try {
             final CliFrontend cli = new CliFrontend(configuration, customCommandLines);
 
+            // TODO
             SecurityUtils.install(new SecurityConfiguration(cli.configuration));
             retCode = SecurityUtils.getInstalledContext().runSecured(() -> cli.parseAndRun(args));
         } catch (Throwable t) {

@@ -202,13 +202,15 @@ public class RestClusterClient<T> implements ClusterClient<T> {
             ClientHighAvailabilityServicesFactory clientHAServicesFactory)
             throws Exception {
         this.configuration = checkNotNull(configuration);
-
+        // TODO 解析配置
         this.restClusterClientConfiguration =
                 RestClusterClientConfiguration.fromConfiguration(configuration);
 
         if (restClient != null) {
             this.restClient = restClient;
         } else {
+            // TODO 构建一个RestClient
+            // TODO 内部其实就是构建了一个Netty客户端
             this.restClient = new RestClient(configuration, executorService);
         }
 
@@ -229,6 +231,7 @@ public class RestClusterClient<T> implements ClusterClient<T> {
         this.retryExecutorService =
                 Executors.newSingleThreadScheduledExecutor(
                         new ExecutorThreadFactory("Flink-RestClusterClient-Retry"));
+        // TODO 监听WebMonitorEndpoint的地址改变
         startLeaderRetrievers();
     }
 
@@ -305,6 +308,14 @@ public class RestClusterClient<T> implements ClusterClient<T> {
 
     @Override
     public CompletableFuture<JobID> submitJob(@Nonnull JobGraph jobGraph) {
+
+        /*
+         TODO
+            将JobGraph进行持久化，持久化成一个JobGraphFile，这个file的前缀是flink-jobgraph，后缀是 .bin。
+            在提交JobGraph到Flink集群运行的时候,其实提交的就是这个文件，
+            最终由Flink集群的WebMonitor(JobSubmitHandler)去接收请求来执行处理。
+            JobSubmitHandler在执行处理的第一件事就是把接收到的文件反序列化得到JobGraph对象。
+         */
         CompletableFuture<java.nio.file.Path> jobGraphFileFuture =
                 CompletableFuture.supplyAsync(
                         () -> {
@@ -324,6 +335,10 @@ public class RestClusterClient<T> implements ClusterClient<T> {
                         },
                         executorService);
 
+
+        /*
+        TODO 等待持久化完成之后,将JobGraphFile加入待上传的文件列表
+         */
         CompletableFuture<Tuple2<JobSubmitRequestBody, Collection<FileUpload>>> requestFuture =
                 jobGraphFileFuture.thenApply(
                         jobGraphFile -> {
@@ -331,11 +346,11 @@ public class RestClusterClient<T> implements ClusterClient<T> {
                             List<JobSubmitRequestBody.DistributedCacheFile> artifactFileNames =
                                     new ArrayList<>(8);
                             Collection<FileUpload> filesToUpload = new ArrayList<>(8);
-
+                            // TODO 将JobGraphFile加入待上传的文件列表
                             filesToUpload.add(
                                     new FileUpload(
                                             jobGraphFile, RestConstants.CONTENT_TYPE_BINARY));
-
+                            // TODO 上传Job所需的jar
                             for (Path jar : jobGraph.getUserJars()) {
                                 jarFileNames.add(jar.getName());
                                 filesToUpload.add(
@@ -369,17 +384,18 @@ public class RestClusterClient<T> implements ClusterClient<T> {
                                                     e));
                                 }
                             }
-
+                            // TODO 构建提交任务的请求体,包含对应的一些资源,主要是JobGraph的持久化文件和对应的依赖jar
                             final JobSubmitRequestBody requestBody =
                                     new JobSubmitRequestBody(
                                             jobGraphFile.getFileName().toString(),
                                             jarFileNames,
                                             artifactFileNames);
-
+                            // TODO 返回一个Tuple2,包含两个内容: requestBody和filesToUpload
                             return Tuple2.of(
                                     requestBody, Collections.unmodifiableCollection(filesToUpload));
                         });
 
+        // TODO 发送请求
         final CompletableFuture<JobSubmitResponseBody> submissionFuture =
                 requestFuture.thenCompose(
                         requestAndFileUploads -> {
@@ -387,6 +403,7 @@ public class RestClusterClient<T> implements ClusterClient<T> {
                                     "Submitting job '{}' ({}).",
                                     jobGraph.getName(),
                                     jobGraph.getJobID());
+                            // TODO 提交
                             return sendRetriableRequest(
                                     JobSubmitHeaders.getInstance(),
                                     EmptyMessageParameters.getInstance(),
@@ -843,12 +860,20 @@ public class RestClusterClient<T> implements ClusterClient<T> {
                     Collection<FileUpload> filesToUpload,
                     Predicate<Throwable> retryPredicate,
                     BiConsumer<String, Throwable> consumer) {
+        // TODO 可重试机制
         return retry(
                 () ->
+                        // TODO 获取主节点JobManager中的WebMonitorEndpoint的地址
+                        // TODO 其实客户端提交JobGraph就是提交给WebMonitorEndpoint
                         getWebMonitorBaseUrl()
                                 .thenCompose(
                                         webMonitorBaseUrl -> {
                                             try {
+                                                /*
+                                                    TODO 提交Request给WebMonitorEndpoint,
+                                                     最终由JobSubmitHandler来执行请求处理
+                                                     通过 Http Restful方式提交
+                                                */
                                                 final CompletableFuture<P> future =
                                                         restClient.sendRequest(
                                                                 webMonitorBaseUrl.getHost(),

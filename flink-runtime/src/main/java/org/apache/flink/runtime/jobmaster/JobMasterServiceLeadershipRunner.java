@@ -245,8 +245,10 @@ public class JobMasterServiceLeadershipRunner implements JobManagerRunner, Leade
 
     @Override
     public void grantLeadership(UUID leaderSessionID) {
+        // TODO 检验启动状态
         runIfStateRunning(
                 // TODO startJobMasterServiceProcess
+                // TODO 创建JobMaster并启动
                 () -> startJobMasterServiceProcessAsync(leaderSessionID),
                 "starting a new JobMasterServiceProcess");
     }
@@ -256,11 +258,12 @@ public class JobMasterServiceLeadershipRunner implements JobManagerRunner, Leade
         sequentialOperation =
                 sequentialOperation.thenRun(
                         () ->
+                                // TODO 校验leader状态
                                 runIfValidLeader(
                                         leaderSessionId,
                                         ThrowingRunnable.unchecked(
                                                 () ->
-                                                        // TODO
+                                                        // TODO 创建jobMaster并启动
                                                         verifyJobSchedulingStatusAndCreateJobMasterServiceProcess(
                                                                 leaderSessionId)),
                                         "verify job scheduling status and create JobMasterServiceProcess"));
@@ -277,7 +280,7 @@ public class JobMasterServiceLeadershipRunner implements JobManagerRunner, Leade
         if (jobSchedulingStatus == RunningJobsRegistry.JobSchedulingStatus.DONE) {
             jobAlreadyDone();
         } else {
-            // TODO
+            // TODO 创建JobMaster并启动
             createNewJobMasterServiceProcess(leaderSessionId);
         }
     }
@@ -316,6 +319,7 @@ public class JobMasterServiceLeadershipRunner implements JobManagerRunner, Leade
                 leaderSessionId);
 
         try {
+            // TODO 状态注册,标识当前Job为Running状态
             runningJobsRegistry.setJobRunning(getJobID());
         } catch (IOException e) {
             throw new FlinkException(
@@ -325,6 +329,7 @@ public class JobMasterServiceLeadershipRunner implements JobManagerRunner, Leade
                     e);
         }
         //TODO DefaultJobMasterServiceProcessFactory,创建DefaultJobMasterServiceProcess,在该过程里面创建JobMaster，并启动
+        // TODO 创建JobMaster并启动
         jobMasterServiceProcess = jobMasterServiceProcessFactory.create(leaderSessionId);
 
         forwardIfValidLeader(

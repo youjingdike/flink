@@ -64,19 +64,37 @@ public class AbstractSessionClusterExecutor<
             @Nonnull final Configuration configuration,
             @Nonnull final ClassLoader userCodeClassloader)
             throws Exception {
+        // TODO 通过StreamGraph构建JobGraph
         final JobGraph jobGraph = PipelineExecutorUtils.getJobGraph(pipeline, configuration);
+        /*
+        TODO 到此为止,JobGraph已经构建完成,接下来开始JobGraph的提交
+         */
 
         try (final ClusterDescriptor<ClusterID> clusterDescriptor =
                 clusterClientFactory.createClusterDescriptor(configuration)) {
             final ClusterID clusterID = clusterClientFactory.getClusterId(configuration);
             checkState(clusterID != null);
 
+            // TODO 创建RestClusterClient
+            /*
+            TODO 用于创建RestClusterClient的 Provider: ClusterClientProvider
+             1. 内部会初始化得到RestClusterClient
+             2. 初始化RestClusterClient的时候,会初始化他内部的成员变量: RestClient
+             3. 在初始化RestClient的时候,也会初始化他内部的一个netty客户端
+             TODO 提交Job的客户端: RestClusterClient中的RestClient中的Netty客户端
+             TODO 接受Job的服务端: JobManager中启动的WebMonitorEndpoint中的Netty 服务端
+             */
             final ClusterClientProvider<ClusterID> clusterClientProvider =
                     clusterDescriptor.retrieve(clusterID);
-            // TODO 创建RestClusterClient
             ClusterClient<ClusterID> clusterClient = clusterClientProvider.getClusterClient();
             // TODO 通过RestClusterClient提交作业;
+            /*
+            TODO 提交执行
+                1. MiniClusterClient 本地执行
+                2. RestClusterClient 提交到Flink Rest服务器接受处理
+             */
             return clusterClient
+                    // TODO 调用RestClient 内部的netty客户端进行提交
                     .submitJob(jobGraph)
                     .thenApplyAsync(
                             FunctionUtils.uncheckedFunction(

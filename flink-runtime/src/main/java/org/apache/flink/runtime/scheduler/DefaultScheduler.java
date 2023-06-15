@@ -213,7 +213,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
                 schedulingStrategy.getClass().getName());
         // TODO 启动scheduler,在这里面会启动CheckpointCoordinator
         transitionToRunning();
-        //step.5;PipelinedRegionSchedulingStrategy
+        // TODO step.5;PipelinedRegionSchedulingStrategy 申请Slot,并部署StreamTask运行
         schedulingStrategy.startScheduling();
     }
 
@@ -399,7 +399,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
                 executionVertexVersioner.recordVertexModifications(verticesToDeploy);
 
         transitionToScheduled(verticesToDeploy);
-        //step.9;请求获取slots资源
+        // TODO step.9;申请Slot,请求获取slots资源
         final List<SlotExecutionVertexAssignment> slotExecutionVertexAssignments =
                 allocateSlots(executionVertexDeploymentOptions);
 
@@ -410,7 +410,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
                         slotExecutionVertexAssignments);
 
         //TODO 在step9;申请好slots资源后，开始部署Task
-        // TODO step.1; 部署task
+        // TODO *step.1; 部署Task
         waitForAllSlotsAndDeploy(deploymentHandles);
     }
 
@@ -467,7 +467,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
     }
 
     private void waitForAllSlotsAndDeploy(final List<DeploymentHandle> deploymentHandles) {
-        // TODO step.2;deployAll
+        // TODO *step.2;deployAll
         FutureUtils.assertNoException(
                 assignAllResourcesAndRegisterProducedPartitions(deploymentHandles)
                         .handle(deployAll(deploymentHandles)));
@@ -502,7 +502,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
             final List<DeploymentHandle> deploymentHandles) {
         return (ignored, throwable) -> {
             propagateIfNonNull(throwable);
-            // TODO step.3; 遍历deploymentHandles
+            // TODO *step.3; 遍历deploymentHandles
             for (final DeploymentHandle deploymentHandle : deploymentHandles) {
                 final SlotExecutionVertexAssignment slotExecutionVertexAssignment =
                         deploymentHandle.getSlotExecutionVertexAssignment();
@@ -511,7 +511,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
                 checkState(slotAssigned.isDone());
 
                 FutureUtils.assertNoException(
-                        // TODO step.4;deployOrHandleError
+                        // TODO *step.4;deployOrHandleError
                         slotAssigned.handle(deployOrHandleError(deploymentHandle)));
             }
             return null;
@@ -647,7 +647,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
             }
 
             if (throwable == null) {
-                // TODO step.5;
+                // TODO *step.5;
                 deployTaskSafe(executionVertexId);
             } else {
                 handleTaskDeploymentFailure(executionVertexId, throwable);
@@ -659,7 +659,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
     private void deployTaskSafe(final ExecutionVertexID executionVertexId) {
         try {
             final ExecutionVertex executionVertex = getExecutionVertex(executionVertexId);
-            // TODO step.6;DefaultExecutionVertexOperations
+            // TODO *step.6;DefaultExecutionVertexOperations
             executionVertexOperations.deploy(executionVertex);
         } catch (Throwable e) {
             handleTaskDeploymentFailure(executionVertexId, e);

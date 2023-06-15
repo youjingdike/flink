@@ -587,7 +587,7 @@ public abstract class SchedulerBase implements SchedulerNG, CheckpointScheduling
         mainThreadExecutor.assertRunningInMainThread();
         registerJobMetrics();
         operatorCoordinatorHandler.startAllOperatorCoordinators();
-        //step.4;
+        // TODO step.4;
         startSchedulingInternal();
     }
 

@@ -311,6 +311,7 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
                 "Received JobGraph submission '{}' ({}).", jobGraph.getName(), jobGraph.getJobID());
 
         try {
+            // TODO jobID的去重判断
             if (isDuplicateJob(jobGraph.getJobID())) {
                 final DuplicateJobSubmissionException exception =
                         isInGloballyTerminalState(jobGraph.getJobID())
@@ -325,7 +326,8 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
                                 "Currently jobs is not supported if parts of the vertices have "
                                         + "resources configured. The limitation will be removed in future versions."));
             } else {
-                // TODO
+                // TODO 提交Job,此时JobGraph所需的jar和文件都已经上传
+                // TODO 此处携带的JobGraph,会在一会启动JobMaster的时候,会用来构建ExecutionGraph
                 return internalSubmitJob(jobGraph);
             }
         } catch (FlinkException e) {
@@ -385,7 +387,7 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
     private CompletableFuture<Acknowledge> internalSubmitJob(JobGraph jobGraph) {
         log.info("Submitting job '{}' ({}).", jobGraph.getName(), jobGraph.getJobID());
 
-        // TODO  this::persistAndRunJob
+        // TODO 先持久化,然后运行(拉起JobMaster),this::persistAndRunJob
         final CompletableFuture<Acknowledge> persistAndRunFuture =
                 waitForTerminatingJob(jobGraph.getJobID(), jobGraph, this::persistAndRunJob)
                         .thenApply(ignored -> Acknowledge.get());
@@ -412,7 +414,11 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
     }
 
     private void persistAndRunJob(JobGraph jobGraph) throws Exception {
+        // TODO 服务端保存JobGraph此处是将JobGraph持久化到FileSystem(例如hdfs)上,返回一个stateHandle(句柄),并将状态句柄保存在zk里面
+        // TODO 之前在讲主节点启动时Dispatcher会启动一个JobGraphStore服务,并且如果里面还有未执行完的JobGraph,会先进行恢复
+        // TODO JobGraphWriter = DefaultJobGraphStore
         jobGraphWriter.putJobGraph(jobGraph);
+        // TODO
         runJob(jobGraph, ExecutionType.SUBMISSION);
     }
 
@@ -420,9 +426,18 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
         Preconditions.checkState(!runningJobs.containsKey(jobGraph.getJobID()));
         long initializationTimestamp = System.currentTimeMillis();
         //TODO 创建JobMasterServiceLeadershipRunner，并已调用start()启动;
+        /*
+        TODO 创建JobManagerRunner,这是一个启动器,内部会初始化DefaultJobMasterServiceProcessFactory对象
+         在JobMaster竞选完成后,DefaultJobMasterServiceProcessFactory对象会做两件重要的事情:
+         1. 创建JobMaster实例
+         2. 在创建JobMaster的时候,同时会把JobGraph变成ExecutionGraph
+         TODO Flink集群的两个主从架构:
+          1. 资源管理 ResourceManager + TaskExecutor
+          2. 任务运行 JobMaster + StreamTask
+         */
         JobManagerRunner jobManagerRunner =
                 createJobManagerRunner(jobGraph, initializationTimestamp);
-
+        // TODO 加入 runningJobs 队列
         runningJobs.put(jobGraph.getJobID(), jobManagerRunner);
 
         final JobID jobId = jobGraph.getJobID();
@@ -495,6 +510,8 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
         final RpcService rpcService = getRpcService();
 
         // TODO JobMasterServiceLeadershipRunnerFactory,创建JobMasterServiceLeadershipRunner，内部持有很多factory实例
+        // TODO 构建JobManagerRunner,内部分装了一个DefaultJobMasterServiceProcessFactory,
+        //  此对象内部会在后面leader竞选完成后构建JobMaster并启动
         JobManagerRunner runner =
                 jobManagerRunnerFactory.createJobManagerRunner(
                         jobGraph,
@@ -506,7 +523,7 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
                         new DefaultJobManagerJobMetricGroupFactory(jobManagerMetricGroup),
                         fatalErrorHandler,
                         initializationTimestamp);
-        //TODO 启动
+        // TODO 开始JobMaster的选举,选举成功后会在ZooKeeperLeaderElectionDriver的isLeader方法中创建并启动JobMaster
         runner.start();
         return runner;
     }

@@ -162,9 +162,12 @@ public class ZooKeeperStateHandleStore<T extends Serializable>
             throw new AlreadyExistException(
                     String.format("ZooKeeper node %s already exists.", path));
         }
+        // TODO 保存在fileSystem上,并返回一个状态句柄
         final RetrievableStateHandle<T> storeHandle = storage.store(state);
+        // TODO 先序列化该状态句柄,转为字节序列化数据
         final byte[] serializedStoreHandle = serializeOrDiscard(storeHandle);
         try {
+            // TODO 存储在zk上
             writeStoreHandleTransactionally(path, serializedStoreHandle);
             return storeHandle;
         } catch (KeeperException.NodeExistsException e) {

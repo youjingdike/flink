@@ -427,6 +427,7 @@ public class ExecutionVertex
 
     // TODO 在DefaultExecutionVertexOperations中被调用
     public void deploy() throws JobException {
+        // TODO
         currentExecution.deploy();
     }
 

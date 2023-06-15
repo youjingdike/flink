@@ -273,6 +273,11 @@ public class StreamExecutionEnvironment {
         // Given this, it is safe to overwrite the execution config default values here because all
         // other ways assume
         // that the env is already instantiated so they will overwrite the value passed here.
+        /*
+        TODO 进行各种组件配置
+          1.初始化得到StateBackend
+          2.初始化checkpoint相关参数
+         */
         this.configure(this.configuration, this.userClassloader);
     }
 
@@ -915,6 +920,7 @@ public class StreamExecutionEnvironment {
         configuration
                 .getOptional(StreamPipelineOptions.TIME_CHARACTERISTIC)
                 .ifPresent(this::setStreamTimeCharacteristic);
+        // TODO 加载得到StateBackEnd
         Optional.ofNullable(loadStateBackend(configuration, classLoader))
                 .ifPresent(this::setStateBackend);
         configuration
@@ -971,6 +977,12 @@ public class StreamExecutionEnvironment {
                                         flag));
 
         config.configure(configuration, classLoader);
+        // TODO checkpoint相关参数的解析和配置
+        /*
+        TODO 1、从configuration对象中解析各种跟checkpoint有关的参数放置在CheckpointConfig对象中
+         2、将来解析各种算子，构造StreamGraph的时候，这个checkpointConfig会传递给StreamGraph
+         3、由StreamGraph去构造JobGraph的时候，会继续传递
+         */
         checkpointCfg.configure(configuration);
     }
 
@@ -989,6 +1001,7 @@ public class StreamExecutionEnvironment {
 
     private StateBackend loadStateBackend(ReadableConfig configuration, ClassLoader classLoader) {
         try {
+            // TODO 获取配置中有关StateBackend的相关配置,构建StateBackend
             return StateBackendLoader.loadStateBackendFromConfig(configuration, classLoader, null);
         } catch (DynamicCodeLoadingException | IOException e) {
             throw new WrappingRuntimeException(e);
@@ -1895,6 +1908,7 @@ public class StreamExecutionEnvironment {
      * @throws Exception which occurs during job execution.
      */
     public JobExecutionResult execute() throws Exception {
+        // TODO 获取到StreamGraph,并执行StreamGraph
         return execute(getStreamGraph());
     }
 
@@ -1928,12 +1942,14 @@ public class StreamExecutionEnvironment {
     @Internal
     public JobExecutionResult execute(StreamGraph streamGraph) throws Exception {
         // TODO 进行作业提交
+        // 异步执行StreamGraph
         final JobClient jobClient = executeAsync(streamGraph);
 
         try {
             final JobExecutionResult jobExecutionResult;
 
             if (configuration.getBoolean(DeploymentOptions.ATTACHED)) {
+                // TODO 通过get方法阻塞等待StreamGraph的提交结果
                 jobExecutionResult = jobClient.getJobExecutionResult().get();
             } else {
                 jobExecutionResult = new DetachedJobExecutionResult(jobClient.getJobID());
@@ -2038,6 +2054,9 @@ public class StreamExecutionEnvironment {
                 executorFactory,
                 "Cannot find compatible factory for specified execution.target (=%s)",
                 configuration.get(DeploymentOptions.TARGET));
+        /*
+        TODO 异步提交得到future
+         */
         // TODO 重点逻辑：
         // TODO per-job:YarnJobClusterExecutorFactory创建YarnJobClusterExecutor；
         //  session:YarnSessionClusterExecutorFactory创建YarnSessionClusterExecutor；
@@ -2048,6 +2067,7 @@ public class StreamExecutionEnvironment {
                         .execute(streamGraph, configuration, userClassloader);
 
         try {
+            // TODO 阻塞获取StreamGraph的执行结果
             JobClient jobClient = jobClientFuture.get();
             jobListeners.forEach(jobListener -> jobListener.onJobSubmitted(jobClient, null));
             return jobClient;
@@ -2209,6 +2229,7 @@ public class StreamExecutionEnvironment {
      */
     public static StreamExecutionEnvironment getExecutionEnvironment(Configuration configuration) {
         return Utils.resolveFactory(threadLocalContextEnvironmentFactory, contextEnvironmentFactory)
+                // TODO 构建StreamExecutionEnvironment
                 .map(factory -> factory.createExecutionEnvironment(configuration))
                 .orElseGet(() -> StreamExecutionEnvironment.createLocalEnvironment(configuration));
     }

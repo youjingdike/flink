@@ -164,6 +164,7 @@ public class StreamContextEnvironment extends StreamExecutionEnvironment {
                     Configuration mergedConfiguration = new Configuration();
                     mergedConfiguration.addAll(configuration);
                     mergedConfiguration.addAll(conf);
+                    // TODO 初始化StreamContextEnvironment
                     return new StreamContextEnvironment(
                             executorServiceLoader,
                             mergedConfiguration,

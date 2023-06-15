@@ -727,7 +727,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
             } catch (SlotNotFoundException e) {
                 throw new TaskSubmissionException("Could not submit task.", e);
             }
-            // TODO step.8;Task implements Runnable
+            // TODO *step.8;Task implements Runnable
             // TODO 创建Task
             Task task =
                     new Task(
@@ -771,13 +771,14 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
             boolean taskAdded;
 
             try {
+                // TODO 将task加入到taskSlotTable中
                 taskAdded = taskSlotTable.addTask(task);
             } catch (SlotNotFoundException | SlotNotActiveException e) {
                 throw new TaskSubmissionException("Could not submit task.", e);
             }
 
             if (taskAdded) {
-                // TODO step.9;
+                // TODO *step.9;启动task,进入task的run()中
                 task.startTaskThread();
 
                 setupResultPartitionBookkeeping(

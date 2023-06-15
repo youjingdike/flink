@@ -219,7 +219,7 @@ public class PackagedProgram implements AutoCloseable {
     public void invokeInteractiveModeForExecution() throws ProgramInvocationException {
         FlinkSecurityManager.monitorUserSystemExitForCurrentThread();
         try {
-            // TODO
+            // TODO 调用自己编写的应用程序的main方法
             callMainMethod(mainClass, args);
         } finally {
             FlinkSecurityManager.unmonitorUserSystemExitForCurrentThread();
@@ -354,6 +354,7 @@ public class PackagedProgram implements AutoCloseable {
         }
 
         try {
+            // TODO 调用main 方法
             mainMethod.invoke(null, (Object) args);
         } catch (IllegalArgumentException e) {
             throw new ProgramInvocationException(

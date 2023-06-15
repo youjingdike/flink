@@ -89,7 +89,8 @@ public class DefaultJobMasterServiceProcess
         this.jobId = jobId;
         this.leaderSessionId = leaderSessionId;
 
-        //TODO  DefaultJobMasterServiceFactory,创建JobMaster
+        // TODO  DefaultJobMasterServiceFactory,创建JobMaster
+        // TODO 构建JobMaster并启动
         this.jobMasterServiceFuture =
                 jobMasterServiceFactory.createJobMasterService(leaderSessionId, this);
 

@@ -67,6 +67,7 @@ public enum JobMasterServiceLeadershipRunnerFactory implements JobManagerRunnerF
         final RunningJobsRegistry runningJobsRegistry =
                 highAvailabilityServices.getRunningJobsRegistry();
         // TODO 高可用为：DefaultLeaderElectionService
+        // TODO 获取选举服务,准备进行JobMaster的leader选举
         final LeaderElectionService jobManagerLeaderElectionService =
                 highAvailabilityServices.getJobManagerLeaderElectionService(jobGraph.getJobID());
 
@@ -95,7 +96,7 @@ public enum JobMasterServiceLeadershipRunnerFactory implements JobManagerRunnerF
                         .getOrResolveClassLoader(
                                 jobGraph.getUserJarBlobKeys(), jobGraph.getClasspaths())
                         .asClassLoader();
-
+        // TODO 构建DefaultJobMasterServiceFactory,封装了JobMaster启动所需的基础服务
         final DefaultJobMasterServiceFactory jobMasterServiceFactory =
                 new DefaultJobMasterServiceFactory(
                         jobManagerServices.getIoExecutor(),
