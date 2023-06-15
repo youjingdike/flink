@@ -33,10 +33,12 @@ public final class FlinkPipelineTranslationUtil {
     /** Transmogrifies the given {@link Pipeline} to a {@link JobGraph}. */
     public static JobGraph getJobGraph(
             Pipeline pipeline, Configuration optimizerConfiguration, int defaultParallelism) {
-
+        // TODO 获取FLinkPipelineTranslator翻译器
         FlinkPipelineTranslator pipelineTranslator = getPipelineTranslator(pipeline);
 
         // TODO StreamGraphTranslator
+        // TODO 通过FLinkPipelineTranslator来转换获取到JobGraph
+        // TODO 此处 pipeline = StreamGraph
         return pipelineTranslator.translateToJobGraph(
                 pipeline, optimizerConfiguration, defaultParallelism);
     }

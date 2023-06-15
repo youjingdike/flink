@@ -371,10 +371,12 @@ public class StreamGraph implements Pipeline {
             TypeInformation<IN> inTypeInfo,
             TypeInformation<OUT> outTypeInfo,
             String operatorName) {
+        // TODO 此时会选择当前 invokableClass类型
         Class<? extends TaskInvokable> invokableClass =
                 operatorFactory.isStreamSource()
                         ? SourceStreamTask.class
                         : OneInputStreamTask.class;
+        // TODO
         addOperator(
                 vertexID,
                 slotSharingGroup,
@@ -395,7 +397,7 @@ public class StreamGraph implements Pipeline {
             TypeInformation<OUT> outTypeInfo,
             String operatorName,
             Class<? extends TaskInvokable> invokableClass) {
-        // TODO
+        // TODO 一个StreamOperator对应一个StreamNode
         addNode(
                 vertexID,
                 slotSharingGroup,
@@ -500,7 +502,7 @@ public class StreamGraph implements Pipeline {
             throw new RuntimeException("Duplicate vertexID " + vertexID);
         }
 
-        // TODO 创建StreamNode，并保存到streamNodes map中
+        // TODO 对于每一个StreamOperator,初始化了一个StreamNod
         StreamNode vertex =
                 new StreamNode(
                         vertexID,
@@ -509,7 +511,10 @@ public class StreamGraph implements Pipeline {
                         operatorFactory,
                         operatorName,
                         vertexClass);
-
+        // TODO 将该StreamNode加入到StreamGraph中
+        // TODO 编写算子处理逻辑(UserFunction) ==> StreamOperator ==> Transformation ==> StreamNode
+        // TODO 构建StreamNode的时候,会多做一件事,指定InvokableClass
+        // TODO 判断是否是Source算子,如果是则InvokableClass = SourceStreamTask,如果不是则为OneInputStreamTask或Two...等等
         streamNodes.put(vertexID, vertex);
 
         return vertex;
@@ -593,6 +598,7 @@ public class StreamGraph implements Pipeline {
     }
 
     public void addEdge(Integer upStreamVertexID, Integer downStreamVertexID, int typeNumber) {
+        // TODO
         addEdgeInternal(
                 upStreamVertexID,
                 downStreamVertexID,
@@ -642,6 +648,7 @@ public class StreamGraph implements Pipeline {
                     outputTag,
                     exchangeMode);
         } else {
+            // TODO
             createActualEdge(
                     upStreamVertexID,
                     downStreamVertexID,
@@ -659,11 +666,17 @@ public class StreamGraph implements Pipeline {
             StreamPartitioner<?> partitioner,
             OutputTag outputTag,
             StreamExchangeMode exchangeMode) {
+        // TODO 通过上游顶点拿到上游StreamNodeId
         StreamNode upstreamNode = getStreamNode(upStreamVertexID);
+        // TODO 其实就是当前顶点的StreamNodeId,对StreamEdge来说,该StreamNode为这条边的下游
         StreamNode downstreamNode = getStreamNode(downStreamVertexID);
 
         // If no partitioner was specified and the parallelism of upstream and downstream
         // operator matches use forward partitioning, use rebalance otherwise.
+        /* TODO 如果没有设置partitioner
+            1.如果上游StreamNode和下游StreamNode并行度一样,则使用ForwardPartitioner数据分发策略
+            2.如果上游StreamNode和下游StreamNode并行度不一样,则使用RebalancePartitioner数据分发策略
+         */
         if (partitioner == null
                 && upstreamNode.getParallelism() == downstreamNode.getParallelism()) {
             partitioner = new ForwardPartitioner<Object>();
@@ -699,6 +712,7 @@ public class StreamGraph implements Pipeline {
          */
         int uniqueId = getStreamEdges(upstreamNode.getId(), downstreamNode.getId()).size();
 
+        // TODO 构建StreamEdge对象
         StreamEdge edge =
                 new StreamEdge(
                         upstreamNode,
@@ -708,8 +722,9 @@ public class StreamGraph implements Pipeline {
                         outputTag,
                         exchangeMode,
                         uniqueId);
-
+        // TODO 将当前的StreamEdge对象设置为上游StreamNode的输出边
         getStreamNode(edge.getSourceId()).addOutEdge(edge);
+        // TODO 将当前的StreamEdge对象设置为下游StreamNode的输入边
         getStreamNode(edge.getTargetId()).addInEdge(edge);
     }
 
@@ -972,6 +987,7 @@ public class StreamGraph implements Pipeline {
 
     /** Gets the assembled {@link JobGraph} with a specified {@link JobID}. */
     public JobGraph getJobGraph(@Nullable JobID jobID) {
+        // TODO
         return StreamingJobGraphGenerator.createJobGraph(this, jobID);
     }
 

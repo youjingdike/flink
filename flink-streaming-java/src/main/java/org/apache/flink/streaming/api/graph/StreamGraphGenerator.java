@@ -302,18 +302,24 @@ public class StreamGraphGenerator {
     }
 
     public StreamGraph generate() {
-        // TODO 创建StreamGraph
+        // TODO 创建StreamGraph,构建了一个空的StreamGraph对象,目前里面没有StreamNode也没有Edge
         streamGraph = new StreamGraph(executionConfig, checkpointConfig, savepointRestoreSettings);
         streamGraph.setEnableCheckpointsAfterTasksFinish(
                 configuration.get(
                         ExecutionCheckpointingOptions.ENABLE_CHECKPOINTS_AFTER_TASKS_FINISH));
         shouldExecuteInBatchMode = shouldExecuteInBatchMode();
+
+        // TODO 设置StateBackend和Checkpoint
         configureStreamGraph(streamGraph);
 
+        // TODO 初始化一个容器用来存储已经转换过的Transformation
         alreadyTransformed = new HashMap<>();
 
-        // TODO 在这里面转换成StreamNode
+        /*
+        TODO 在之前做算子转换时已经将各个算子转化为Transformation,并添加到了Transformations集合中
+         */
         for (Transformation<?> transformation : transformations) {
+            // TODO 遍历所有Transformation,然后转换成StreamNode
             transform(transformation);
         }
 
@@ -497,6 +503,7 @@ public class StreamGraphGenerator {
      * delegates to one of the transformation specific methods.
      */
     private Collection<Integer> transform(Transformation<?> transform) {
+        // TODO 先判断是否已经被transform了
         if (alreadyTransformed.containsKey(transform)) {
             return alreadyTransformed.get(transform);
         }
@@ -543,11 +550,15 @@ public class StreamGraphGenerator {
         // call at least once to trigger exceptions about MissingTypeInfo
         transform.getOutputType();
 
+        // TODO 将transformation和transformationTranslator的对应关系 初始化到了translatorMap中
+        // TODO transformationTranslator是用来将transformation转换成StreamNode的
         @SuppressWarnings("unchecked")
         final TransformationTranslator<?, Transformation<?>> translator =
                 (TransformationTranslator<?, Transformation<?>>)
                         translatorMap.get(transform.getClass());
 
+        // TODO 根据不同类型的transform,做相应的不同的转换
+        // TODO 将当前Transformation转换成StreamNode和StreamEdge,用于构建StreamGraph
         Collection<Integer> transformedIds;
         if (translator != null) {
             // TODO
@@ -800,6 +811,7 @@ public class StreamGraphGenerator {
         checkNotNull(translator);
         checkNotNull(transform);
 
+        // TODO 获取所有输入
         // TODO SourceTransformation是在这里转换的，没有放在StreamExecutionEnvironment的transformations里面,其实每个Transformation进来都会转换其输入的Transformation
         // TODO 只有source会在这里被转化,其他的Transformation在后面的Transformation转换其输入Transformation时，已经转换完毕；
         final List<Collection<Integer>> allInputIds = getParentInputIds(transform.getInputs());
@@ -808,7 +820,7 @@ public class StreamGraphGenerator {
         if (alreadyTransformed.containsKey(transform)) {
             return alreadyTransformed.get(transform);
         }
-
+        // TODO Slot共享,如果没有设置,就是default
         final String slotSharingGroup =
                 determineSlotSharingGroup(
                         transform.getSlotSharingGroup().isPresent()
@@ -822,7 +834,9 @@ public class StreamGraphGenerator {
                 new ContextImpl(this, streamGraph, slotSharingGroup, configuration);
 
         return shouldExecuteInBatchMode
+                // TODO 批处理
                 ? translator.translateForBatch(transform, context)
+                // TODO 流处理
                 : translator.translateForStreaming(transform, context);
     }
 

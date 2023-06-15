@@ -57,8 +57,10 @@ public abstract class SimpleTransformationTranslator<OUT, T extends Transformati
             final T transformation, final Context context) {
         checkNotNull(transformation);
         checkNotNull(context);
-
-        // TODO 以SourceTransformationTranslator为例
+        // TODO 这个地方可以是任意类型的算子transformation
+        // TODO Source类型算子作为StreamGraph的顶点,在进行StreamNode转换时是无法得到下游算子信息的,
+        //  所以Source类型算子在转换StreamNode的过程中不会构建StreamEdge
+        // TODO 以OneInputTransformationTranslator为例
         final Collection<Integer> transformedIds =
                 translateForStreamingInternal(transformation, context);
         configure(transformation, context);
