@@ -181,7 +181,7 @@ public class ActiveResourceManager<WorkerType extends ResourceIDRetrievable>
 
     @Override
     public boolean startNewWorker(WorkerResourceSpec workerResourceSpec) {
-        //step.31;
+        // TODO step.31;
         requestNewWorker(workerResourceSpec);
         return true;
     }
@@ -284,8 +284,9 @@ public class ActiveResourceManager<WorkerType extends ResourceIDRetrievable>
         // which keeps the main thread busy.
         final CompletableFuture<WorkerType> requestResourceFuture =
                 startWorkerCoolDown.thenCompose(
-                        //step.32;YarnResourceManagerDriver
+                        // TODO step.32;YarnResourceManagerDriver
                         (ignore) -> resourceManagerDriver.requestResource(taskExecutorProcessSpec));
+        // TODO 在step.40中会设置requestResourceFuture的完成;回传YarnWorkerNode
         FutureUtils.assertNoException(
                 requestResourceFuture.handle(
                         (worker, exception) -> {
@@ -300,6 +301,7 @@ public class ActiveResourceManager<WorkerType extends ResourceIDRetrievable>
                                 recordWorkerFailureAndPauseWorkerCreationIfNeeded();
                                 requestWorkerIfRequired();
                             } else {
+                                // TODO step.41;所有worker由ActiveResourceManager维护。
                                 final ResourceID resourceId = worker.getResourceID();
                                 workerNodeMap.put(resourceId, worker);
                                 currentAttemptUnregisteredWorkers.put(

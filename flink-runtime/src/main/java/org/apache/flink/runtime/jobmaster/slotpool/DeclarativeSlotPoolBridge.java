@@ -241,7 +241,7 @@ public class DeclarativeSlotPoolBridge extends DeclarativeSlotPoolService implem
 
         final PendingRequest pendingRequest =
                 PendingRequest.createNormalRequest(slotRequestId, resourceProfile);
-        //step.16;
+        // TODO step.16;
         return internalRequestNewSlot(pendingRequest, timeout);
     }
 
@@ -264,7 +264,7 @@ public class DeclarativeSlotPoolBridge extends DeclarativeSlotPoolService implem
 
     private CompletableFuture<PhysicalSlot> internalRequestNewSlot(
             PendingRequest pendingRequest, @Nullable Time timeout) {
-        //step.17;
+        // TODO step.17;
         internalRequestNewAllocatedSlot(pendingRequest);
 
         if (timeout == null) {
@@ -292,7 +292,7 @@ public class DeclarativeSlotPoolBridge extends DeclarativeSlotPoolService implem
 
     private void internalRequestNewAllocatedSlot(PendingRequest pendingRequest) {
         pendingRequests.put(pendingRequest.getSlotRequestId(), pendingRequest);
-        //step.18;DefaultDeclarativeSlotPool
+        // TODO step.18;DefaultDeclarativeSlotPool
         getDeclarativeSlotPool()
                 .increaseResourceRequirementsBy(
                         ResourceCounter.withResource(pendingRequest.getResourceProfile(), 1));

@@ -534,7 +534,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
 
         if (null != jobManagerRegistration) {
             if (Objects.equals(jobMasterId, jobManagerRegistration.getJobMasterId())) {
-                //step.24;DeclarativeSlotManager
+                // TODO step.24;DeclarativeSlotManager
                 slotManager.processResourceRequirements(resourceRequirements);
 
                 return CompletableFuture.completedFuture(Acknowledge.get());
@@ -1288,7 +1288,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
         @Override
         public boolean allocateResource(WorkerResourceSpec workerResourceSpec) {
             validateRunsInMainThread();
-            //step.30;ActiveResourceManager
+            // TODO step.30;ActiveResourceManager
             return startNewWorker(workerResourceSpec);
         }
 

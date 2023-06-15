@@ -126,7 +126,7 @@ public class DefaultDeclarativeSlotPool implements DeclarativeSlotPool {
             return;
         }
         totalResourceRequirements = totalResourceRequirements.add(increment);
-        //step.19;
+        // TODO step.19;
         declareResourceRequirements();
     }
 
@@ -148,6 +148,7 @@ public class DefaultDeclarativeSlotPool implements DeclarativeSlotPool {
     }
 
     private void declareResourceRequirements() {
+        //  TODO 获取需要的资源
         final Collection<ResourceRequirement> resourceRequirements = getResourceRequirements();
 
         LOG.debug(
@@ -157,8 +158,8 @@ public class DefaultDeclarativeSlotPool implements DeclarativeSlotPool {
                 resourceRequirements,
                 System.lineSeparator(),
                 fulfilledResourceRequirements);
-        //step.19;DefaultDeclarativeSlotPoolFactory,查看该consumer为：DeclarativeSlotPoolService的declareResourceRequirements()
-        //与ResourceManager取得联系
+        // TODO step.19;DefaultDeclarativeSlotPoolFactory,查看该consumer为：DeclarativeSlotPoolService的declareResourceRequirements()
+        // TODO 与ResourceManager取得联系
         notifyNewResourceRequirements.accept(resourceRequirements);
     }
 

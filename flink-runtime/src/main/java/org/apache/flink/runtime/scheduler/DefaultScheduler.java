@@ -409,7 +409,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
                         deploymentOptionsByVertex,
                         slotExecutionVertexAssignments);
 
-        //TODO 在step9;申请好slots资源后，开始部署Task
+        //TODO 在step.9中申请好slots资源后，开始部署Task
         // TODO *step.1; 部署Task
         waitForAllSlotsAndDeploy(deploymentHandles);
     }
@@ -441,7 +441,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
 
     private List<SlotExecutionVertexAssignment> allocateSlots(
             final List<ExecutionVertexDeploymentOption> executionVertexDeploymentOptions) {
-        //step.10;SlotSharingExecutionSlotAllocator
+        // TODO step.10;SlotSharingExecutionSlotAllocator
         return executionSlotAllocator.allocateSlotsFor(
                 executionVertexDeploymentOptions.stream()
                         .map(ExecutionVertexDeploymentOption::getExecutionVertexId)

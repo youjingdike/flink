@@ -59,7 +59,7 @@ public class PhysicalSlotProviderImpl implements PhysicalSlotProvider {
                 slotRequestId,
                 resourceProfile);
 
-        // //step.13;先看有可用的slot没，有的话直接分配
+        // TODO step.13;先看有可用的slot没，有的话直接分配
         Optional<PhysicalSlot> availablePhysicalSlot =
                 tryAllocateFromAvailable(slotRequestId, slotProfile);
 
@@ -69,7 +69,7 @@ public class PhysicalSlotProviderImpl implements PhysicalSlotProvider {
                         .map(CompletableFuture::completedFuture)
                         .orElseGet(
                                 () ->
-                                        //step.14;没的话请求Flink RM获取
+                                        // TODO step.14;没的话请求Flink RM获取
                                         requestNewSlot(
                                                 slotRequestId,
                                                 resourceProfile,
@@ -103,7 +103,7 @@ public class PhysicalSlotProviderImpl implements PhysicalSlotProvider {
             ResourceProfile resourceProfile,
             boolean willSlotBeOccupiedIndefinitely) {
         if (willSlotBeOccupiedIndefinitely) {
-            //step.15;DeclarativeSlotPoolBridge
+            // TODO step.15;DeclarativeSlotPoolBridge
             return slotPool.requestNewAllocatedSlot(slotRequestId, resourceProfile, null);
         } else {
             return slotPool.requestNewAllocatedBatchSlot(slotRequestId, resourceProfile);

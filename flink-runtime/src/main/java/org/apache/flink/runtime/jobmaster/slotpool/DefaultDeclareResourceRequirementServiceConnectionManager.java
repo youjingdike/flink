@@ -68,7 +68,7 @@ class DefaultDeclareResourceRequirementServiceConnectionManager
             checkNotClosed();
             if (isConnected()) {
                 currentResourceRequirements = resourceRequirements;
-                //step.20;
+                // TODO step.20;
                 triggerResourceRequirementsSubmission(
                         Duration.ofMillis(1L),
                         Duration.ofMillis(10000L),
@@ -85,7 +85,7 @@ class DefaultDeclareResourceRequirementServiceConnectionManager
 
         FutureUtils.retryWithDelay(
                 () ->
-                        //step.21;
+                        // TODO step.21;
                         sendResourceRequirements(resourceRequirementsToSend),
                 new ExponentialBackoffRetryStrategy(
                         Integer.MAX_VALUE, sleepOnError, maxSleepOnError),
@@ -98,7 +98,7 @@ class DefaultDeclareResourceRequirementServiceConnectionManager
         synchronized (lock) {
             if (isConnected()) {
                 if (resourceRequirementsToSend == currentResourceRequirements) {
-                    //step.22; 在这里判断是否停止申请资源
+                    // TODO step.22; 在这里判断是否停止申请资源
                     return service.declareResourceRequirements(resourceRequirementsToSend);
                 } else {
                     LOG.debug("Newer resource requirements found. Stop sending old requirements.");
