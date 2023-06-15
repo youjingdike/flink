@@ -57,7 +57,7 @@ public class RpcTaskManagerGateway implements TaskManagerGateway {
 
     @Override
     public CompletableFuture<Acknowledge> submitTask(TaskDeploymentDescriptor tdd, Time timeout) {
-        // TODO TaskExecutor 其是PpcEndpoint的子类
+        // TODO 发送rpc请求，TaskExecutor 其是RpcEndpoint的子类
         return taskExecutorGateway.submitTask(tdd, jobMasterId, timeout);
     }
 
