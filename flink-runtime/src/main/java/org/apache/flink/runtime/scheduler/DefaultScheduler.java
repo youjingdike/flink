@@ -234,6 +234,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
 
         schedulingStrategy.onExecutionStateChange(
                 executionVertexId, taskExecutionState.getExecutionState());
+        // TODO
         maybeHandleTaskFailure(taskExecutionState, executionVertexId);
     }
 
@@ -243,6 +244,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
 
         if (taskExecutionState.getExecutionState() == ExecutionState.FAILED) {
             final Throwable error = taskExecutionState.getError(userCodeLoader);
+            // TODO
             handleTaskFailure(executionVertexId, error);
         }
     }
@@ -255,6 +257,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
         final FailureHandlingResult failureHandlingResult =
                 executionFailureHandler.getFailureHandlingResult(
                         executionVertexId, error, timestamp);
+        // TODO
         maybeRestartTasks(failureHandlingResult);
     }
 
@@ -280,6 +283,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
 
     private void maybeRestartTasks(final FailureHandlingResult failureHandlingResult) {
         if (failureHandlingResult.canRestart()) {
+            // TODO
             restartTasksWithDelay(failureHandlingResult);
         } else {
             failJob(failureHandlingResult.getError(), failureHandlingResult.getTimestamp());
@@ -312,6 +316,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
                                         () -> {
                                             archiveFromFailureHandlingResult(
                                                     failureHandlingResultSnapshot);
+                                            // TODO
                                             restartTasks(executionVertexVersions, globalRecovery);
                                         },
                                         getMainThreadExecutor())),
@@ -342,6 +347,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
         resetForNewExecutions(verticesToRestart);
 
         try {
+            // TODO
             restoreState(verticesToRestart, isGlobalRecovery);
         } catch (Throwable t) {
             handleGlobalFailure(t);

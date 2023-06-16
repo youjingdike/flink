@@ -144,6 +144,7 @@ public class StateAssignmentOperation {
         // actually assign the state
         for (TaskStateAssignment stateAssignment : vertexAssignments.values()) {
             if (stateAssignment.hasNonFinishedState || stateAssignment.isFullyFinished) {
+                // TODO
                 assignTaskStateToExecutionJobVertices(stateAssignment);
             }
         }
@@ -220,6 +221,7 @@ public class StateAssignmentOperation {
             if (assignment.isFullyFinished) {
                 assignFinishedStateToTask(currentExecutionAttempt);
             } else {
+                // TODO
                 assignNonFinishedStateToTask(
                         assignment, operatorIDs, subTaskIndex, currentExecutionAttempt);
             }
@@ -250,6 +252,7 @@ public class StateAssignmentOperation {
                     operatorID.getGeneratedOperatorID(), operatorSubtaskState);
         }
 
+        // TODO
         JobManagerTaskRestore taskRestore =
                 new JobManagerTaskRestore(restoreCheckpointId, taskState);
         currentExecutionAttempt.setInitialState(taskRestore);

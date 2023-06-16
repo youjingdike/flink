@@ -101,6 +101,7 @@ public class TaskDeploymentDescriptorFactory {
             @Nullable JobManagerTaskRestore taskRestore,
             Collection<ResultPartitionDeploymentDescriptor> producedPartitions)
             throws IOException {
+        // TODO
         return new TaskDeploymentDescriptor(
                 jobID,
                 serializedJobInformation,

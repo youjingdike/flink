@@ -76,6 +76,7 @@ public interface SchedulerNG extends AutoCloseableAsync {
     void handleGlobalFailure(Throwable cause);
 
     default boolean updateTaskExecutionState(TaskExecutionState taskExecutionState) {
+        // TODO
         return updateTaskExecutionState(new TaskExecutionStateTransition(taskExecutionState));
     }
 

@@ -1889,6 +1889,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
             final JobMasterGateway jobMasterGateway, final TaskExecutionState taskExecutionState) {
         final ExecutionAttemptID executionAttemptID = taskExecutionState.getID();
 
+        // TODO
         CompletableFuture<Acknowledge> futureAcknowledge =
                 jobMasterGateway.updateTaskExecutionState(taskExecutionState);
 
@@ -2374,12 +2375,14 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
 
         @Override
         public void updateTaskExecutionState(final TaskExecutionState taskExecutionState) {
+            // TODO 判断是否结束状态
             if (taskExecutionState.getExecutionState().isTerminal()) {
                 runAsync(
                         () ->
                                 unregisterTaskAndNotifyFinalState(
                                         jobMasterGateway, taskExecutionState.getID()));
             } else {
+                // TODO
                 TaskExecutor.this.updateTaskExecutionState(jobMasterGateway, taskExecutionState);
             }
         }

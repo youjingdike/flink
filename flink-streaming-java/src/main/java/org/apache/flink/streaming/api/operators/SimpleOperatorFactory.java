@@ -73,6 +73,8 @@ public class SimpleOperatorFactory<OUT> extends AbstractStreamOperatorFactory<OU
         if (operator instanceof AbstractStreamOperator) {
             ((AbstractStreamOperator) operator).setProcessingTimeService(processingTimeService);
         }
+
+        // TODO 调用了setup()
         if (operator instanceof SetupableStreamOperator) {
             ((SetupableStreamOperator) operator)
                     .setup(

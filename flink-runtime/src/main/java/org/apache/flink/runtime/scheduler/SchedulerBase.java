@@ -399,6 +399,7 @@ public abstract class SchedulerBase implements SchedulerNG, CheckpointScheduling
             final Map<ExecutionJobVertex, IntArrayList> subtasksToRestore =
                     getInvolvedExecutionJobVerticesAndSubtasks(vertices);
 
+            // TODO
             final OptionalLong restoredCheckpointId =
                     checkpointCoordinator.restoreLatestCheckpointedStateToSubtasks(
                             subtasksToRestore.keySet());
@@ -687,6 +688,7 @@ public abstract class SchedulerBase implements SchedulerNG, CheckpointScheduling
             checkState(executionVertexId.isPresent());
 
             if (isNotifiable(executionVertexId.get(), taskExecutionState)) {
+                // TODO
                 updateTaskExecutionStateInternal(executionVertexId.get(), taskExecutionState);
             }
             return true;

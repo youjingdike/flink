@@ -1407,6 +1407,7 @@ public class CheckpointCoordinator {
         //     of the restarted region), meaning there will be unmatched state by design.
         //   - because what we might end up restoring from an original savepoint with unmatched
         //     state, if there is was no checkpoint yet.
+        // TODO
         return restoreLatestCheckpointedStateInternal(
                 tasks,
                 OperatorCoordinatorRestoreBehavior
@@ -1554,6 +1555,7 @@ public class CheckpointCoordinator {
                     new StateAssignmentOperation(
                             latest.getCheckpointID(), tasks, operatorStates, allowNonRestoredState);
 
+            // TODO
             stateAssignmentOperation.assignStates();
 
             // call master hooks for restore. we currently call them also on "regional restore"

@@ -385,6 +385,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
         environment.setMainMailboxExecutor(mainMailboxExecutor);
         environment.setAsyncOperationsThreadPool(asyncOperationsThreadPool);
 
+        //创建状态存储后端
         this.stateBackend = createStateBackend();
         this.checkpointStorage = createCheckpointStorage(stateBackend);
 
@@ -650,6 +651,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
 
     @Override
     public final void restore() throws Exception {
+        // TODO
         restoreInternal();
     }
 
@@ -666,6 +668,8 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
          * TODO OperatorChain包含了在一个StreamTask中作为一条链执行的所有操作符。
          *   这个链的主要入口点是它的mainOperator。mainOperator通过从网络输入和/或源输入中提取记录，并将生成的记录推送到剩余的链式操作符，来驱动StreamTask的执行。
          */
+        // TaskStateManagerImpl;RegularOperatorChain
+        //创建 OperatorChain，会加载每一个 operator，并调用 setup 方法
         operatorChain =
                 getEnvironment().getTaskStateManager().isTaskDeployedAsFinished()
                         ? new FinishedOperatorChain<>(this, recordWriter)
