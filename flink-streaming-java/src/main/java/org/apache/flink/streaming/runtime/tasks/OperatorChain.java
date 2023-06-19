@@ -651,6 +651,7 @@ public abstract class OperatorChain<OUT, OP extends StreamOperator<OUT>>
             allOutputs.add(new Tuple2<>(output, outputEdge));
         }
 
+        // TODO 只有一个输出
         if (allOutputs.size() == 1) {
             return allOutputs.get(0).f0;
         } else {
@@ -665,6 +666,7 @@ public abstract class OperatorChain<OUT, OP extends StreamOperator<OUT>>
             // This is the inverse of creating the normal ChainingOutput.
             // If the chaining output does not copy we need to copy in the broadcast output,
             // otherwise multi-chaining would not work correctly.
+            // TODO 不止有一个输出，需要使用 BroadcastingOutputCollector 进行封装
             if (containingTask.getExecutionConfig().isObjectReuseEnabled()) {
                 return closer.register(new CopyingBroadcastingOutputCollector<>(asArray));
             } else {
@@ -709,7 +711,7 @@ public abstract class OperatorChain<OUT, OP extends StreamOperator<OUT>>
                         allOperatorWrappers,
                         false);
 
-        // TODO 构造WatermarkGaugeExposingOutput,将下游operator算子封装到当前算子的output里面，形成链式调用；
+        // TODO 构造ChainingOutput,将下游operator算子封装到当前算子的output里面，形成链式调用；
         return wrapOperatorIntoOutput(
                 chainedOperator, containingTask, operatorConfig, userCodeClassloader, outputTag);
     }
