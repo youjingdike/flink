@@ -302,12 +302,14 @@ class AkkaRpcActor<T extends RpcEndpoint & RpcGateway> extends AbstractActor {
                 rpcMethod.setAccessible(true);
 
                 final Method capturedRpcMethod = rpcMethod;
+                // TODO 1) 无返回值
                 if (rpcMethod.getReturnType().equals(Void.TYPE)) {
                     // No return value to send back
                     runWithContextClassLoader(
                             () -> capturedRpcMethod.invoke(rpcEndpoint, rpcInvocation.getArgs()),
                             flinkClassLoader);
                 } else {
+                    // TODO 2) 有返回值
                     final Object result;
                     try {
                         result =

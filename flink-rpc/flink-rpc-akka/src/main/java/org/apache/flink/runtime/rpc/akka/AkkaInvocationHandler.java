@@ -119,7 +119,7 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
         Class<?> declaringClass = method.getDeclaringClass();
 
         Object result;
-
+        // TODO 非Rpc方法，直接本地执行。这个是服务端通过自己的代理对象RpcServer调用自己非Rpc方法时走的逻辑
         if (declaringClass.equals(AkkaBasedEndpoint.class)
                 || declaringClass.equals(Object.class)
                 || declaringClass.equals(RpcGateway.class)
@@ -135,6 +135,8 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
                             + "fencing token. Please use RpcService#connect(RpcService, F, Time) with F being the fencing token to "
                             + "retrieve a properly FencedRpcGateway.");
         } else {
+            // TODO RPC方法，指RpcGateway子接口中定义的方法
+            // TODO 接口：ResourceManagerGateway、DispatcherGateway、JobMasterGateway、MetricQueryServiceGateway、TaskExecutorGateway
             result = invokeRpc(method, args);
         }
 
@@ -213,6 +215,7 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         Time futureTimeout = extractRpcTimeout(parameterAnnotations, args, timeout);
 
+        // TODO 1) 封装消息
         final RpcInvocation rpcInvocation =
                 createRpcInvocationMessage(
                         method.getDeclaringClass().getSimpleName(),
@@ -220,11 +223,13 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
                         parameterTypes,
                         args);
 
+        // TODO 2) 借助akka发送消息，进行RPC调用
         Class<?> returnType = method.getReturnType();
 
         final Object result;
 
         if (Objects.equals(returnType, Void.TYPE)) {
+            // TODO  无返回值，用akka tell模式
             tell(rpcInvocation);
 
             result = null;
@@ -237,6 +242,7 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
             final Throwable callStackCapture = captureAskCallStack ? new Throwable() : null;
 
             // execute an asynchronous call
+            // TODO 有返回值，用akka ask模式
             final CompletableFuture<?> resultFuture =
                     ask(rpcInvocation, futureTimeout)
                             .thenApply(

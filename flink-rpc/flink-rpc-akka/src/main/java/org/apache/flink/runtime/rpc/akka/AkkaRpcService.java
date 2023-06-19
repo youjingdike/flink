@@ -253,8 +253,11 @@ public class AkkaRpcService implements RpcService {
     public <C extends RpcEndpoint & RpcGateway> RpcServer startServer(C rpcEndpoint) {
         checkNotNull(rpcEndpoint, "rpc endpoint");
 
+        //  TODO 以Ask方式向SupervisorActor发送StartAkkaRpcActor消息，
+        // TODO SupervisorActor收到消息后根据消息里RpcEndpoint的配置信息创建Actor，并以tell方式回复创建成功。
         final SupervisorActor.ActorRegistration actorRegistration =
                 registerAkkaRpcActor(rpcEndpoint);
+
         final ActorRef actorRef = actorRegistration.getActorRef();
         final CompletableFuture<Void> actorTerminationFuture =
                 actorRegistration.getTerminationFuture();
@@ -273,10 +276,12 @@ public class AkkaRpcService implements RpcService {
             hostname = host.get();
         }
 
+        // TODO 服务端对象实现了RpcGateway接口
         Set<Class<?>> implementedRpcGateways =
                 new HashSet<>(RpcUtils.extractImplementedRpcGateways(rpcEndpoint.getClass()));
-
+        // TODO 服务端对象是一个RpcServer
         implementedRpcGateways.add(RpcServer.class);
+        // TODO 服务端对象是Akka base endpoint，可以获取到ActorRef引用
         implementedRpcGateways.add(AkkaBasedEndpoint.class);
 
         final InvocationHandler akkaInvocationHandler;
@@ -314,6 +319,7 @@ public class AkkaRpcService implements RpcService {
         // code is loaded dynamically (for example from an OSGI bundle) through a custom ClassLoader
         ClassLoader classLoader = getClass().getClassLoader();
 
+        // TODO 生成代理对象
         @SuppressWarnings("unchecked")
         RpcServer server =
                 (RpcServer)
@@ -339,6 +345,7 @@ public class AkkaRpcService implements RpcService {
         synchronized (lock) {
             checkState(!stopped, "RpcService is stopped");
 
+            // TODO 创建Actor
             final SupervisorActor.StartAkkaRpcActorResponse startAkkaRpcActorResponse =
                     SupervisorActor.startAkkaRpcActor(
                             supervisor.getActor(),
@@ -361,7 +368,7 @@ public class AkkaRpcService implements RpcService {
                                                     AkkaRpcActor.class.getSimpleName(),
                                                     rpcEndpoint.getEndpointId()),
                                             cause));
-
+            // TODO 在RpcService中保存ActorRef与RpcEndpoint引用关系
             actors.put(actorRegistration.getActorRef(), rpcEndpoint);
 
             return actorRegistration;
@@ -544,8 +551,10 @@ public class AkkaRpcService implements RpcService {
                 address,
                 clazz.getName());
 
+        // TODO 1) 使用ActorSystem.actorSelection(address).resolveOne的方式来获取Actor的引用ActorRef(ActorRef可以用来向服务端Actor发送消息)
         final CompletableFuture<ActorRef> actorRefFuture = resolveActorAddress(address);
 
+        // TODO 2) ActorRef创建完成后，使用ask的方式向服务端发送一条握手消息(用来验证Client和Server彼此版本一致)
         final CompletableFuture<HandshakeSuccessMessage> handshakeFuture =
                 actorRefFuture.thenCompose(
                         (ActorRef actorRef) ->
@@ -561,10 +570,12 @@ public class AkkaRpcService implements RpcService {
                                                                         HandshakeSuccessMessage
                                                                                 .class))));
 
+        // TODO 3) 以上2个事都做完后，异步创建代理对象并返回
         final CompletableFuture<C> gatewayFuture =
                 actorRefFuture.thenCombineAsync(
                         handshakeFuture,
                         (ActorRef actorRef, HandshakeSuccessMessage ignored) -> {
+                            // TODO invocationHandlerFactory.apply(actorRef) = new AkkaInvocationHandler 或 new 或 FencedAkkaInvocationHandler
                             InvocationHandler invocationHandler =
                                     invocationHandlerFactory.apply(actorRef);
 

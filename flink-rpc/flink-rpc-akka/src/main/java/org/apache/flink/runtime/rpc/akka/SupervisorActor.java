@@ -68,6 +68,7 @@ class SupervisorActor extends AbstractActor {
 
     @Override
     public Receive createReceive() {
+        // TODO 2) 处理消息
         return receiveBuilder()
                 .match(StartAkkaRpcActor.class, this::createStartAkkaRpcActorMessage)
                 .matchAny(this::handleUnknownMessage)
@@ -118,10 +119,12 @@ class SupervisorActor extends AbstractActor {
                 endpointId);
 
         try {
+            // TODO 创建Actor
             final ActorRef actorRef = getContext().actorOf(akkaRpcActorProps, endpointId);
 
             registeredAkkaRpcActors.put(actorRef, akkaRpcActorRegistration);
 
+            // TODO 回复消息
             getSender()
                     .tell(
                             StartAkkaRpcActorResponse.success(
@@ -199,6 +202,10 @@ class SupervisorActor extends AbstractActor {
 
     public static StartAkkaRpcActorResponse startAkkaRpcActor(
             ActorRef supervisor, StartAkkaRpcActor.PropsFactory propsFactory, String endpointId) {
+        //  TODO 1) 发送消息
+        // TODO 以Ask方式发送消息并等待结果
+        //  Ask在实现上实际上是会创建一个Actor等待响应结果，成功或者超时时，销毁Actor
+        //  createReceive() 处理创建消息
         return Patterns.ask(
                         supervisor,
                         createStartAkkaRpcActorMessage(propsFactory, endpointId),
