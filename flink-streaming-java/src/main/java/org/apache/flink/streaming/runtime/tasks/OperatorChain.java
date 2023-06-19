@@ -187,8 +187,8 @@ public abstract class OperatorChain<OUT, OP extends StreamOperator<OUT>>
             // we create the chain of operators and grab the collector that leads into the chain
             List<StreamOperatorWrapper<?, ?>> allOpWrappers =
                     new ArrayList<>(chainedConfigs.size());
-            // TODO,里面含有构造ChainingOutput的过程
-            // TODO 这里会递归调用，为 OperatorChain 内部的所有的 Operator 都创建 output
+            // TODO,里面含有构造output的过程
+            // TODO 重点过程:***这里会递归调用，为 OperatorChain 内部的所有的 Operator 都创建 output***
             this.mainOperatorOutput =
                     createOutputCollector(
                             containingTask,
@@ -635,8 +635,8 @@ public abstract class OperatorChain<OUT, OP extends StreamOperator<OUT>>
 
 
             // TODO 创建当前节点的下游节点，并返回当前节点的 output
-            // TODO createChainedOperator 在创建 operator 的时候，会调用 createOutputCollector 为 operator 创建 output
-            // TODO 随意会形成递归调用关系，所有的 operator 以及它们的 output 都会被创建出来
+            // TODO createOperatorChain 在创建 operator 的时候，会调用 createOutputCollector 为 operator 创建 output
+            // TODO 所以会形成递归调用关系，所有的 operator 以及它们的 output 都会被创建出来
             // TODO 该方法里面会继续调用createOutputCollector()
             WatermarkGaugeExposingOutput<StreamRecord<T>> output =
                     createOperatorChain(
@@ -709,7 +709,7 @@ public abstract class OperatorChain<OUT, OP extends StreamOperator<OUT>>
                         allOperatorWrappers,
                         false);
 
-        // TODO 构造ChainingOutput
+        // TODO 构造WatermarkGaugeExposingOutput,将下游operator算子封装到当前算子的output里面，形成链式调用；
         return wrapOperatorIntoOutput(
                 chainedOperator, containingTask, operatorConfig, userCodeClassloader, outputTag);
     }
@@ -727,7 +727,7 @@ public abstract class OperatorChain<OUT, OP extends StreamOperator<OUT>>
             boolean isHead) {
 
         // now create the operator and give it the output collector to write its output to
-        // TODO 调用了setUp(),与mainOperatorAndTimeService的创建逻辑一样
+        // TODO 调用了setUp(),在这个过程中创建了output实例，与mainOperatorAndTimeService的创建逻辑一样
         Tuple2<OP, Optional<ProcessingTimeService>> chainedOperatorAndTimeService =
                 StreamOperatorFactoryUtil.createOperator(
                         operatorConfig.getStreamOperatorFactory(userCodeClassloader),
@@ -763,6 +763,7 @@ public abstract class OperatorChain<OUT, OP extends StreamOperator<OUT>>
         WatermarkGaugeExposingOutput<StreamRecord<IN>> currentOperatorOutput;
         if (containingTask.getExecutionConfig().isObjectReuseEnabled()) {
             // TODO 构造ChainingOutput
+            // TODO ****关键点：operator作为当前算子的下游算子，被currentOperatorOutput内部持有***
             currentOperatorOutput = new ChainingOutput<>(operator, outputTag);
         } else {
             TypeSerializer<IN> inSerializer =
