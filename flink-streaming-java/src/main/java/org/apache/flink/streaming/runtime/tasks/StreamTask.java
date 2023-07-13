@@ -374,7 +374,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
         this.configuration = new StreamConfig(environment.getTaskConfiguration());
         this.recordWriter = createRecordWriterDelegate(configuration, environment);
         this.actionExecutor = Preconditions.checkNotNull(actionExecutor);
-        // TODO 传入this::processInput
+        // TODO 传入this::processInput,**重点：所有task处理数据的启动方法入口；
         this.mailboxProcessor = new MailboxProcessor(this::processInput, mailbox, actionExecutor);
         this.mainMailboxExecutor = mailboxProcessor.getMainMailboxExecutor();
         this.asyncExceptionHandler = new StreamTaskAsyncExceptionHandler(environment);

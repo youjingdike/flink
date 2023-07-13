@@ -199,8 +199,8 @@ public class MailboxProcessor implements Closeable {
         // TODO 循环执行mailboxDefaultAction(this::processInput)
         while (isNextLoopPossible()) {
             // The blocking `processMail` call will not return until default action is available.
-            // 它会检测 MailBox 中是否有 mail 需要处理，如果有的话，就做相应的处理，一直将全部的 mail 处理完才会返回，
-            // 只要 loop 还在进行，这里就会返回 true，否则会返回 false
+            // TODO 它会检测 MailBox 中是否有 mail 需要处理，如果有的话，就做相应的处理，一直将全部的 mail 处理完才会返回，
+            // TODO 只要 loop 还在进行，这里就会返回 true，否则会返回 false
             processMail(localMailbox, false);
             if (isNextLoopPossible()) {
                 mailboxDefaultAction.runDefaultAction(
