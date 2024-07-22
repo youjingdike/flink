@@ -166,6 +166,7 @@ public class ZooKeeperLeaderElectionDriver implements LeaderElectionDriver, Lead
 
     @Override
     public void isLeader() {
+        // TODO 竞选成功会回调该方法
         leaderElectionEventHandler.onGrantLeadership();
     }
 
