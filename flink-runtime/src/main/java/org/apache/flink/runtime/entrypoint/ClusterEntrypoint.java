@@ -366,6 +366,7 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
              * 用于下面创建AkkaRpcService实例
              */
             rpcSystem = RpcSystem.load(configuration);
+
             /**RpcService：AkkaRpcService
              *初始化和启动 AkkaRpcService，内部其实包装了一个 ActorSystem
              * */
@@ -390,6 +391,7 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
                     Executors.newFixedThreadPool(
                             ClusterEntrypointUtils.getPoolSize(configuration),
                             new ExecutorThreadFactory("cluster-io"));
+
             /**初始化 HA 服务组件，非高可用为：StandaloneHaServices，高可用为：ZooKeeperHaServices*/
             haServices = createHaServices(configuration, ioExecutor, rpcSystem);
 
@@ -398,6 +400,7 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
             // 所谓大文件例如上传Flink-job的jar时所依赖的一些需要一起上传的jar，或者TaskManager上传的log文件等
             blobServer = new BlobServer(configuration, haServices.createBlobStore());
             blobServer.start();
+
             // 初始化心跳服务组件, heartbeatServices = HeartbeatServices
             heartbeatServices = createHeartbeatServices(configuration);
 
