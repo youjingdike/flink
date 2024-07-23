@@ -164,7 +164,7 @@ public class DefaultDispatcherResourceManagerComponentFactory
                                     executor);
             /*step4:
              TODO 创建WebMonitorEndpoint实例，在Standalong模式下为：DispatcherRestEndpoint
-              在perjob模式下为：MiniDispatcherRestEndpoint
+              在per-job/application模式下为：MiniDispatcherRestEndpoint
               该实例内部会启动一个Netty服务端，绑定了一堆Handler
             */
             webMonitorEndpoint =

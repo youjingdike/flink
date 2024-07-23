@@ -239,41 +239,36 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
 
     private void runCluster(Configuration configuration, PluginManager pluginManager)
             throws Exception {
-        /*关于Flink的主节点JobManager，他只是一个逻辑上的主节点，针对不同的部署模式，主节点的实现类也不同。
+        /* 关于Flink的主节点JobManager，他只是一个逻辑上的主节点，针对不同的部署模式，主节点的实现类也不同。
 
-        JobManager（逻辑）有三大核心内容，分别为ResourceManager、Dispatcher和WebmonitorEndpoin：
+        JobManager（逻辑）有三大核心内容，分别为ResourceManager、Dispatcher和WebmonitorEndpoint：
 
-        ResourceManager：
-
+        * ResourceManager：
         Flink集群的资源管理器，只有一个，关于Slot的管理和申请等工作，都有它负责
 
-        Dispatcher：
-
+        * Dispatcher：
         1、负责接收用户提交的JobGraph，然后启动一个JobMaster，类似与Yarn中的AppMaster和Spark中的Driver。
-
         2、内有一个持久服务：JobGraphStore，负责存储JobGraph。当构建执行图或物理执行图时主节点宕机并恢复，则可以从这里重新拉取作业JobGraph
 
-        WebMonitorEndpoint：
-
+        * WebMonitorEndpoint：
         Rest服务，内部有一个Netty服务，客户端的所有请求都由该组件接收处理
 
         用一个例子来描述这三个组件的功能：
-
             当Client提交一个Job到集群时（Client会把Job构建成一个JobGraph），主节点接收到提交的job的Rest请求后，WebMonitorEndpoint 会通过Router进行解析找到对应的Handler来执行处理，
             处理完毕后交由Dispatcher，Dispatcher负责大气JobMaster来负责这个Job内部的Task的部署执行，执行Task所需的资源，JobMaster向ResourceManager申请。
          */
 
         synchronized (lock) {
-            /**
-             TODO 该方法初始化了主节点对外提供服务的时候所需要的三大核心组件启动时所需的基础服务
-             1. commonRPCService：  基于Akka的RpcService实现。内部包装了ActorSystem
-             2. JMXService：        启动一个JMXService
-             3. ioExecutor：        启动一个线程池
-             4. haServices：        提供对高可用性所需的所有服务的访问注册，分布式计数器和领导人选举
-             5. blobServer：        负责侦听传入的请求生成线程来处理这些请求 。它还负责创建要存储的目录结构blob或临时缓存目录
-             6. heartbeatServices： 提供心跳所需的所有服务，这包括创建心跳接收器和心跳发送者。
-             7. metricRegistry：    跟踪所有已注册的Metric，他作为连接MetricGroup和MetricReporter
-             8. archivedExecutionGraphStore：存储执行图ExecutionGraph的可序列化形式。
+            /*
+             TODO initializeServices方法初始化了主节点对外提供服务的时候所需要的三大核心组件启动时所需的基础服务
+                 1. commonRPCService：  基于Akka的RpcService实现。内部包装了ActorSystem
+                 2. JMXService：        启动一个JMXService
+                 3. ioExecutor：        启动一个线程池
+                 4. haServices：        提供对高可用性所需的所有服务的访问注册，分布式计数器和领导人选举
+                 5. blobServer：        负责侦听传入的请求生成线程来处理这些请求 。它还负责创建要存储的目录结构blob或临时缓存目录
+                 6. heartbeatServices： 提供心跳所需的所有服务，这包括创建心跳接收器和心跳发送者。
+                 7. metricRegistry：    跟踪所有已注册的Metric，他作为连接MetricGroup和MetricReporter
+                 8. archivedExecutionGraphStore：存储执行图ExecutionGraph的可序列化形式。
              */
             initializeServices(configuration, pluginManager);
 
@@ -349,20 +344,19 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
     }
 
 
-    /**
-    TODO 初始化了主节点对外提供服务的时候所需要的三大核心组件启动时所需的基础服务
-     1. commonRPCService：  基于Akka的RpcService实现。内部包装了ActorSystem
-     2. JMXService：        启动一个JMXService
-     3. ioExecutor：        启动一个线程池
-     4. haServices：        提供对高可用性所需的所有服务的访问注册，分布式计数器和领导人选举
-     5. blobServer：        负责侦听传入的请求生成线程来处理这些请求 。它还负责创建要存储的目录结构blob或临时缓存目录
-     6. heartbeatServices： 提供心跳所需的所有服务，这包括创建心跳接收器和心跳发送者。
-     7. metricRegistry：    跟踪所有已注册的Metric，他作为连接MetricGroup和MetricReporter
-     8. archivedExecutionGraphStore：存储执行图ExecutionGraph的可序列化形式。
-     */
     protected void initializeServices(Configuration configuration, PluginManager pluginManager)
             throws Exception {
-
+        /*
+         TODO 初始化了主节点对外提供服务的时候所需要的三大核心组件启动时所需的基础服务
+             1. commonRPCService：  基于Akka的RpcService实现。内部包装了ActorSystem
+             2. JMXService：        启动一个JMXService
+             3. ioExecutor：        启动一个线程池
+             4. haServices：        提供对高可用性所需的所有服务的访问注册，分布式计数器和领导人选举
+             5. blobServer：        负责侦听传入的请求生成线程来处理这些请求 。它还负责创建要存储的目录结构blob或临时缓存目录
+             6. heartbeatServices： 提供心跳所需的所有服务，这包括创建心跳接收器和心跳发送者。
+             7. metricRegistry：    跟踪所有已注册的Metric，他作为连接MetricGroup和MetricReporter
+             8. archivedExecutionGraphStore：存储执行图ExecutionGraph的可序列化形式。
+         */
         LOG.info("Initializing cluster services.");
 
         synchronized (lock) {
