@@ -95,7 +95,7 @@ public enum ClientUtils {
             LOG.info(
                     "Starting program (detached: {})",
                     !configuration.getBoolean(DeploymentOptions.ATTACHED));
-            // TODO 配置执行环境
+            // TODO 配置执行环境的上下文,在StreamExecutionEnvironment类中使用，设置的都是static的，所以在finally块儿里面进行了清除
             ContextEnvironment.setAsContext(
                     executorServiceLoader,
                     configuration,
@@ -114,6 +114,7 @@ public enum ClientUtils {
                 // TODO 真正提交执行
                 program.invokeInteractiveModeForExecution();
             } finally {
+                // TODO 清除上下文
                 ContextEnvironment.unsetAsContext();
                 StreamContextEnvironment.unsetAsContext();
             }

@@ -203,6 +203,7 @@ public class ApplicationDispatcherBootstrap implements DispatcherBootstrap {
             configuration.set(
                     PipelineOptionsInternal.PIPELINE_FIXED_JOB_ID, ZERO_JOB_ID.toHexString());
         }
+        // TODO
         return runApplicationAsync(dispatcherGateway, scheduledExecutor, true);
     }
 
@@ -257,6 +258,7 @@ public class ApplicationDispatcherBootstrap implements DispatcherBootstrap {
         try {
             final List<JobID> applicationJobIds = new ArrayList<>(recoveredJobIds);
 
+            // TODO 设置executorServiceLoader为EmbeddedExecutorServiceLoader
             final PipelineExecutorServiceLoader executorServiceLoader =
                     new EmbeddedExecutorServiceLoader(
                             applicationJobIds, dispatcherGateway, scheduledExecutor);

@@ -265,7 +265,7 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
 
         synchronized (lock) {
             /**
-             TODO 初始化了主节点对外提供服务的时候所需要的三大核心组件启动时所需的基础服务
+             TODO 该方法初始化了主节点对外提供服务的时候所需要的三大核心组件启动时所需的基础服务
              1. commonRPCService：  基于Akka的RpcService实现。内部包装了ActorSystem
              2. JMXService：        启动一个JMXService
              3. ioExecutor：        启动一个线程池
