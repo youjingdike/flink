@@ -182,6 +182,9 @@ class AkkaRpcActor<T extends RpcEndpoint & RpcGateway> extends AbstractActor {
         try {
             switch (controlMessage) {
                 case START:
+                    /* TODO 启动,初始化是STOPPED状态,所以这里调用STOPPED的start(),在里面调用了akkaRpcActor.rpcEndpoint.internalCallOnStart()
+                        -> 调用到rpcEndpoint的onStart(),执行启动逻辑
+                     */
                     state = state.start(this, flinkClassLoader);
                     break;
                 case STOP:
