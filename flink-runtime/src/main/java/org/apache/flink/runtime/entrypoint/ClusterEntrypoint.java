@@ -306,9 +306,9 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
 
             /*
             * TODO 根据第一步中已创建基础服务，创建JobManager的三大核心角色实例
-            1. WebMonitorEndpoint：用于接受客户端发送的执行任务的Rest请求
-            2. resourceManager：负责资源的分配和记账
-            3. dispatcher：负责用于接收作业提交，持久化他们，生成要执行的作业管理器任务，并在主任务失败时恢复它们。
+                1. WebMonitorEndpoint：用于接受客户端发送的执行任务的Rest请求
+                2. resourceManager：负责资源的分配和记账
+                3. dispatcher：负责用于接收作业提交，持久化他们，生成要执行的作业管理器任务，并在主任务失败时恢复它们。
              */
             clusterComponent =
                     dispatcherResourceManagerComponentFactory.create(
