@@ -324,6 +324,7 @@ public class AkkaRpcServiceUtils {
         }
 
         public AkkaRpcService createAndStart() throws Exception {
+            // TODO 在AkkaRpcService构造函数里面进行了一些初始化操作
             return createAndStart(AkkaRpcService::new);
         }
 
@@ -337,6 +338,7 @@ public class AkkaRpcServiceUtils {
                                 AkkaBootstrapTools.getForkJoinExecutorConfiguration(configuration));
             }
 
+            // TODO 创建一个ActorSystem传入AkkaRpcService持有其
             final ActorSystem actorSystem;
 
             // akka internally caches the context class loader

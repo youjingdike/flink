@@ -68,7 +68,7 @@ class SupervisorActor extends AbstractActor {
 
     @Override
     public Receive createReceive() {
-        // TODO 2) 处理消息
+        // TODO 2) 处理消息：主要处理StartAkkaRpcActor的消息，进行Actor的创建
         return receiveBuilder()
                 .match(StartAkkaRpcActor.class, this::createStartAkkaRpcActorMessage)
                 .matchAny(this::handleUnknownMessage)
@@ -122,9 +122,10 @@ class SupervisorActor extends AbstractActor {
             // TODO 创建Actor
             final ActorRef actorRef = getContext().actorOf(akkaRpcActorProps, endpointId);
 
+            // TODO 保存了创建的Actor与AkkaRpcActorRegistration的对应引用关系
             registeredAkkaRpcActors.put(actorRef, akkaRpcActorRegistration);
 
-            // TODO 回复消息
+            // TODO 3) 回复消息：StartAkkaRpcActorResponse：持有ActorRegistration持有ActorRef
             getSender()
                     .tell(
                             StartAkkaRpcActorResponse.success(
@@ -202,10 +203,10 @@ class SupervisorActor extends AbstractActor {
 
     public static StartAkkaRpcActorResponse startAkkaRpcActor(
             ActorRef supervisor, StartAkkaRpcActor.PropsFactory propsFactory, String endpointId) {
-        //  TODO 1) 发送消息
+        //  TODO 1) 发送消息：给supervisor发送StartAkkaRpcActor的消息
         // TODO 以Ask方式发送消息并等待结果
-        //  Ask在实现上实际上是会创建一个Actor等待响应结果，成功或者超时时，销毁Actor
-        //  createReceive() 处理创建消息
+        //  Ask在实现上是会返回一个等待响应结果的Future，成功或者超时时，销毁Actor
+        //  在上面的createReceive() 处理StartAkkaRpcActor的消息
         return Patterns.ask(
                         supervisor,
                         createStartAkkaRpcActorMessage(propsFactory, endpointId),

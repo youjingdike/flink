@@ -121,12 +121,14 @@ public abstract class RpcEndpoint implements RpcGateway, AutoCloseableAsync {
      * @param endpointId Unique identifier for this endpoint
      */
     protected RpcEndpoint(final RpcService rpcService, final String endpointId) {
+        // TODO 保存rpcService和endpointId
         this.rpcService = checkNotNull(rpcService, "rpcService");
         this.endpointId = checkNotNull(endpointId, "endpointId");
 
-        // TODO 生成Rpc服务端自身的代理对象 AkkaRpcService
+        // TODO 通过RpcService(AkkaRpcService)启动RpcServer,生成Rpc服务端自身的代理对象
+        // TODO startServer的参数类型是<C extends RpcEndpoint & RpcGateway>,所以这里传入的this
         this.rpcServer = rpcService.startServer(this);
-
+        // TODO 主线程执行器，所有调用在主线程中串行执行
         this.mainThreadExecutor = new MainThreadExecutor(rpcServer, this::validateRunsInMainThread);
     }
 

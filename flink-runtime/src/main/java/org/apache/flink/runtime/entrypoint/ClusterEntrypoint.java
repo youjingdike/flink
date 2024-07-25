@@ -368,7 +368,7 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
             rpcSystem = RpcSystem.load(configuration);
 
             /**RpcService：AkkaRpcService
-             *初始化和启动 AkkaRpcService，内部其实包装了一个 ActorSystem
+             *初始化和启动 AkkaRpcService，内部持有了一个 ActorSystem实例
              * */
             commonRpcService =
                     RpcUtils.createRemoteRpcService(
@@ -378,6 +378,7 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
                             getRPCPortRange(configuration),
                             configuration.getString(JobManagerOptions.BIND_HOST),
                             configuration.getOptional(JobManagerOptions.RPC_BIND_PORT));
+
             // 启动一个 JMXService，用于客户端链接 JobManager JVM 进行监控
             JMXService.startInstance(configuration.getString(JMXServerOptions.JMX_SERVER_PORT));
 
@@ -396,7 +397,7 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
             haServices = createHaServices(configuration, ioExecutor, rpcSystem);
 
             // 初始化 BlobServer 服务端
-            //初始化大文件存储BlobServer服务端，
+            // 初始化大文件存储BlobServer服务端，
             // 所谓大文件例如上传Flink-job的jar时所依赖的一些需要一起上传的jar，或者TaskManager上传的log文件等
             blobServer = new BlobServer(configuration, haServices.createBlobStore());
             blobServer.start();

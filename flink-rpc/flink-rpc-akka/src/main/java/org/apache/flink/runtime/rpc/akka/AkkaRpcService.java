@@ -162,6 +162,7 @@ public class AkkaRpcService implements RpcService {
 
         stopped = false;
 
+        // TODO 创建SupervisorActor，用于创建其他Actor
         supervisor = startSupervisorActor();
         startDeadLettersActor();
     }
@@ -253,7 +254,7 @@ public class AkkaRpcService implements RpcService {
     public <C extends RpcEndpoint & RpcGateway> RpcServer startServer(C rpcEndpoint) {
         checkNotNull(rpcEndpoint, "rpc endpoint");
 
-        //  TODO 以Ask方式向SupervisorActor发送StartAkkaRpcActor消息，
+        // TODO 以Ask方式向SupervisorActor发送StartAkkaRpcActor消息
         // TODO SupervisorActor收到消息后根据消息里RpcEndpoint的配置信息创建Actor，并以tell方式回复创建成功。
         final SupervisorActor.ActorRegistration actorRegistration =
                 registerAkkaRpcActor(rpcEndpoint);
@@ -336,6 +337,7 @@ public class AkkaRpcService implements RpcService {
             SupervisorActor.ActorRegistration registerAkkaRpcActor(C rpcEndpoint) {
         final Class<? extends AbstractActor> akkaRpcActorType;
 
+        // TODO 判断是什么类型的actor
         if (rpcEndpoint instanceof FencedRpcEndpoint) {
             akkaRpcActorType = FencedAkkaRpcActor.class;
         } else {

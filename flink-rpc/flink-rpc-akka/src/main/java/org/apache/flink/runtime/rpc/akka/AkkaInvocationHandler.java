@@ -116,16 +116,18 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        // TODO 获取调用方法的声明类或接口
         Class<?> declaringClass = method.getDeclaringClass();
 
         Object result;
-        // TODO 非Rpc方法，直接本地执行。这个是服务端通过自己的代理对象RpcServer调用自己非Rpc方法时走的逻辑
+        // TODO 非Rpc方法，直接调用Handler的本地方法执行。这个是服务端通过自己的代理对象RpcServer调用自己非Rpc方法时走的逻辑
         if (declaringClass.equals(AkkaBasedEndpoint.class)
                 || declaringClass.equals(Object.class)
                 || declaringClass.equals(RpcGateway.class)
                 || declaringClass.equals(StartStoppable.class)
                 || declaringClass.equals(MainThreadExecutable.class)
                 || declaringClass.equals(RpcServer.class)) {
+            // TODO 这里传入的是this，走Handler的本地方法
             result = method.invoke(this, args);
         } else if (declaringClass.equals(FencedRpcGateway.class)) {
             throw new UnsupportedOperationException(
