@@ -398,7 +398,7 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
 
             // 初始化 BlobServer 服务端
             // 初始化大文件存储BlobServer服务端，
-            // 所谓大文件例如上传Flink-job的jar时所依赖的一些需要一起上传的jar，或者TaskManager上传的log文件等
+            // 所谓大文件,例如: 上传Flink-job的jar时所依赖的一些需要一起上传的jar，或者TaskManager上传的log文件等
             blobServer = new BlobServer(configuration, haServices.createBlobStore());
             blobServer.start();
 

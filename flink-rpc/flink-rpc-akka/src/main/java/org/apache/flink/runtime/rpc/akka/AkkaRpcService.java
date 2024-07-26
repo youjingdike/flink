@@ -322,7 +322,7 @@ public class AkkaRpcService implements RpcService {
         // code is loaded dynamically (for example from an OSGI bundle) through a custom ClassLoader
         ClassLoader classLoader = getClass().getClassLoader();
 
-        // TODO 生成代理对象
+        // TODO 生成RpcServer代理对象,而后对该server的调用都会进入Handler的invoke方法处理，handler实现了多个接口的方法
         @SuppressWarnings("unchecked")
         RpcServer server =
                 (RpcServer)

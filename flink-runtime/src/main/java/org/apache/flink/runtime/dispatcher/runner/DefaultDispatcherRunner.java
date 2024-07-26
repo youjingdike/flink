@@ -137,7 +137,8 @@ public final class DefaultDispatcherRunner implements DispatcherRunner, LeaderCo
     }
 
     private DispatcherLeaderProcess createNewDispatcherLeaderProcess(UUID leaderSessionID) {
-        // JobDispatcherLeaderProcess
+        // TODO per-job：JobDispatcherLeaderProcess
+        // TODO application：SessionDispatcherLeaderProcess
         final DispatcherLeaderProcess newDispatcherLeaderProcess =
                 dispatcherLeaderProcessFactory.create(leaderSessionID);
 

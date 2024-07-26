@@ -159,11 +159,13 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
     public void scheduleRunAsync(Runnable runnable, long delayMillis) {
         checkNotNull(runnable, "runnable");
         checkArgument(delayMillis >= 0, "delay must be zero or greater");
-
+        // TODO 判断是否为本地Actor
         if (isLocal) {
             long atTimeNanos = delayMillis == 0 ? 0 : System.nanoTime() + (delayMillis * 1_000_000);
+            // TODO 向Actor发送消息runnable
             tell(new RunAsync(runnable, atTimeNanos));
         } else {
+            // TODO 抛出异常，不支持远程发送Runnable消息
             throw new RuntimeException(
                     "Trying to send a Runnable to a remote actor at "
                             + rpcEndpoint.path()
