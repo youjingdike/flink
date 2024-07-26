@@ -116,7 +116,8 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        // TODO 获取调用方法的声明类或接口
+        // TODO 获取调用方法的声明类或接口：
+        //  这个AkkaInvocationHandler被好几个地方用于创建不同代理对象的代理类，所以这一点对理解下面的逻辑很有帮助；
         Class<?> declaringClass = method.getDeclaringClass();
 
         Object result;
