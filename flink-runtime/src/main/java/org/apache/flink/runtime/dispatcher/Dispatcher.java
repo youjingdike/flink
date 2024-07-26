@@ -218,6 +218,7 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
 
         // TODO 启动待恢复的Job,开始正式的启动任务
         startRecoveredJobs();
+        // TODO 启动引导类，application模式的ApplicationDispatcherBootstrap在此时执行用户代码,per-job没有任何逻辑
         this.dispatcherBootstrap =
                 this.dispatcherBootstrapFactory.create(
                         getSelfGateway(DispatcherGateway.class),
