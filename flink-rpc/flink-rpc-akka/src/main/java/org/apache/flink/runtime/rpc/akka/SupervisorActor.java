@@ -203,10 +203,10 @@ class SupervisorActor extends AbstractActor {
 
     public static StartAkkaRpcActorResponse startAkkaRpcActor(
             ActorRef supervisor, StartAkkaRpcActor.PropsFactory propsFactory, String endpointId) {
-        //  TODO 1) 发送消息：给supervisor发送StartAkkaRpcActor的消息
+        // TODO 1) 发送消息：给supervisor发送StartAkkaRpcActor的消息,创建Actor
         // TODO 以Ask方式发送消息并等待结果
         //  Ask在实现上是会返回一个等待响应结果的Future，成功或者超时时，销毁Actor
-        //  在上面的createReceive() 处理StartAkkaRpcActor的消息
+        //  接下来Actor接收到消息，执行上面的createReceive()处理StartAkkaRpcActor的消息
         return Patterns.ask(
                         supervisor,
                         createStartAkkaRpcActorMessage(propsFactory, endpointId),

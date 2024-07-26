@@ -258,8 +258,9 @@ public class AkkaRpcService implements RpcService {
         // TODO SupervisorActor收到消息后根据消息里RpcEndpoint的配置信息创建Actor，并以tell方式回复创建成功。
         final SupervisorActor.ActorRegistration actorRegistration =
                 registerAkkaRpcActor(rpcEndpoint);
-
+        // TODO 获取到创建的Actor，并将其传给代理对象handler
         final ActorRef actorRef = actorRegistration.getActorRef();
+
         final CompletableFuture<Void> actorTerminationFuture =
                 actorRegistration.getTerminationFuture();
 
@@ -303,6 +304,7 @@ public class AkkaRpcService implements RpcService {
 
             implementedRpcGateways.add(FencedMainThreadExecutable.class);
         } else {
+            // TODO 持有Actor实例对象
             akkaInvocationHandler =
                     new AkkaInvocationHandler(
                             akkaAddress,
