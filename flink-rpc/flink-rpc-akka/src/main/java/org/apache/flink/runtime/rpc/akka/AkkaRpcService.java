@@ -278,7 +278,9 @@ public class AkkaRpcService implements RpcService {
             hostname = host.get();
         }
 
-        // TODO 服务端对象实现了RpcGateway接口
+        // TODO 提取rpcEndpoint实现的接口中所有继承了RpcGateway接口的子接口;
+        //  这个提取在RpcEndpoint#getSelfGateway的判断中很有用,可以使代理RpcServer转换成想要的接口代理类型,
+        //  进行对应的代理接口的方法调用,进而影响到AkkaInvocationHandler.invoke的执行逻辑
         Set<Class<?>> implementedRpcGateways =
                 new HashSet<>(RpcUtils.extractImplementedRpcGateways(rpcEndpoint.getClass()));
         // TODO 服务端对象是一个RpcServer
