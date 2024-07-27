@@ -215,12 +215,13 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
      * @throws Exception if the RPC invocation fails
      */
     private Object invokeRpc(Method method, Object[] args) throws Exception {
+        // TODO 获取方法相应的信息
         String methodName = method.getName();
         Class<?>[] parameterTypes = method.getParameterTypes();
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         Time futureTimeout = extractRpcTimeout(parameterAnnotations, args, timeout);
 
-        // TODO 1) 封装消息
+        // TODO 1) 封装消息:创建RpcInvocationMessage(可分为LocalRpcInvocation/RemoteRpcInvocation)
         final RpcInvocation rpcInvocation =
                 createRpcInvocationMessage(
                         method.getDeclaringClass().getSimpleName(),
@@ -228,11 +229,11 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
                         parameterTypes,
                         args);
 
-        // TODO 2) 借助akka发送消息，进行RPC调用
         Class<?> returnType = method.getReturnType();
 
         final Object result;
 
+        // TODO 2) 借助akka发送消息，进行RPC调用
         if (Objects.equals(returnType, Void.TYPE)) {
             // TODO  无返回值，用akka tell模式
             tell(rpcInvocation);
@@ -251,6 +252,7 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
             final CompletableFuture<?> resultFuture =
                     ask(rpcInvocation, futureTimeout)
                             .thenApply(
+                                    // TODO 调用返回后进行反序列化如果需要
                                     resultValue ->
                                             deserializeValueIfNeeded(
                                                     resultValue, method, flinkClassLoader));
@@ -270,9 +272,11 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
                         }
                     });
 
+            // TODO 若返回类型为CompletableFuture则直接赋值
             if (Objects.equals(returnType, CompletableFuture.class)) {
                 result = completableFuture;
             } else {
+                // TODO 从CompletableFuture获取
                 try {
                     result =
                             completableFuture.get(futureTimeout.getSize(), futureTimeout.getUnit());

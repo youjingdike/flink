@@ -349,7 +349,7 @@ public class AkkaRpcService implements RpcService {
         synchronized (lock) {
             checkState(!stopped, "RpcService is stopped");
 
-            // TODO 创建Actor
+            // TODO 创建Actor,并持有RpcEndpoint的实例对象
             final SupervisorActor.StartAkkaRpcActorResponse startAkkaRpcActorResponse =
                     SupervisorActor.startAkkaRpcActor(
                             supervisor.getActor(),

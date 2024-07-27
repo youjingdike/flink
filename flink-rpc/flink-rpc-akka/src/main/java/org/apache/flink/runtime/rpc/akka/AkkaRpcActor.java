@@ -275,25 +275,27 @@ class AkkaRpcActor<T extends RpcEndpoint & RpcGateway> extends AbstractActor {
         Method rpcMethod = null;
 
         try {
+            // TODO 获取方法的信息
             String methodName = rpcInvocation.getMethodName();
             Class<?>[] parameterTypes = rpcInvocation.getParameterTypes();
 
+            // TODO 在RpcEndpoint中找指定方法
             rpcMethod = lookupRpcMethod(methodName, parameterTypes);
         } catch (ClassNotFoundException e) {
             log.error("Could not load method arguments.", e);
-
+            // TODO 异常处理
             RpcConnectionException rpcException =
                     new RpcConnectionException("Could not load method arguments.", e);
             getSender().tell(new Status.Failure(rpcException), getSelf());
         } catch (IOException e) {
             log.error("Could not deserialize rpc invocation message.", e);
-
+            // TODO 异常处理
             RpcConnectionException rpcException =
                     new RpcConnectionException("Could not deserialize rpc invocation message.", e);
             getSender().tell(new Status.Failure(rpcException), getSelf());
         } catch (final NoSuchMethodException e) {
             log.error("Could not find rpc method for rpc invocation.", e);
-
+            // TODO 异常处理
             RpcConnectionException rpcException =
                     new RpcConnectionException("Could not find rpc method for rpc invocation.", e);
             getSender().tell(new Status.Failure(rpcException), getSelf());
@@ -451,9 +453,11 @@ class AkkaRpcActor<T extends RpcEndpoint & RpcGateway> extends AbstractActor {
      * @param runAsync Run async message
      */
     private void handleRunAsync(RunAsync runAsync) {
+        // TODO 获取延迟调度时间
         final long timeToRun = runAsync.getTimeNanos();
         final long delayNanos;
 
+        // TODO 若为0或已经到了调度时间，则立刻进行调度
         if (timeToRun == 0 || (delayNanos = timeToRun - System.nanoTime()) <= 0) {
             // run immediately
             try {
@@ -465,11 +469,14 @@ class AkkaRpcActor<T extends RpcEndpoint & RpcGateway> extends AbstractActor {
         } else {
             // schedule for later. send a new message after the delay, which will then be
             // immediately executed
+            // TODO 计算出延迟时间
             FiniteDuration delay = new FiniteDuration(delayNanos, TimeUnit.NANOSECONDS);
+            // TODO 重新封装消息
             RunAsync message = new RunAsync(runAsync.getRunnable(), timeToRun);
 
             final Object envelopedSelfMessage = envelopeSelfMessage(message);
 
+            // TODO 等待指定延迟时间后给自己再发送一个消息
             getContext()
                     .system()
                     .scheduler()
