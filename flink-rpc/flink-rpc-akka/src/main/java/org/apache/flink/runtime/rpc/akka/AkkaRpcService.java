@@ -591,7 +591,7 @@ public class AkkaRpcService implements RpcService {
                             // all Flink code is loaded dynamically
                             // (for example from an OSGI bundle) through a custom ClassLoader
                             ClassLoader classLoader = getClass().getClassLoader();
-
+                            // TODO 创建代理对象
                             @SuppressWarnings("unchecked")
                             C proxy =
                                     (C)
