@@ -96,7 +96,8 @@ public class ApplicationDispatcherGatewayServiceFactory
                             fencingToken,
                             recoveredJobs,
                             (dispatcherGateway, scheduledExecutor, errorHandler) ->
-                                    // TODO application模式，在这里调用客户端代码,并启动jobMaster
+                                    // TODO DispatcherBootstrapFactory匿名对象，在Dispatcher#onStart(..)里面被调用，然后执行用户代码
+                                    // TODO application模式，在这里执行用户代码,并启动jobMaster
                                     new ApplicationDispatcherBootstrap(
                                             application,
                                             recoveredJobIds,

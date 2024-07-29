@@ -259,6 +259,8 @@ public class ApplicationDispatcherBootstrap implements DispatcherBootstrap {
             final List<JobID> applicationJobIds = new ArrayList<>(recoveredJobIds);
 
             // TODO 设置executorServiceLoader为EmbeddedExecutorServiceLoader
+            // TODO 这个设置传递到StreamContextEnvironment,在执行job提交时，构建执行的PipelineExecutor。
+            // TODO application模式，使用EmbeddedExecutor提交作业
             final PipelineExecutorServiceLoader executorServiceLoader =
                     new EmbeddedExecutorServiceLoader(
                             applicationJobIds, dispatcherGateway, scheduledExecutor);

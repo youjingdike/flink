@@ -51,8 +51,7 @@ public class DefaultDispatcherRunnerFactory implements DispatcherRunnerFactory {
             throws Exception {
 
         //TODO per-job:JobDispatcherLeaderProcessFactoryFactory创建JobDispatcherLeaderProcessFactory, 在这个过程里从文件中恢复jobGraph
-        //TODO application:ApplicationDispatcherLeaderProcessFactoryFactory创建SessionDispatcherLeaderProcessFactory,
-        // 其持有ApplicationDispatcherGatewayServiceFactory实例
+        //TODO application:ApplicationDispatcherLeaderProcessFactoryFactory创建SessionDispatcherLeaderProcessFactory,其持有ApplicationDispatcherGatewayServiceFactory实例
         final DispatcherLeaderProcessFactory dispatcherLeaderProcessFactory =
                 dispatcherLeaderProcessFactoryFactory.createFactory(
                         jobGraphStoreFactory,

@@ -98,6 +98,7 @@ public class SessionDispatcherLeaderProcess extends AbstractDispatcherLeaderProc
 
     private void createDispatcher(Collection<JobGraph> jobGraphs) {
 
+        // TODO application模式：ApplicationDispatcherGatewayServiceFactory
         final DispatcherGatewayService dispatcherService =
                 dispatcherGatewayServiceFactory.create(
                         DispatcherId.fromUuid(getLeaderSessionId()), jobGraphs, jobGraphStore);
