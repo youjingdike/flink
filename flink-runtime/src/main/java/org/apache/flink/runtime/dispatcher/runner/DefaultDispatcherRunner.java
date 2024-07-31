@@ -109,6 +109,7 @@ public final class DefaultDispatcherRunner implements DispatcherRunner, LeaderCo
                             getClass().getSimpleName(),
                             leaderSessionID,
                             DispatcherLeaderProcess.class.getSimpleName());
+                    // TODO
                     startNewDispatcherLeaderProcess(leaderSessionID);
                 });
     }
@@ -121,7 +122,9 @@ public final class DefaultDispatcherRunner implements DispatcherRunner, LeaderCo
         dispatcherLeaderProcess = createNewDispatcherLeaderProcess(leaderSessionID);
 
         final DispatcherLeaderProcess newDispatcherLeaderProcess = dispatcherLeaderProcess;
-        // TODO 在这里启动JobDispatcherLeaderProcess,调用到JobDispatcherLeaderProcess.onStart()
+        // TODO 在这里:
+        // TODO per-job：启动JobDispatcherLeaderProcess,调用到JobDispatcherLeaderProcess.onStart()
+        // TODO application：启动SessionDispatcherLeaderProcess,调用到SessionDispatcherLeaderProcess.onStart()
         FutureUtils.assertNoException(
                 previousDispatcherLeaderProcessTerminationFuture.thenRun(
                         newDispatcherLeaderProcess::start));

@@ -216,8 +216,12 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
             throw exception;
         }
 
-        // TODO 启动待恢复的Job,开始正式的启动任务
+        // TODO 启动待恢复的Job,开始正式的启动任务:
+        //  *如果是per-job模式，JobGraph会在这里启动;
+        //  *如果是application模式，这里不会启动JobGraph，会通过执行ApplicationDispatcherBootstrap来启动JobGraph,
+        //      通过rpc调用dispatcherGateway.submitJob(jobGraph, rpcTimeout)来通过另一种方式提交job
         startRecoveredJobs();
+
         // TODO **启动引导类，执行用户代码：application模式的ApplicationDispatcherBootstrap在此时执行用户代码,per-job没有任何逻辑
         // TODO 将自身的gateway传入，用于EmbeddedExecutor提交Job调用
         this.dispatcherBootstrap =
@@ -236,19 +240,19 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
     }
 
     private void startRecoveredJobs() {
-        // 遍历recoveredJobs，per-job模式，是有一个jobGraph
+        // TODO 遍历recoveredJobs，循环启动job，per-job/application模式，是有一个jobGraph
         for (JobGraph recoveredJob : recoveredJobs) {
-            //启动任务
+            // TODO 启动任务
             runRecoveredJob(recoveredJob);
         }
         recoveredJobs.clear();
     }
 
     /**
-     * 开始启动任务
      * @param recoveredJob
      */
     private void runRecoveredJob(final JobGraph recoveredJob) {
+        // TODO 开始启动任务
         checkNotNull(recoveredJob);
         try {
             // TODO
@@ -417,9 +421,9 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
     }
 
     private void persistAndRunJob(JobGraph jobGraph) throws Exception {
-        // TODO 服务端保存JobGraph此处是将JobGraph持久化到FileSystem(例如hdfs)上,返回一个stateHandle(句柄),并将状态句柄保存在zk里面
+        // TODO 服务端保存JobGraph,此处是将JobGraph持久化到FileSystem(例如hdfs)上,返回一个stateHandle(句柄),并将状态句柄保存在zk里面
         // TODO 之前在讲主节点启动时Dispatcher会启动一个JobGraphStore服务,并且如果里面还有未执行完的JobGraph,会先进行恢复
-        // TODO JobGraphWriter = DefaultJobGraphStore
+        // TODO JobGraphWriter = DefaultJobGraphStore，持久化JobGraph
         jobGraphWriter.putJobGraph(jobGraph);
         // TODO
         runJob(jobGraph, ExecutionType.SUBMISSION);

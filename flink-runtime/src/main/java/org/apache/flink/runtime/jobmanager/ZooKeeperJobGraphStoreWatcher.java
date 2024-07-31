@@ -64,6 +64,7 @@ public class ZooKeeperJobGraphStoreWatcher implements JobGraphStoreWatcher {
 
     public ZooKeeperJobGraphStoreWatcher(PathChildrenCache pathCache) {
         this.pathCache = checkNotNull(pathCache);
+        // TODO 注册listener,监听jobgraph的变化,根据不同的event,调用不同的回调方法
         this.pathCache.getListenable().addListener(new JobGraphsPathCacheListener());
         running = false;
     }
@@ -96,7 +97,6 @@ public class ZooKeeperJobGraphStoreWatcher implements JobGraphStoreWatcher {
 
         @Override
         public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) {
-
             if (LOG.isDebugEnabled()) {
                 if (event.getData() != null) {
                     LOG.debug(
@@ -108,6 +108,7 @@ public class ZooKeeperJobGraphStoreWatcher implements JobGraphStoreWatcher {
                 }
             }
 
+            // TODO 根据不同的事件类型,调用不同的回调方法
             switch (event.getType()) {
                 case CHILD_ADDED:
                     {

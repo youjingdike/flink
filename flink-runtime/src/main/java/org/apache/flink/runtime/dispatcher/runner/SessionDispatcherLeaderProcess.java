@@ -72,16 +72,20 @@ public class SessionDispatcherLeaderProcess extends AbstractDispatcherLeaderProc
 
     @Override
     protected void onStart() {
+        // TODO 启动jobGraphStore
         startServices();
 
         onGoingRecoveryOperation =
+                // TODO 恢复jobGraphs
                 recoverJobsAsync()
+                        // TODO 创建并启动dispatcher
                         .thenAccept(this::createDispatcherIfRunning)
                         .handle(this::onErrorIfRunning);
     }
 
     private void startServices() {
         try {
+            // TODO 启动jobGraphStore，并将自己注册为JobGraphStore的监听器，当有新的JobGraph被提交时，会调用onAddedJobGraph方法，提交新的Job
             jobGraphStore.start(this);
         } catch (Exception e) {
             throw new FlinkRuntimeException(
@@ -165,6 +169,7 @@ public class SessionDispatcherLeaderProcess extends AbstractDispatcherLeaderProc
 
     @Override
     public void onAddedJobGraph(JobID jobId) {
+        // TODO 其本身就是一个JobGraphStore.JobGraphListener，当有新的JobGraph被添加时，会调用该方法
         runIfStateIs(State.RUNNING, () -> handleAddedJobGraph(jobId));
     }
 
@@ -181,7 +186,7 @@ public class SessionDispatcherLeaderProcess extends AbstractDispatcherLeaderProc
                         .thenCompose(
                                 optionalJobGraph ->
                                         optionalJobGraph
-                                                .flatMap(this::submitAddedJobIfRunning)
+                                                .flatMap(this::submitAddedJobIfRunning)// TODO
                                                 .orElse(FutureUtils.completedVoidFuture()))
                         .handle(this::onErrorIfRunning);
     }
@@ -193,6 +198,7 @@ public class SessionDispatcherLeaderProcess extends AbstractDispatcherLeaderProc
     private CompletableFuture<Void> submitAddedJob(JobGraph jobGraph) {
         final DispatcherGateway dispatcherGateway = getDispatcherGatewayInternal();
 
+        // TODO 通过dispatcherGateway的rpc调用启动新添加的job
         return dispatcherGateway
                 .submitJob(jobGraph, RpcUtils.INF_TIMEOUT)
                 .thenApply(FunctionUtils.nullFn())
