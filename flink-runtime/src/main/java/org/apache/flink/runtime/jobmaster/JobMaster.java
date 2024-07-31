@@ -297,6 +297,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
         resourceManagerLeaderRetriever =
                 highAvailabilityServices.getResourceManagerLeaderRetriever();
 
+        // TODO 创建SlotPoolService:DeclarativeSlotPoolBridge
         this.slotPoolService =
                 checkNotNull(slotPoolServiceSchedulerFactory).createSlotPoolService(jid);
 

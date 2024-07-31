@@ -96,7 +96,7 @@ public class ApplicationDispatcherGatewayServiceFactory
                             fencingToken,
                             recoveredJobs,
                             (dispatcherGateway, scheduledExecutor, errorHandler) ->
-                                    // TODO DispatcherBootstrapFactory匿名对象，在Dispatcher#onStart(..)里面被调用，然后执行用户代码
+                                    // TODO 重点：DispatcherBootstrapFactory匿名对象，在Dispatcher#onStart(..)里面被调用，然后执行用户代码
                                     // TODO application模式，在这里执行用户代码,并启动jobMaster
                                     new ApplicationDispatcherBootstrap(
                                             application,
@@ -111,6 +111,7 @@ public class ApplicationDispatcherGatewayServiceFactory
             throw new FlinkRuntimeException("Could not create the Dispatcher rpc endpoint.", e);
         }
 
+        // TODO 启动Dispatcher，调用Dispatcher#onStart(..)执行用户代码
         dispatcher.start();
 
         return DefaultDispatcherGatewayService.from(dispatcher);

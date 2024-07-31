@@ -328,8 +328,8 @@ public class JobMasterServiceLeadershipRunner implements JobManagerRunner, Leade
                             getJobID()),
                     e);
         }
-        //TODO DefaultJobMasterServiceProcessFactory,创建DefaultJobMasterServiceProcess,在该过程里面创建JobMaster，并启动
-        // TODO 创建JobMaster并启动
+        //TODO DefaultJobMasterServiceProcessFactory,创建DefaultJobMasterServiceProcess,
+        // 在该过程里面创建JobMaster，并启动
         jobMasterServiceProcess = jobMasterServiceProcessFactory.create(leaderSessionId);
 
         forwardIfValidLeader(

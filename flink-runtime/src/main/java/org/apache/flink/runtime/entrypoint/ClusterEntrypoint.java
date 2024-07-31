@@ -255,7 +255,7 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
 
         用一个例子来描述这三个组件的功能：
             当Client提交一个Job到集群时（Client会把Job构建成一个JobGraph），主节点接收到提交的job的Rest请求后，WebMonitorEndpoint 会通过Router进行解析找到对应的Handler来执行处理，
-            处理完毕后交由Dispatcher，Dispatcher负责大气JobMaster来负责这个Job内部的Task的部署执行，执行Task所需的资源，JobMaster向ResourceManager申请。
+            处理完毕后交由Dispatcher，Dispatcher负责启动JobMaster来负责这个Job内部的Task的部署执行，执行Task所需的资源，JobMaster向ResourceManager申请。
          */
 
         synchronized (lock) {

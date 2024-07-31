@@ -103,7 +103,7 @@ public class DefaultExecutionGraphFactory implements ExecutionGraphFactory {
                     }
                 };
 
-        // TODO 将JobGraph转换成ExecutionGraph
+        // TODO **重要：在该方法做了很多操作，将JobGraph转换成ExecutionGraph,创建CheckpointCoordinator**
         final ExecutionGraph newExecutionGraph =
                 DefaultExecutionGraphBuilder.buildGraph(
                         jobGraph,

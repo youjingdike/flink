@@ -223,9 +223,11 @@ public final class DefaultDispatcherRunner implements DispatcherRunner, LeaderCo
             FatalErrorHandler fatalErrorHandler,
             DispatcherLeaderProcessFactory dispatcherLeaderProcessFactory)
             throws Exception {
+        // TODO 创建DefaultDispatcherRunner
         final DefaultDispatcherRunner dispatcherRunner =
                 new DefaultDispatcherRunner(
                         leaderElectionService, fatalErrorHandler, dispatcherLeaderProcessFactory);
+        // TODO DefaultDispatcherRunner进行选主启动
         return DispatcherRunnerLeaderElectionLifecycleManager.createFor(
                 dispatcherRunner, leaderElectionService);
     }

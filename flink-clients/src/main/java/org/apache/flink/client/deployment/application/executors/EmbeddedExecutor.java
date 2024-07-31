@@ -131,7 +131,7 @@ public class EmbeddedExecutor implements PipelineExecutor {
             LOG.debug("Effective Configuration: {}", configuration);
         }
 
-        // TODO
+        // TODO *
         final CompletableFuture<JobID> jobSubmissionFuture =
                 submitJob(configuration, dispatcherGateway, jobGraph, timeout);
 
@@ -183,7 +183,7 @@ public class EmbeddedExecutor implements PipelineExecutor {
                             } catch (FlinkException e) {
                                 throw new CompletionException(e);
                             }
-                            // TODO
+                            // TODO 通过dispatcher的Rpc调用提交Job
                             return dispatcherGateway.submitJob(jobGraph, rpcTimeout);
                         })
                 .thenApply(ack -> jobGraph.getJobID());

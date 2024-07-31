@@ -118,7 +118,7 @@ public class DefaultDispatcherResourceManagerComponentFactory
         DispatcherRunner dispatcherRunner = null;
 
         try {
-            //step1:首先初始化了一些监控服务：
+            //step1:首先初始化了一些监控服务：高可用相关，对应的leader寻回服务
             // TODO 非HA为：StandaloneLeaderRetrievalService,HA为：DefaultLeaderRetrievalService 监控 Dispatcher
             dispatcherLeaderRetrievalService =
                     highAvailabilityServices.getDispatcherLeaderRetriever();
@@ -127,7 +127,8 @@ public class DefaultDispatcherResourceManagerComponentFactory
             resourceManagerRetrievalService =
                     highAvailabilityServices.getResourceManagerLeaderRetriever();
 
-            // TODO Dispatcher 的 GatewayRetriever
+            // TODO RpcGatewayRetriever:使用RpcService实现的gateway寻回器,其还是LeaderRetrievalListener的实现,在寻回服务启动时被传入。
+            // TODO Dispatcher 的 RpcGatewayRetriever
             final LeaderGatewayRetriever<DispatcherGateway> dispatcherGatewayRetriever =
                     new RpcGatewayRetriever<>(
                             rpcService,
@@ -136,7 +137,7 @@ public class DefaultDispatcherResourceManagerComponentFactory
                             new ExponentialBackoffRetryStrategy(
                                     12, Duration.ofMillis(10), Duration.ofMillis(50)));
 
-            // TODO ResourceManager 的 GatewayRetriever
+            // TODO ResourceManager 的 RpcGatewayRetriever
             final LeaderGatewayRetriever<ResourceManagerGateway> resourceManagerGatewayRetriever =
                     new RpcGatewayRetriever<>(
                             rpcService,
@@ -151,7 +152,7 @@ public class DefaultDispatcherResourceManagerComponentFactory
                             configuration.getInteger(RestOptions.SERVER_NUM_THREADS),
                             configuration.getInteger(RestOptions.SERVER_THREAD_PRIORITY),
                             "DispatcherRestEndpoint");
-            //step3: TODO 初始化 MetricFetcher， 间隔是10s
+            //step3: TODO 初始化webUI使用的指标获取器 MetricFetcher， 指标更新间隔默认是10s
             final long updateInterval =
                     configuration.getLong(MetricOptions.METRIC_FETCHER_UPDATE_INTERVAL);
             final MetricFetcher metricFetcher =
@@ -163,7 +164,7 @@ public class DefaultDispatcherResourceManagerComponentFactory
                                     dispatcherGatewayRetriever,
                                     executor);
             /*step4:
-             TODO 创建WebMonitorEndpoint实例，在Standalong模式下为：DispatcherRestEndpoint
+             TODO 创建web监控终端启动：WebMonitorEndpoint实例，在Standalong模式下为：DispatcherRestEndpoint
               在per-job/application模式下为：MiniDispatcherRestEndpoint
               该实例内部会启动一个Netty服务端，绑定了一堆Handler
             */
@@ -190,7 +191,7 @@ public class DefaultDispatcherResourceManagerComponentFactory
                  2. ResourceManager也是一个LeaderContender,也会执行竞选, 会执行竞选结果方法
                  3. ResourceManagerService 具有两个心跳服务和两个定时服务:
                         两个心跳服务:
-                            从节点  和   主节点之间的心跳
+                            从节点  和  主节点之间的心跳
                             Job的主控程序 和 主节点之间的心跳
                         两个定时服务:
                             TaskManager 的超时检查服务
@@ -210,6 +211,7 @@ public class DefaultDispatcherResourceManagerComponentFactory
                             hostname,
                             ioExecutor);
 
+            //TODO 创建history server相关
             final HistoryServerArchivist historyServerArchivist =
                     HistoryServerArchivist.createHistoryServerArchivist(
                             configuration, webMonitorEndpoint, ioExecutor);
@@ -233,7 +235,8 @@ public class DefaultDispatcherResourceManagerComponentFactory
             log.debug("Starting Dispatcher.");
 
             /*step6:
-            TODO 在该代码的内部会创建Dispatcher组件，并调用start() 方法启动
+            TODO 在该代码的内部会创建Dispatcher组件，并调用start() 方法启动;
+             创建并启动Dispatcher ，其中dispatcher会创建和启动JobManager(JobMaster)
              */
             dispatcherRunner =
                     dispatcherRunnerFactory.createDispatcherRunner(
@@ -247,6 +250,7 @@ public class DefaultDispatcherResourceManagerComponentFactory
             log.debug("Starting ResourceManagerService.");
             resourceManagerService.start();
 
+            // TODO 启动对应的leader巡回服务，传入leader寻回监听器
             resourceManagerRetrievalService.start(resourceManagerGatewayRetriever);
             dispatcherLeaderRetrievalService.start(dispatcherGatewayRetriever);
 

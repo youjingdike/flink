@@ -103,7 +103,8 @@ public class DefaultLeaderElectionService
             leaderContender = contender;
 
             // TODO 此处创建选举对象 LeaderElectionDriver，为ZooKeeperLeaderElectionDriver的实例，
-            // 在创建的过程中就会启动选举，并进行监听器的回调：
+            //  在创建LeaderElectionDriver时将其自身传入(其自身是LeaderElectionEventHandler的实现)
+            // TODO 在创建的过程中就会启动选举，并进行监听器的回调：
             //      1.如果竞选成功，则回调该类的isLeader方法
             //      2.如果竞选失败，则回调该类的notLeader方法
             leaderElectionDriver =

@@ -88,6 +88,7 @@ public class ResourceManagerServiceImpl implements ResourceManagerService, Leade
         this.resourceManagerFactory = checkNotNull(resourceManagerFactory);
         this.rmProcessContext = checkNotNull(rmProcessContext);
 
+        // TODO 非HA：StandaloneLeaderElectionService，HA：DefaultLeaderElectionService
         this.leaderElectionService =
                 rmProcessContext
                         .getHighAvailabilityServices()
@@ -119,7 +120,8 @@ public class ResourceManagerServiceImpl implements ResourceManagerService, Leade
         }
 
         LOG.info("Starting resource manager service.");
-
+        // TODO 启动选主服务，将自身传入(其自身是LeaderContender的实现)
+        // TODO 我们看DefaultLeaderElectionService的实现
         leaderElectionService.start(this);
     }
 
@@ -203,6 +205,7 @@ public class ResourceManagerServiceImpl implements ResourceManagerService, Leade
                                 newLeaderSessionID);
 
                         try {
+                            // TODO 启动ResourceManager
                             startNewLeaderResourceManager(newLeaderSessionID);
                         } catch (Throwable t) {
                             fatalErrorHandler.onFatalError(
