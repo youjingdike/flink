@@ -218,7 +218,8 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
 
         // TODO 启动待恢复的Job,开始正式的启动任务
         startRecoveredJobs();
-        // TODO 启动引导类，application模式的ApplicationDispatcherBootstrap在此时执行用户代码,per-job没有任何逻辑
+        // TODO **启动引导类，执行用户代码：application模式的ApplicationDispatcherBootstrap在此时执行用户代码,per-job没有任何逻辑
+        // TODO 将自身的gateway传入，用于EmbeddedExecutor提交Job调用
         this.dispatcherBootstrap =
                 this.dispatcherBootstrapFactory.create(
                         getSelfGateway(DispatcherGateway.class),
@@ -308,6 +309,7 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
 
     @Override
     public CompletableFuture<Acknowledge> submitJob(JobGraph jobGraph, Time timeout) {
+        // TODO EmbeddedExecutor提交JobGraph,通过rpc调用该方法
         log.info(
                 "Received JobGraph submission '{}' ({}).", jobGraph.getName(), jobGraph.getJobID());
 
@@ -328,7 +330,7 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
                                         + "resources configured. The limitation will be removed in future versions."));
             } else {
                 // TODO 提交Job,此时JobGraph所需的jar和文件都已经上传
-                // TODO 此处携带的JobGraph,会在一会启动JobMaster的时候,会用来构建ExecutionGraph
+                // TODO 此处携带的JobGraph,会在后面启动JobMaster的时候,用来构建ExecutionGraph
                 return internalSubmitJob(jobGraph);
             }
         } catch (FlinkException e) {
@@ -524,7 +526,8 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
                         new DefaultJobManagerJobMetricGroupFactory(jobManagerMetricGroup),
                         fatalErrorHandler,
                         initializationTimestamp);
-        // TODO 开始JobMaster的选举,选举成功后会在ZooKeeperLeaderElectionDriver的isLeader方法中创建并启动JobMaster
+        // TODO 开始JobMaster的选举,选举成功后会在ZooKeeperLeaderElectionDriver的isLeader方法的持续回调中，
+        //  回调到JobMasterServiceLeadershipRunner#grantLeadership(UUID leaderSessionID)，创建并启动JobMaster
         runner.start();
         return runner;
     }
