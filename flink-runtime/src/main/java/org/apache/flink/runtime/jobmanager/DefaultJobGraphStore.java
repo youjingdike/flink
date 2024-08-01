@@ -92,6 +92,7 @@ public class DefaultJobGraphStore<R extends ResourceVersion<R>>
         synchronized (lock) {
             if (!running) {
                 this.jobGraphListener = checkNotNull(jobGraphListener);
+                // TODO 将自身(其是JobGraphStore.JobGraphListener的实现)注册到JobGraphStoreWatcher中，等待回调
                 jobGraphStoreWatcher.start(this);
                 running = true;
             }

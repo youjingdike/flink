@@ -72,7 +72,7 @@ public class SessionDispatcherLeaderProcess extends AbstractDispatcherLeaderProc
 
     @Override
     protected void onStart() {
-        // TODO 启动jobGraphStore
+        // TODO 启动jobGraphStore,其实就是将自身(其是JobGraphStore.JobGraphListener的实现)注册为JobGraphStore的监听器
         startServices();
 
         onGoingRecoveryOperation =
