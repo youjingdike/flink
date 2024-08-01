@@ -118,16 +118,16 @@ public class DefaultDispatcherResourceManagerComponentFactory
         DispatcherRunner dispatcherRunner = null;
 
         try {
-            //step1:首先初始化了一些监控服务：高可用相关，对应的leader寻回服务
-            // TODO 非HA为：StandaloneLeaderRetrievalService,HA为：DefaultLeaderRetrievalService 监控 Dispatcher
+            //step1:首先初始化了一些监控服务：高可用相关，对应的leader检索服务
+            // TODO 非HA为：StandaloneLeaderRetrievalService,HA为：DefaultLeaderRetrievalService 监听 Dispatcher的Leader变化
             dispatcherLeaderRetrievalService =
                     highAvailabilityServices.getDispatcherLeaderRetriever();
 
-            // TODO 类型同上， 监控 ResourceManager
+            // TODO 类型同上， ResourceManager的Leader检索服务,监听 ResourceManager的Leader变化
             resourceManagerRetrievalService =
                     highAvailabilityServices.getResourceManagerLeaderRetriever();
 
-            // TODO RpcGatewayRetriever:使用RpcService实现的gateway寻回器,其还是LeaderRetrievalListener的实现,在寻回服务启动时被传入。
+            // TODO RpcGatewayRetriever:使用RpcService实现的gateway相关的Leader检索监听器,其是LeaderRetrievalListener的实现,在检索服务启动时被传入。
             // TODO Dispatcher 的 RpcGatewayRetriever
             final LeaderGatewayRetriever<DispatcherGateway> dispatcherGatewayRetriever =
                     new RpcGatewayRetriever<>(
@@ -249,9 +249,10 @@ public class DefaultDispatcherResourceManagerComponentFactory
                             partialDispatcherServices);
 
             log.debug("Starting ResourceManagerService.");
+            // TODO 这里有选主的过程，选到主才会启动
             resourceManagerService.start();
 
-            // TODO 启动对应的leader巡回服务，传入leader寻回监听器
+            // TODO 启动对应的leader检索服务，传入leader检索监听器
             resourceManagerRetrievalService.start(resourceManagerGatewayRetriever);
             dispatcherLeaderRetrievalService.start(dispatcherGatewayRetriever);
 

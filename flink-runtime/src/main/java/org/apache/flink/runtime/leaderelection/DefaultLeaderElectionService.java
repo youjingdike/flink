@@ -288,6 +288,7 @@ public class DefaultLeaderElectionService
     @Override
     @GuardedBy("lock")
     public void onLeaderInformationChange(LeaderInformation leaderInformation) {
+        // TODO 节点数据变化，会被回调到该方法;
         synchronized (lock) {
             if (running) {
                 if (LOG.isTraceEnabled()) {
@@ -297,10 +298,12 @@ public class DefaultLeaderElectionService
                             confirmedLeaderSessionID,
                             leaderInformation);
                 }
+                // TODO 条件：本身是已确定的Leader
                 if (confirmedLeaderSessionID != null) {
                     final LeaderInformation confirmedLeaderInfo =
                             LeaderInformation.known(
                                     confirmedLeaderSessionID, confirmedLeaderAddress);
+                    // TODO 变化后的数据为空,将自身信息写入
                     if (leaderInformation.isEmpty()) {
                         if (LOG.isDebugEnabled()) {
                             LOG.debug(
@@ -308,6 +311,7 @@ public class DefaultLeaderElectionService
                                     leaderContender.getDescription());
                         }
                         leaderElectionDriver.writeLeaderInformation(confirmedLeaderInfo);
+                    // TODO 返回的信息与期望的领导信息不对应,重新写入自身信息
                     } else if (!leaderInformation.equals(confirmedLeaderInfo)) {
                         // the data field does not correspond to the expected leader information
                         if (LOG.isDebugEnabled()) {

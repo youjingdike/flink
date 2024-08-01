@@ -91,7 +91,9 @@ public class ZooKeeperLeaderRetrievalDriver implements LeaderRetrievalDriver {
          */
         this.client = checkNotNull(client, "CuratorFramework client");
         this.connectionInformationPath = ZooKeeperUtils.generateConnectionInformationPath(path);
-        // TODO Curator框架的TreeCache相当于zk中的Watcher(监听的是znode节点的数据变化)
+        // TODO Curator框架的TreeCache相当于zk中的Watcher(监听的是Znode节点的数据变化)
+        // TODO cache为TreeCache,维护着节点数据的缓存,当发现缓存中的数据和zk上的数据不同时,会回调listener的childEvent()方法
+        // TODO 开启之后，会进行listener的childEvent()方法回调;会调用到上面传入的this.retrieveLeaderInformationFromZooKeeper();
         this.cache =
                 ZooKeeperUtils.createTreeCache(
                         client,
@@ -104,11 +106,9 @@ public class ZooKeeperLeaderRetrievalDriver implements LeaderRetrievalDriver {
         this.fatalErrorHandler = checkNotNull(fatalErrorHandler);
 
         // TODO 开启监听
-        // TODO cache为TreeCache,维护着节点数据的缓存,当发现缓存中的数据和zk上的数据不同是,会回调listener的childEvent()方法
-        //TODO 开启之后，会进行listener的childEvent()方法回调;会调用到上面传入的this.retrieveLeaderInformationFromZooKeeper();
         cache.start();
 
-        // TODO 添加连接状态的监听
+        // TODO 添加连接状态的监听，
         client.getConnectionStateListenable().addListener(connectionStateListener);
 
         running = true;

@@ -104,6 +104,10 @@ public class ZooKeeperLeaderElectionDriver implements LeaderElectionDriver, Lead
 
         leaderLatchPath = ZooKeeperUtils.generateLeaderLatchPath(path);
         leaderLatch = new LeaderLatch(client, leaderLatchPath);
+
+        // TODO 创建一个只观察特定节点的TreeCache,当节点有变化时，回调this::retrieveLeaderInformationFromZooKeeper;
+        // TODO cache为TreeCache,维护着节点数据的缓存,当发现缓存中的数据和zk上的数据不同时,会回调listener的childEvent()方法
+        //TODO 开启之后，会进行listener的childEvent()方法回调;会调用到上面传入的this.retrieveLeaderInformationFromZooKeeper();
         this.cache =
                 ZooKeeperUtils.createTreeCache(
                         client,
@@ -111,7 +115,7 @@ public class ZooKeeperLeaderElectionDriver implements LeaderElectionDriver, Lead
                         this::retrieveLeaderInformationFromZooKeeper);
 
         running = true;
-        // TODO 设置回调监听，将其自身传入(其自身是LeaderLatchListener的实现者)
+        // TODO 设置回调监听，将其自身传入(其自身是curator框架的LeaderLatchListener的实现者)
         /*
         TODO 选举开始后，就会接收到响应：
          1.如果竞选成功，则回调该类(LeaderLatchListener)的isLeader方法,接下来查看isLeader()
@@ -124,6 +128,7 @@ public class ZooKeeperLeaderElectionDriver implements LeaderElectionDriver, Lead
 
         cache.start();
 
+        // TODO 连接状态监听，不过这里什么都没做，只打印了一些日志;
         client.getConnectionStateListenable().addListener(listener);
     }
 
