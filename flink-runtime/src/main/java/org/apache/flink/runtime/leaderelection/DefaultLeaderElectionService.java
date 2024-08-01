@@ -221,6 +221,8 @@ public class DefaultLeaderElectionService
     public void onGrantLeadership() {
         synchronized (lock) {
             if (running) {
+                // TODO 接受领导者的服务会将这个sessionID,通过调用该服务的confirmLeadership(..),
+                //  将sessionId 和 address公布出去，供Leader检索服务使用。
                 issuedLeaderSessionID = UUID.randomUUID();
                 clearConfirmedLeaderInformation();
 

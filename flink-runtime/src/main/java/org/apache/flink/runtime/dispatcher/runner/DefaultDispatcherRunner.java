@@ -146,6 +146,8 @@ public final class DefaultDispatcherRunner implements DispatcherRunner, LeaderCo
                 dispatcherLeaderProcessFactory.create(leaderSessionID);
 
         forwardShutDownFuture(newDispatcherLeaderProcess);
+        // TODO 确认Leader信息;
+        //  这会通知Leader选举服务，表明该竞争者已接受指定的领导权，并且现在可以公布Leader session ID和Leader地址供Leader retrieval(检索)服务使用。
         forwardConfirmLeaderSessionFuture(leaderSessionID, newDispatcherLeaderProcess);
 
         return newDispatcherLeaderProcess;

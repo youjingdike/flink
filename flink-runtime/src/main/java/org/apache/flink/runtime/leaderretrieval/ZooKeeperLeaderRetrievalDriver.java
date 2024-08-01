@@ -98,6 +98,7 @@ public class ZooKeeperLeaderRetrievalDriver implements LeaderRetrievalDriver {
                         connectionInformationPath,
                         this::retrieveLeaderInformationFromZooKeeper);
 
+        // TODO
         this.leaderRetrievalEventHandler = checkNotNull(leaderRetrievalEventHandler);
         this.leaderInformationClearancePolicy = leaderInformationClearancePolicy;
         this.fatalErrorHandler = checkNotNull(fatalErrorHandler);
@@ -107,6 +108,7 @@ public class ZooKeeperLeaderRetrievalDriver implements LeaderRetrievalDriver {
         //TODO 开启之后，会进行listener的childEvent()方法回调;会调用到上面传入的this.retrieveLeaderInformationFromZooKeeper();
         cache.start();
 
+        // TODO 添加连接状态的监听
         client.getConnectionStateListenable().addListener(connectionStateListener);
 
         running = true;
@@ -144,7 +146,7 @@ public class ZooKeeperLeaderRetrievalDriver implements LeaderRetrievalDriver {
                     final String leaderAddress = ois.readUTF();
                     final UUID leaderSessionID = (UUID) ois.readObject();
                     // TODO DefaultLeaderRetrievalService
-                    // TODO 通知我们拿到了地址
+                    // TODO 通知eventHandler拿到了地址
                     leaderRetrievalEventHandler.notifyLeaderAddress(
                             LeaderInformation.known(leaderSessionID, leaderAddress));
                     return;
@@ -192,6 +194,7 @@ public class ZooKeeperLeaderRetrievalDriver implements LeaderRetrievalDriver {
 
     private void onReconnectedConnectionState() {
         // check whether we find some new leader information in ZooKeeper
+        // TODO
         retrieveLeaderInformationFromZooKeeper();
     }
 

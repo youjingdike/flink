@@ -95,7 +95,7 @@ public class DefaultLeaderRetrievalService
             leaderListener = listener;
 
             //TODO ZooKeeperLeaderRetrievalDriverFactory创建ZooKeeperLeaderRetrievalDriver，一切需要进行注册,从zk中获取一些信息的,都被封装成了一个LeaderRetrievalDriver
-            // driver最后会回调到该类的notifyLeaderAddress()
+            // 将自身(其是LeaderRetrievalEventHandler的实现)注入driver,最后driver会回调到该类的notifyLeaderAddress()
             leaderRetrievalDriver =
                     leaderRetrievalDriverFactory.createLeaderRetrievalDriver(
                             this, new LeaderRetrievalFatalErrorHandler());
