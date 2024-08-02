@@ -91,7 +91,7 @@ public class HighAvailabilityServicesUtils {
             throws Exception {
 
         HighAvailabilityMode highAvailabilityMode = HighAvailabilityMode.fromConfig(configuration);
-
+        // TODO 判断高可用模式
         switch (highAvailabilityMode) {
             case NONE:
                 final Tuple2<String, Integer> hostnamePort = getJobManagerAddress(configuration);
@@ -117,6 +117,7 @@ public class HighAvailabilityServicesUtils {
                 return new StandaloneHaServices(
                         resourceManagerRpcUrl, dispatcherRpcUrl, webMonitorAddress);
             case ZOOKEEPER:
+                // TODO 创建BlobStoreService->FileSystemBlobStore,传入高可用服务,被高可用服务持有
                 BlobStoreService blobStoreService =
                         BlobUtils.createBlobStoreFromConfig(configuration);
 
