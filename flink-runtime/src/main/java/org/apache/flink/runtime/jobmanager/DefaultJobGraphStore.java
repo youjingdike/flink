@@ -311,6 +311,7 @@ public class DefaultJobGraphStore<R extends ResourceVersion<R>>
 
     @Override
     public void onAddedJobGraph(JobID jobId) {
+        // TODO k8s时，这里不会被回调
         synchronized (lock) {
             if (running) {
                 if (!addedJobGraphs.contains(jobId)) {

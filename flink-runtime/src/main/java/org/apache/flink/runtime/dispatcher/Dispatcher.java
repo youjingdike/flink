@@ -313,7 +313,8 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
 
     @Override
     public CompletableFuture<Acknowledge> submitJob(JobGraph jobGraph, Time timeout) {
-        // TODO EmbeddedExecutor提交JobGraph,通过rpc调用该方法
+        // TODO application模式：EmbeddedExecutor提交JobGraph,通过rpc调用该方法
+        //  session模式：当有新的job提交后,JobSubmitHandler调用到该方法,进行新作业的提交
         log.info(
                 "Received JobGraph submission '{}' ({}).", jobGraph.getName(), jobGraph.getJobID());
 

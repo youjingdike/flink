@@ -136,6 +136,7 @@ public class KubernetesStateHandleStore<T extends Serializable>
         boolean discardState = true;
         try {
             // a successful operation will result in the state not being discarded
+            // TODO 存储在ConfigMap中
             discardState =
                     !kubeClient
                             .checkAndUpdateConfigMap(

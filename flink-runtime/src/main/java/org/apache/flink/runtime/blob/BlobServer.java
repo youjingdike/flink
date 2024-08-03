@@ -194,6 +194,7 @@ public class BlobServer extends Thread
                 config.getOptional(JobManagerOptions.BIND_HOST)
                         .orElseGet(NetUtils::getWildcardIPAddress);
 
+        // TODO 启动serverSocket,接受客户端连接
         this.serverSocket =
                 NetUtils.createSocketFromPorts(
                         ports,
@@ -262,8 +263,11 @@ public class BlobServer extends Thread
 
     @Override
     public void run() {
+        // TODO 启动获取客户端连接的循环
         try {
             while (!this.shutdownRequested.get()) {
+                // TODO NetUtils.acceptWithoutTimeout(serverSocket)里面也是一个循环获取socket,直到获取到socket连接返回,
+                //  然后创建一个BlobServerConnection并持有blobServer,存入activeConnections集合里面
                 BlobServerConnection conn =
                         new BlobServerConnection(NetUtils.acceptWithoutTimeout(serverSocket), this);
                 try {
@@ -274,6 +278,7 @@ public class BlobServer extends Thread
                         activeConnections.add(conn);
                     }
 
+                    // TODO BlobServerConnection是一个Thread,启动线程,处理客户端的请求,根据请求类型有可能调用blobServer的方法
                     conn.start();
                     conn = null;
                 } finally {

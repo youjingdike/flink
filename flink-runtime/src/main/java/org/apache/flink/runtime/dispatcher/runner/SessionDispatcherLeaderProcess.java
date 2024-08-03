@@ -85,7 +85,8 @@ public class SessionDispatcherLeaderProcess extends AbstractDispatcherLeaderProc
 
     private void startServices() {
         try {
-            // TODO 启动jobGraphStore，并将自己注册为JobGraphStore的监听器，当有新的JobGraph被提交时，会调用onAddedJobGraph方法，提交新的Job
+            // TODO 启动jobGraphStore，并将自己注册为JobGraphStore的监听器，当有新的JobGraph被提交时，会调用onAddedJobGraph方法，提交新的Job，
+            //  只有在session模式下，这个监听才起作用
             jobGraphStore.start(this);
         } catch (Exception e) {
             throw new FlinkRuntimeException(
@@ -182,11 +183,11 @@ public class SessionDispatcherLeaderProcess extends AbstractDispatcherLeaderProc
         // serialize all ongoing recovery operations
         onGoingRecoveryOperation =
                 onGoingRecoveryOperation
-                        .thenApplyAsync(ignored -> recoverJobIfRunning(jobId), ioExecutor)
+                        .thenApplyAsync(ignored -> recoverJobIfRunning(jobId), ioExecutor)// TODO 获取JobGraph
                         .thenCompose(
                                 optionalJobGraph ->
                                         optionalJobGraph
-                                                .flatMap(this::submitAddedJobIfRunning)// TODO
+                                                .flatMap(this::submitAddedJobIfRunning)// TODO 提交JobGraph
                                                 .orElse(FutureUtils.completedVoidFuture()))
                         .handle(this::onErrorIfRunning);
     }
@@ -198,7 +199,7 @@ public class SessionDispatcherLeaderProcess extends AbstractDispatcherLeaderProc
     private CompletableFuture<Void> submitAddedJob(JobGraph jobGraph) {
         final DispatcherGateway dispatcherGateway = getDispatcherGatewayInternal();
 
-        // TODO 通过dispatcherGateway的rpc调用启动新添加的job
+        // TODO 通过dispatcherGateway的rpc调用,启动新添加的job
         return dispatcherGateway
                 .submitJob(jobGraph, RpcUtils.INF_TIMEOUT)
                 .thenApply(FunctionUtils.nullFn())

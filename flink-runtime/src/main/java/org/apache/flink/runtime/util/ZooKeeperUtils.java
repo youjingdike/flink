@@ -428,7 +428,7 @@ public class ZooKeeperUtils {
         CuratorFramework facade = client.usingNamespace(client.getNamespace() + zooKeeperJobsPath);
 
 //        final String zooKeeperFullJobsPath = client.getNamespace() + zooKeeperJobsPath;
-
+        // TODO 创建StateHandleStore
         final ZooKeeperStateHandleStore<JobGraph> zooKeeperStateHandleStore =
                 new ZooKeeperStateHandleStore<>(facade, stateStorage);
 
@@ -534,6 +534,7 @@ public class ZooKeeperUtils {
             FileSystemStateStorageHelper<T> createFileSystemStateStorage(
                     Configuration configuration, String prefix) throws IOException {
 
+        // TODO 这里要传入一个prefix，因为FileSystemStateStorageHelper也被checkpoint存储时使用
         return new FileSystemStateStorageHelper<>(
                 HighAvailabilityServicesUtils.getClusterHighAvailableStoragePath(configuration),
                 prefix);

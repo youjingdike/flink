@@ -64,7 +64,7 @@ public class ZooKeeperJobGraphStoreWatcher implements JobGraphStoreWatcher {
 
     public ZooKeeperJobGraphStoreWatcher(PathChildrenCache pathCache) {
         this.pathCache = checkNotNull(pathCache);
-        // TODO 注册listener,监听jobgraph的变化,根据不同的event,调用不同的回调方法
+        // TODO 注册listener,监听jobGraph的变化,根据不同的event,调用不同的回调方法
         this.pathCache.getListenable().addListener(new JobGraphsPathCacheListener());
         running = false;
     }
@@ -115,7 +115,7 @@ public class ZooKeeperJobGraphStoreWatcher implements JobGraphStoreWatcher {
                         JobID jobId = fromEvent(event);
 
                         LOG.debug("Received CHILD_ADDED event notification for job {}", jobId);
-
+                        // TODO 进行回调
                         jobGraphListener.onAddedJobGraph(jobId);
                     }
                     break;
