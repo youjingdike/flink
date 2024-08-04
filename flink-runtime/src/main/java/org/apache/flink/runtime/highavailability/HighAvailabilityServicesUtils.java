@@ -56,6 +56,9 @@ import static org.apache.flink.util.StringUtils.isNullOrWhitespaceOnly;
 /** Utils class to instantiate {@link HighAvailabilityServices} implementations. */
 public class HighAvailabilityServicesUtils {
 
+    /**
+     * TODO {@link org.apache.flink.runtime.minicluster.MiniCluster} 里面调用的
+     */
     public static HighAvailabilityServices createAvailableOrEmbeddedServices(
             Configuration config, Executor executor, FatalErrorHandler fatalErrorHandler)
             throws Exception {
@@ -95,6 +98,9 @@ public class HighAvailabilityServicesUtils {
                 curatorFrameworkWrapper, configuration, executor, blobStoreService);
     }
 
+    /**
+     * TODO {@link org.apache.flink.runtime.entrypoint.ClusterEntrypoint}里面调用的
+     */
     public static HighAvailabilityServices createHighAvailabilityServices(
             Configuration configuration,
             Executor executor,
