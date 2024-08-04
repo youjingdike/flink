@@ -149,6 +149,7 @@ public final class DefaultSlotPoolServiceSchedulerFactory
         final SlotPoolServiceFactory slotPoolServiceFactory;
         final SchedulerNGFactory schedulerNGFactory;
 
+        // TODO Adaptive类型不支持批处理作业类型
         JobManagerOptions.SchedulerType schedulerType =
                 ClusterOptions.getSchedulerType(configuration);
         if (schedulerType == JobManagerOptions.SchedulerType.Adaptive && jobType == JobType.BATCH) {
@@ -160,6 +161,7 @@ public final class DefaultSlotPoolServiceSchedulerFactory
 
         switch (schedulerType) {
             case Ng:
+                // TODO 使用DefaultSchedulerFactory创建DefaultScheduler
                 schedulerNGFactory = new DefaultSchedulerFactory();
                 slotPoolServiceFactory =
                         new DeclarativeSlotPoolBridgeServiceFactory(
@@ -169,6 +171,7 @@ public final class DefaultSlotPoolServiceSchedulerFactory
                                 batchSlotTimeout);
                 break;
             case Adaptive:
+                // TODO 使用AdaptiveSchedulerFactory创建AdaptiveScheduler
                 schedulerNGFactory = getAdaptiveSchedulerFactoryFromConfiguration(configuration);
                 slotPoolServiceFactory =
                         new DeclarativeSlotPoolServiceFactory(
