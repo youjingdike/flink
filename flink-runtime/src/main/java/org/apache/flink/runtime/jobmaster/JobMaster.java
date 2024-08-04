@@ -329,10 +329,14 @@ public class JobMaster extends FencedRpcEndpoint<JobMasterId>
                         getMainThreadExecutor(),
                         log);
 
+        // TODO 创建SlotPoolService
         this.slotPoolService =
                 checkNotNull(slotPoolServiceSchedulerFactory)
                         .createSlotPoolService(
                                 jid,
+                                // TODO 创建DeclarativeSlotPoolFactory, 用于创建DeclarativeSlotPool
+                                //  BlocklistDeclarativeSlotPoolFactory
+                                //  DefaultDeclarativeSlotPoolFactory
                                 createDeclarativeSlotPoolFactory(
                                         jobMasterConfiguration.getConfiguration()));
 
@@ -416,7 +420,9 @@ public class JobMaster extends FencedRpcEndpoint<JobMasterId>
 
     private DeclarativeSlotPoolFactory createDeclarativeSlotPoolFactory(
             Configuration configuration) {
+        // TODO batch作业是否开启推测执行(execution.batch.speculative.enabled)
         if (BlocklistUtils.isBlocklistEnabled(configuration)) {
+            // TODO 这里要传入一个BlockedTaskManagerChecker
             return new BlocklistDeclarativeSlotPoolFactory(blocklistHandler::isBlockedTaskManager);
         } else {
             return new DefaultDeclarativeSlotPoolFactory();

@@ -37,6 +37,7 @@ public class BlocklistUtils {
 
     public static boolean isBlocklistEnabled(Configuration configuration) {
         // Currently, only enable blocklist for speculative execution
+        // TODO execution.batch.speculative.enabled的配置Boolean类型
         return configuration.get(BatchExecutionOptions.SPECULATIVE_ENABLED);
     }
 

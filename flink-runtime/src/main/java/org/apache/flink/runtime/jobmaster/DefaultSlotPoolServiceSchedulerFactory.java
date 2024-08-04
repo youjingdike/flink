@@ -175,7 +175,9 @@ public final class DefaultSlotPoolServiceSchedulerFactory
 
         switch (schedulerType) {
             case Default:
+                // TODO 使用DefaultSchedulerFactory创建DefaultScheduler
                 schedulerNGFactory = new DefaultSchedulerFactory();
+                // TODO 使用DeclarativeSlotPoolBridgeServiceFactory创建DeclarativeSlotPoolBridge
                 slotPoolServiceFactory =
                         new DeclarativeSlotPoolBridgeServiceFactory(
                                 SystemClock.getInstance(),
@@ -185,13 +187,19 @@ public final class DefaultSlotPoolServiceSchedulerFactory
                                 getRequestSlotMatchingStrategy(configuration, jobType));
                 break;
             case Adaptive:
+                // TODO 使用AdaptiveSchedulerFactory创建AdaptiveScheduler
                 schedulerNGFactory = new AdaptiveSchedulerFactory();
+                // TODO 使用DeclarativeSlotPoolServiceFactory创建DeclarativeSlotPoolService
                 slotPoolServiceFactory =
                         new DeclarativeSlotPoolServiceFactory(
                                 SystemClock.getInstance(), slotIdleTimeout, rpcTimeout);
                 break;
             case AdaptiveBatch:
+                // TODO 使用AdaptiveBatchSchedulerFactory创建不同的调度器
+                //  SpeculativeScheduler:启用推测执行
+                //  AdaptiveBatchScheduler:未启用推测执行
                 schedulerNGFactory = new AdaptiveBatchSchedulerFactory();
+                // TODO 使用DeclarativeSlotPoolBridgeServiceFactory创建DeclarativeSlotPoolBridge
                 slotPoolServiceFactory =
                         new DeclarativeSlotPoolBridgeServiceFactory(
                                 SystemClock.getInstance(),
