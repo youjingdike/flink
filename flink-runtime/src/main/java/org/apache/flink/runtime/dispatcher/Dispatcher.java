@@ -518,7 +518,7 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
         final RpcService rpcService = getRpcService();
 
         // TODO JobMasterServiceLeadershipRunnerFactory,创建JobMasterServiceLeadershipRunner，内部持有很多factory实例
-        // TODO 构建JobManagerRunner,内部分装了一个DefaultJobMasterServiceProcessFactory,
+        // TODO 构建JobManagerRunner,内部封装了一个DefaultJobMasterServiceProcessFactory,
         //  此对象内部会在后面leader竞选完成后构建JobMaster并启动
         JobManagerRunner runner =
                 jobManagerRunnerFactory.createJobManagerRunner(
@@ -531,7 +531,7 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
                         new DefaultJobManagerJobMetricGroupFactory(jobManagerMetricGroup),
                         fatalErrorHandler,
                         initializationTimestamp);
-        // TODO 开始JobMaster的选举,选举成功后会在ZooKeeperLeaderElectionDriver的isLeader方法的持续回调中，
+        // TODO 开始JobManager的选主,选举成功后会在ZooKeeperLeaderElectionDriver的isLeader方法的持续回调中，
         //  回调到JobMasterServiceLeadershipRunner#grantLeadership(UUID leaderSessionID)，创建并启动JobMaster
         runner.start();
         return runner;
