@@ -188,7 +188,7 @@ public class DefaultDispatcherResourceManagerComponentFactory
              TODO 创建ResourceManager实例
                  三个要点:
                  1. ResourceManager是一个RpcEndpoint(Actor),当构建好对象后启动时会触发onStart(Actor的perStart生命周期方法)方法
-                 2. ResourceManager也是一个LeaderContender,也会执行竞选, 会执行竞选结果方法
+                 2. ResourceManager也是一个LeaderContender,也会执行竞选, 会执行竞选结果方法回调
                  3. ResourceManagerService 具有两个心跳服务和两个定时服务:
                         两个心跳服务:
                             从节点  和  主节点之间的心跳
@@ -216,6 +216,7 @@ public class DefaultDispatcherResourceManagerComponentFactory
                     HistoryServerArchivist.createHistoryServerArchivist(
                             configuration, webMonitorEndpoint, ioExecutor);
 
+            // TODO 部分调度器服务的服务容器，在提供给调度器之前需要完成。这些服务是调度器所必需的，但不是调度器的一部分。
             final PartialDispatcherServices partialDispatcherServices =
                     new PartialDispatcherServices(
                             configuration,
@@ -235,7 +236,8 @@ public class DefaultDispatcherResourceManagerComponentFactory
             log.debug("Starting Dispatcher.");
 
             /*step6:
-            TODO 在该代码的内部会创建Dispatcher组件，并调用start() 方法启动;
+            TODO 创建Dispatcher驱动，从而引导Dispatcher的启动：
+             在该代码的内部会创建Dispatcher组件，并调用start() 方法启动;
              创建并启动Dispatcher ，其中dispatcher会创建和启动JobManager(JobMaster)
              */
             dispatcherRunner =

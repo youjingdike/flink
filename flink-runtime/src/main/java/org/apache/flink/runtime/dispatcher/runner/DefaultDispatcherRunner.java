@@ -102,6 +102,7 @@ public final class DefaultDispatcherRunner implements DispatcherRunner, LeaderCo
 
     @Override
     public void grantLeadership(UUID leaderSessionID) {
+        // TODO 选主之后被回调
         runActionIfRunning(
                 () -> {
                     LOG.info(

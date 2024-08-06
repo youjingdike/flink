@@ -107,7 +107,7 @@ public class SessionDispatcherLeaderProcess extends AbstractDispatcherLeaderProc
         final DispatcherGatewayService dispatcherService =
                 dispatcherGatewayServiceFactory.create(
                         DispatcherId.fromUuid(getLeaderSessionId()), jobGraphs, jobGraphStore);
-
+        // TODO 完成DispatcherService的设置
         completeDispatcherSetup(dispatcherService);
     }
 
