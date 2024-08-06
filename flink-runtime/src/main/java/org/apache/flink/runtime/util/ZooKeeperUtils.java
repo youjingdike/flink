@@ -611,8 +611,8 @@ public class ZooKeeperUtils {
             final CuratorFramework client,
             final String pathToNode,
             final RunnableWithException nodeChangeCallback) {
-        // TODO TreeCache:维护着节点数据的缓存,当发现缓存中的数据和zk上的数据不同时,会回调listener的childEvent()方法
-        // TODO 开启之后，会进行listener的childEvent()方法回调;会调用到上面传入的nodeChangeCallback;
+        // TODO TreeCache:维护着节点数据的缓存,开启之后，当发现缓存中的数据和zk上的数据不同时,会回调listener的childEvent()方法
+        // TODO 会调用到上面传入的nodeChangeCallback;
         final TreeCache cache =
                 TreeCache.newBuilder(client, pathToNode)
                         .setCacheData(true)
@@ -620,7 +620,7 @@ public class ZooKeeperUtils {
                         .setSelector(ZooKeeperUtils.treeCacheSelectorForPath(pathToNode))
                         .setExecutor(Executors.newDirectExecutorService())
                         .build();
-
+        // TODO 通过createTreeCacheListener将nodeChangeCallback封装成TreeCacheListener,并注册
         cache.getListenable().addListener(createTreeCacheListener(nodeChangeCallback));
 
         return cache;

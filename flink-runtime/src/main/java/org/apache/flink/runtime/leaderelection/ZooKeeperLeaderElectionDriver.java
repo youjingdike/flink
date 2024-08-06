@@ -106,8 +106,8 @@ public class ZooKeeperLeaderElectionDriver implements LeaderElectionDriver, Lead
         leaderLatch = new LeaderLatch(client, leaderLatchPath);
 
         // TODO 创建一个只观察特定节点的TreeCache,当节点有变化时，回调this::retrieveLeaderInformationFromZooKeeper;
-        // TODO cache为TreeCache,维护着节点数据的缓存,当发现缓存中的数据和zk上的数据不同时,会回调listener的childEvent()方法
-        //TODO 开启之后，会进行listener的childEvent()方法回调;会调用到上面传入的this.retrieveLeaderInformationFromZooKeeper();
+        // TODO cache为TreeCache,维护着节点数据的缓存,开启之后，当发现缓存中的数据和zk上的数据不同时,会回调listener的childEvent()方法,
+        //  会调用到传入的this.retrieveLeaderInformationFromZooKeeper();
         this.cache =
                 ZooKeeperUtils.createTreeCache(
                         client,
