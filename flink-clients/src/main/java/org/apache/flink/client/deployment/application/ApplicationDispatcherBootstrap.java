@@ -109,7 +109,7 @@ public class ApplicationDispatcherBootstrap implements DispatcherBootstrap {
         this.application = checkNotNull(application);
         this.errorHandler = checkNotNull(errorHandler);
 
-        // TODO
+        // TODO 从该方法开始run application,执行客户代码,跟踪代码到runApplicationEntryPoint(..)
         this.applicationCompletionFuture =
                 fixJobIdAndRunApplicationAsync(dispatcherGateway, scheduledExecutor);
 

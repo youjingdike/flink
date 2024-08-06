@@ -331,6 +331,7 @@ public class PackagedProgram implements AutoCloseable {
 
         try {
             // TODO 通过反射调用main(),接下来看StreamExecutionEnvironment.execute()
+            //  这个entryClass，就是启动命令行设置的类名，或者打的可执行jar包的主类
             mainMethod = entryClass.getMethod("main", String[].class);
         } catch (NoSuchMethodException e) {
             throw new ProgramInvocationException(

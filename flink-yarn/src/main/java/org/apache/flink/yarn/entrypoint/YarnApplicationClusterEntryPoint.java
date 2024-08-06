@@ -105,6 +105,8 @@ public final class YarnApplicationClusterEntryPoint extends ApplicationClusterEn
             System.exit(1);
         }
 
+        // TODO 这里传入的PackagedProgram对象,封装了用户代码，在执行ApplicationDispatcherBootstrap.runApplicationEntryPoint(..)时,
+        //  被调用到program.invokeInteractiveModeForExecution()开始执行用户代码
         YarnApplicationClusterEntryPoint yarnApplicationClusterEntrypoint =
                 new YarnApplicationClusterEntryPoint(configuration, program);
 

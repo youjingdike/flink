@@ -95,8 +95,8 @@ public class ApplicationDispatcherGatewayServiceFactory
                             rpcService,
                             fencingToken,
                             recoveredJobs,
+                            // TODO **重点**：创建DispatcherBootstrapFactory匿名对象，在Dispatcher#onStart(..)里面被调用，然后执行用户代码
                             (dispatcherGateway, scheduledExecutor, errorHandler) ->
-                                    // TODO 重点：DispatcherBootstrapFactory匿名对象，在Dispatcher#onStart(..)里面被调用，然后执行用户代码
                                     // TODO application模式，在这里执行用户代码,并启动jobMaster
                                     new ApplicationDispatcherBootstrap(
                                             application,

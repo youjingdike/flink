@@ -95,7 +95,6 @@ public enum ClientUtils {
             LOG.info(
                     "Starting program (detached: {})",
                     !configuration.getBoolean(DeploymentOptions.ATTACHED));
-            // TODO 配置执行环境的上下文,在StreamExecutionEnvironment类中使用，设置的都是static的，所以在finally块儿里面进行了清除
             ContextEnvironment.setAsContext(
                     executorServiceLoader,
                     configuration,
@@ -103,6 +102,7 @@ public enum ClientUtils {
                     enforceSingleJobExecution,
                     suppressSysout);
 
+            // TODO 配置执行环境的上下文,在StreamExecutionEnvironment类中使用，设置的都是static的，所以在finally块儿里面进行了清除
             StreamContextEnvironment.setAsContext(
                     executorServiceLoader,
                     configuration,
@@ -111,7 +111,8 @@ public enum ClientUtils {
                     suppressSysout);
 
             try {
-                // TODO 真正提交执行
+                // TODO 真正提交执行:PackagedProgram类
+                //  在启动集群，执行YarnApplicationClusterEntryPoint入口类的main()时，被创建并传入，在这里被使用
                 program.invokeInteractiveModeForExecution();
             } finally {
                 // TODO 清除上下文
