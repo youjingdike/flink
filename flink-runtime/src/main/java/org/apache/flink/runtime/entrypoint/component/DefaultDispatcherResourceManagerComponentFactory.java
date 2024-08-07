@@ -242,6 +242,7 @@ public class DefaultDispatcherResourceManagerComponentFactory
              */
             dispatcherRunner =
                     dispatcherRunnerFactory.createDispatcherRunner(
+                            // TODO 获取Dispatcher的选主服务
                             highAvailabilityServices.getDispatcherLeaderElectionService(),
                             fatalErrorHandler,
                             // TODO 创建JobGraphStore,用于存储JobGraph的实例进行作业恢复;

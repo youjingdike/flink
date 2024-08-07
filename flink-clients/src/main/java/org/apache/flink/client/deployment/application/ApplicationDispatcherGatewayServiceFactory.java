@@ -111,7 +111,7 @@ public class ApplicationDispatcherGatewayServiceFactory
             throw new FlinkRuntimeException("Could not create the Dispatcher rpc endpoint.", e);
         }
 
-        // TODO 启动Dispatcher，调用Dispatcher#onStart(..)执行用户代码
+        // TODO 启动Dispatcher，通过rpc调用启动，调用到Dispatcher#onStart(..)执行用户代码
         dispatcher.start();
 
         return DefaultDispatcherGatewayService.from(dispatcher);

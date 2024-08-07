@@ -224,6 +224,7 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
 
         // TODO **启动引导类，执行用户代码：application模式的ApplicationDispatcherBootstrap在此时执行用户代码,per-job没有任何逻辑
         // TODO 将自身的gateway传入，用于EmbeddedExecutor提交Job调用
+        // TODO dispatcherBootstrapFactory就是创建Dispatcher时传入的DispatcherBootstrapFactory匿名对象
         this.dispatcherBootstrap =
                 this.dispatcherBootstrapFactory.create(
                         getSelfGateway(DispatcherGateway.class),
