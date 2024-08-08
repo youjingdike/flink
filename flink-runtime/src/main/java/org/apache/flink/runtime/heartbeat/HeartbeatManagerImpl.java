@@ -240,7 +240,7 @@ public class HeartbeatManagerImpl<I, O> implements HeartbeatManager<I, O> {
                 }
 
                 // TODO 给主节点回复心跳,并做负载汇报
-                //要看是什么具体的心跳对象，选择进入不同的实现类
+                //  要看是什么具体的心跳对象，选择进入不同的实现类
                 heartbeatTarget
                         .receiveHeartbeat(
                                 getOwnResourceID(),

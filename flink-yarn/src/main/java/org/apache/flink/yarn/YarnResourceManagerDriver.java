@@ -161,6 +161,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
 
     @Override
     protected void initializeInternal() throws Exception {
+        // TODO 该类的方法会被回调
         final YarnContainerEventHandler yarnContainerEventHandler = new YarnContainerEventHandler();
         try {
             // 创建并启动AMRMClientAsync，联系YARN RM

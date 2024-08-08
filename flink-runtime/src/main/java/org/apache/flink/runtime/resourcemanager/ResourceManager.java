@@ -324,7 +324,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
             final String jobManagerAddress,
             final JobID jobId,
             final Time timeout) {
-
+        // TODO JobMaster向ResourceManager注册时会调用该方法
         checkNotNull(jobMasterId);
         checkNotNull(jobManagerResourceId);
         checkNotNull(jobManagerAddress);
@@ -353,6 +353,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
         CompletableFuture<JobMasterId> jobMasterIdFuture;
 
         try {
+            // TODO 获取jobMasterId
             jobMasterIdFuture = jobLeaderIdService.getLeaderId(jobId);
         } catch (Exception e) {
             // we cannot check the job leader id so let's fail
@@ -380,7 +381,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
                         jobMasterIdFuture,
                         (JobMasterGateway jobMasterGateway, JobMasterId leadingJobMasterId) -> {
                             if (Objects.equals(leadingJobMasterId, jobMasterId)) {
-                                //TODO 注册
+                                //TODO 注册JobMaster
                                 return registerJobMasterInternal(
                                         jobMasterGateway,
                                         jobId,
@@ -1139,10 +1140,10 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
 
     private void startHeartbeatServices() {
         // TODO ResourceManager(主节点)维持和从节点的心跳，如下两种：
-        //  HeartbeatServices创建HeartbeatManager的子类HeartbeatManagerSenderImpl，该类也是HeartbeatTarget的子类
-        //  创建不同的HeartbeatManager,处理逻辑都在创建不同的Listener里面
+        //  HeartbeatServices创建HeartbeatManager的子类HeartbeatManagerSenderImpl，该类也是HeartbeatTarget的子类，作为心跳服务的client端
+        //  创建不同的HeartbeatManager,处理逻辑都在传入的不同 HeartbeatListener里面
 
-        // TODO ResourceManager(逻辑JobManager)维持和TaskExecutor(TaskManager)的心跳
+        // TODO ResourceManager维持和TaskExecutor(TaskManager)的心跳
         taskManagerHeartbeatManager =
                 heartbeatServices.createHeartbeatManagerSender(
                         resourceId,

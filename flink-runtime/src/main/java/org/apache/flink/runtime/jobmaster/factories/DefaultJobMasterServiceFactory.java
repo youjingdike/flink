@@ -123,7 +123,7 @@ public class DefaultJobMasterServiceFactory implements JobMasterServiceFactory {
                         DefaultExecutionDeploymentReconciler::new,
                         initializationTimestamp);
         // TODO 开启JobMaster,开始调度task作业；
-        // TODO JobMaster继承了RpcEndpoint,所以在调用start()后会回调JobMaster的onStart方法
+        // TODO JobMaster继承了RpcEndpoint,所以在调用start()后通过rpc调用启动,会执行到JobMaster的onStart()方法
         jobMaster.start();
 
         return jobMaster;

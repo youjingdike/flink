@@ -245,7 +245,8 @@ public class JobMasterServiceLeadershipRunner implements JobManagerRunner, Leade
 
     @Override
     public void grantLeadership(UUID leaderSessionID) {
-        // TODO 检验启动状态
+        // TODO 选主成功后，被回调
+        //  检验启动状态
         runIfStateRunning(
                 // TODO startJobMasterServiceProcess
                 // TODO 创建JobMaster并启动
@@ -319,7 +320,7 @@ public class JobMasterServiceLeadershipRunner implements JobManagerRunner, Leade
                 leaderSessionId);
 
         try {
-            // TODO 状态注册,标识当前Job为Running状态
+            // TODO 跟新注册表的状态,标识当前Job为Running状态
             runningJobsRegistry.setJobRunning(getJobID());
         } catch (IOException e) {
             throw new FlinkException(
@@ -338,6 +339,7 @@ public class JobMasterServiceLeadershipRunner implements JobManagerRunner, Leade
                 jobMasterGatewayFuture,
                 "JobMasterGatewayFuture from JobMasterServiceProcess");
         forwardResultFuture(leaderSessionId, jobMasterServiceProcess.getResultFuture());
+        // TODO 确认主信息
         confirmLeadership(leaderSessionId, jobMasterServiceProcess.getLeaderAddressFuture());
     }
 
@@ -506,6 +508,7 @@ public class JobMasterServiceLeadershipRunner implements JobManagerRunner, Leade
             UUID expectedLeaderId, Runnable action, String actionDescription) {
         synchronized (lock) {
             if (isValidLeader(expectedLeaderId)) {
+                // TODO
                 action.run();
             } else {
                 LOG.trace(

@@ -112,7 +112,7 @@ public class DefaultSchedulerComponents {
                         bulkChecker,
                         slotRequestTimeout);
         return new DefaultSchedulerComponents(
-                new PipelinedRegionSchedulingStrategy.Factory(),
+                new PipelinedRegionSchedulingStrategy.Factory(),// TODO PipelinedRegionSchedulingStrategy
                 bulkChecker::start,
                 allocatorFactory);
     }

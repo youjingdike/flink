@@ -137,6 +137,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
             final Time rpcTimeout)
             throws Exception {
 
+        // TODO 在父类里面做了JobGraph转换成ExecutionGraph
         super(
                 log,
                 jobGraph,

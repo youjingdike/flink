@@ -190,6 +190,7 @@ public class ResourceManagerServiceImpl implements ResourceManagerService, Leade
 
     @Override
     public void grantLeadership(UUID newLeaderSessionID) {
+        // TODO 选主之后回调到该方法
         handleLeaderEventExecutor.execute(
                 () -> {
                     synchronized (lock) {

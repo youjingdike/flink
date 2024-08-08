@@ -53,6 +53,7 @@ public final class YarnApplicationClusterEntryPoint extends ApplicationClusterEn
 
     private YarnApplicationClusterEntryPoint(
             final Configuration configuration, final PackagedProgram program) {
+        // TODO 传入YarnResourceManagerFactory实例对象
         super(configuration, program, YarnResourceManagerFactory.getInstance());
     }
 
