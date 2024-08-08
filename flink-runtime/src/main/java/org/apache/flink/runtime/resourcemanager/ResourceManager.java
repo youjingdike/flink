@@ -229,7 +229,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
 
     private void startResourceManagerServices() throws Exception {
         try {
-            //DefaultJobLeaderIdService设置JobLeaderIdActions
+            // TODO DefaultJobLeaderIdService设置JobLeaderIdActions
             jobLeaderIdService.start(new JobLeaderIdActionsImpl());
 
             registerMetrics();
@@ -238,10 +238,10 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
             startHeartbeatServices();
             // TODO 启动两个定时服务
             // TODO SlotManager是存在于ResourceManager中用来管理所有TaskManager汇报和注册的Slot的工作的
-            //DeclarativeSlotManager
+            //  DeclarativeSlotManager
             slotManager.start(
                     getFencingToken(), getMainThreadExecutor(), new ResourceActionsImpl());
-            //初始化AM，NM的client
+            // TODO 初始化AM，NM的client
             initialize();
         } catch (Exception e) {
             handleStartResourceManagerServicesException(e);
@@ -1143,7 +1143,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
         //  HeartbeatServices创建HeartbeatManager的子类HeartbeatManagerSenderImpl，该类也是HeartbeatTarget的子类，作为心跳服务的client端
         //  创建不同的HeartbeatManager,处理逻辑都在传入的不同 HeartbeatListener里面
 
-        // TODO ResourceManager维持和TaskExecutor(TaskManager)的心跳
+        // TODO ResourceManager维持和TaskExecutor(逻辑TaskManager)的心跳
         taskManagerHeartbeatManager =
                 heartbeatServices.createHeartbeatManagerSender(
                         resourceId,
