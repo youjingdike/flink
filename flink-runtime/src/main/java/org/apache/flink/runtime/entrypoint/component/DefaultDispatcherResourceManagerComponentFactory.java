@@ -206,7 +206,7 @@ public class DefaultDispatcherResourceManagerComponentFactory
                             heartbeatServices,
                             fatalErrorHandler,
                             new ClusterInformation(hostname, blobServer.getPort()),
-                            webMonitorEndpoint.getRestBaseUrl(),
+                            webMonitorEndpoint.getRestBaseUrl(),// TODO 将webUI传入通过对应的部署模式进行跳转，比如通过yarn的webUI进行跳转
                             metricRegistry,
                             hostname,
                             ioExecutor);

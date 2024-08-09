@@ -164,14 +164,14 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
         // TODO 该类的方法会被回调
         final YarnContainerEventHandler yarnContainerEventHandler = new YarnContainerEventHandler();
         try {
-            // 创建并启动AMRMClientAsync，联系YARN RM
+            // TODO 创建并启动AMRMClientAsync，联系YARN RM
             resourceManagerClient =
                     yarnResourceManagerClientFactory.createResourceManagerClient(
                             yarnHeartbeatIntervalMillis, yarnContainerEventHandler);
             resourceManagerClient.init(yarnConfig);
             resourceManagerClient.start();
 
-            // AM启动后向YARN RM注册自己，这样可以通过YARN跳转到Flink web ui页面
+            // TODO AM启动后向YARN RM注册自己，这样可以通过YARN跳转到Flink web ui页面
             final RegisterApplicationMasterResponse registerApplicationMasterResponse =
                     registerApplicationMaster();
 
@@ -186,7 +186,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
         } catch (Exception e) {
             throw new ResourceManagerException("Could not start resource manager client.", e);
         }
-        // 创建并启动NMClientAsync，用于联系YARN NM
+        // TODO 创建并启动NMClientAsync，用于联系YARN NM
         nodeManagerClient =
                 yarnNodeManagerClientFactory.createNodeManagerClient(yarnContainerEventHandler);
         nodeManagerClient.init(yarnConfig);

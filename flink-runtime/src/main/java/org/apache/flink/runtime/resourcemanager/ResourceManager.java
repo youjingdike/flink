@@ -213,8 +213,10 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
 
     @Override
     public final void onStart() throws Exception {
+        // TODO ResourceManager通过rpc调用启动后，会执行到该方法
         try {
             log.info("Starting the resource manager.");
+            // TODO
             startResourceManagerServices();
             startedFuture.complete(null);
         } catch (Throwable t) {
@@ -243,6 +245,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
                     getFencingToken(), getMainThreadExecutor(), new ResourceActionsImpl());
             // TODO 初始化AM，NM的client
             initialize();
+            // TODO 到这里ResourceManager的启动就完成了。。。
         } catch (Exception e) {
             handleStartResourceManagerServicesException(e);
         }

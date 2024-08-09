@@ -273,7 +273,7 @@ public class ResourceManagerServiceImpl implements ResourceManagerService, Leade
                 .thenComposeAsync(
                         (ignore) -> {
                             synchronized (lock) {
-                                // 开启ResourceManager
+                                // TODO 开启ResourceManager
                                 return startResourceManagerIfIsLeader(newLeaderResourceManager);
                             }
                         },
@@ -296,7 +296,7 @@ public class ResourceManagerServiceImpl implements ResourceManagerService, Leade
     private CompletableFuture<Boolean> startResourceManagerIfIsLeader(
             ResourceManager<?> resourceManager) {
         if (isLeader(resourceManager)) {
-            // TODO 启动
+            // TODO 启动ResourceManager
             resourceManager.start();
             forwardTerminationFuture(resourceManager);
             return resourceManager.getStartedFuture().thenApply(ignore -> true);
