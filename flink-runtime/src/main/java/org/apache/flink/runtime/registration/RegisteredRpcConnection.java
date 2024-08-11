@@ -106,7 +106,7 @@ public abstract class RegisteredRpcConnection<
         final RetryingRegistration<F, G, S, R> newRegistration = createNewRegistration();
 
         if (REGISTRATION_UPDATER.compareAndSet(this, null, newRegistration)) {
-            //TODO 开始注册,注册完成后的回调代码在上面的createNewRegistration()方法内
+            //TODO 开始注册,注册完成后的回调代码:在上面的createNewRegistration()方法内
             newRegistration.startRegistration();
         } else {
             // concurrent start operation
@@ -273,7 +273,7 @@ public abstract class RegisteredRpcConnection<
                         // TODO 注册成功
                         if (result.isSuccess()) {
                             targetGateway = result.getGateway();
-                            // TODO 成功后调用该方法进行心跳注册
+                            // TODO 成功后调用该方法进行心跳注册,不同的子类不同的实现
                             onRegistrationSuccess(result.getSuccess());
                         } else if (result.isRejection()) {
                             // TODO 拒接后调用该方法

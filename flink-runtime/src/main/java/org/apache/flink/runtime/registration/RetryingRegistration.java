@@ -227,7 +227,7 @@ public abstract class RetryingRegistration<
                     attempt,
                     timeoutMillis);
             // TODO 真正开始注册
-            // TODO 调用子类的实现方法
+            // TODO 调用子类的实现方法，不同的子类实现不同
             CompletableFuture<RegistrationResponse> registrationFuture =
                     invokeRegistration(gateway, fencingToken, timeoutMillis);
 
@@ -245,7 +245,7 @@ public abstract class RetryingRegistration<
                                                 targetAddress);
                                         S success = (S) result;
                                         // TODO 此方法执行完将触发回调:onRegistrationSuccess方法
-                                        // 回调方法触发的地方在我们之前构建TaskExecutor注册对象的方法createNewRegistration()中
+                                        //  回调方法触发的地方在我们之前构建TaskExecutor注册对象的方法createNewRegistration()中
                                         completionFuture.complete(
                                                 RetryingRegistrationResult.success(
                                                         gateway, success));
@@ -257,7 +257,7 @@ public abstract class RetryingRegistration<
                                                 targetAddress);
                                         R rejection = (R) result;
                                         // TODO 此方法执行完将触发回调:onRegistrationFailure方法
-                                        //回调方法触发的地方在我们之前构建TaskExecutor注册对象的方法createNewRegistration()中
+                                        //  回调方法触发的地方在我们之前构建TaskExecutor注册对象的方法createNewRegistration()中
                                         completionFuture.complete(
                                                 RetryingRegistrationResult.rejection(rejection));
                                     } else {

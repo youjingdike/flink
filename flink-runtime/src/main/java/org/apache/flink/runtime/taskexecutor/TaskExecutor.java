@@ -1369,6 +1369,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
                         resourceManagerAddress.getAddress(),
                         resourceManagerAddress.getResourceManagerId(),
                         getMainThreadExecutor(),
+                        // TODO 注册监听器，根据注册结果进行回调,如果注册成功,就发送Slot信息汇报给ResourceManager
                         new ResourceManagerRegistrationListener(),
                         taskExecutorRegistration);
 
@@ -1384,7 +1385,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
 
         // TODO 发送Slot信息汇报给ResourceManager
         final CompletableFuture<Acknowledge> slotReportResponseFuture =
-                //进入该方法
+                // TODO 进入该方法
                 resourceManagerGateway.sendSlotReport(
                         getResourceID(),
                         taskExecutorRegistrationId,

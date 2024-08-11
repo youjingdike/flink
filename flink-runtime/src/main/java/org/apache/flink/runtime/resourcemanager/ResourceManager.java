@@ -431,7 +431,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
     @Override
     public CompletableFuture<RegistrationResponse> registerTaskExecutor(
             final TaskExecutorRegistration taskExecutorRegistration, final Time timeout) {
-        //TODO 处理远程rpc注册调用；
+        //TODO 处理TaskExecutor远程rpc注册调用；
 
         // TODO 获取taskExecutorGateway的代理,准备回复注册响应
         CompletableFuture<TaskExecutorGateway> taskExecutorGatewayFuture =
@@ -439,6 +439,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
                         .connect(
                                 taskExecutorRegistration.getTaskExecutorAddress(),
                                 TaskExecutorGateway.class);
+        // TODO 保存taskExecutorGateway
         taskExecutorGatewayFutures.put(
                 taskExecutorRegistration.getResourceId(), taskExecutorGatewayFuture);
 
@@ -471,7 +472,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
             InstanceID taskManagerRegistrationId,
             SlotReport slotReport,
             Time timeout) {
-        //接收taskExecutor的rpc调用
+        // TODO 接收TaskExecutor的rpc调用
 
         // TODO 之前在注册时会将注册信息和ResourceID的映射关系保存在taskExecutors这个map里,
         // TODO 所以这里直接获取节点注册对象
