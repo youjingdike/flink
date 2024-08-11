@@ -161,7 +161,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
 
     @Override
     protected void initializeInternal() throws Exception {
-        // TODO 该类的方法会被回调
+        // TODO YarnContainerEventHandler该类的方法会被回调
         final YarnContainerEventHandler yarnContainerEventHandler = new YarnContainerEventHandler();
         try {
             // TODO 创建并启动AMRMClientAsync，联系YARN RM
@@ -264,7 +264,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
         } else {
             final Priority priority = priorityAndResourceOpt.get().getPriority();
             final Resource resource = priorityAndResourceOpt.get().getResource();
-            // TODO step.33;请求获取container资源,申请成功后，回调：YarnContainerEventHandler.onContainersAllocated
+            // TODO step.33;请求获取container资源,申请成功后，回调：YarnContainerEventHandler.onContainersAllocated()方法
             // TODO 在回调里面启动taskExecutor
             resourceManagerClient.addContainerRequest(getContainerRequest(resource, priority));
 
@@ -402,7 +402,8 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
                 containerLaunchContextFuture.handleAsync(
                         (context, exception) -> {
                             if (exception == null) {
-                                // TODO step.39; 通过YARN NM Client发送请求，启动container运行TaskManager进程，申请结束；
+                                // TODO step.39; 通过YARN NM Client发送启动container请求，运行YarnTaskExecutorRunner.class的main(),驱动启动TaskExecutor进程，申请结束；
+                                // TODO **资源申请END**
                                 nodeManagerClient.startContainerAsync(container, context);
                                 // TODO step.40;设置传入的requestResourceFuture完成;
                                 requestResourceFuture.complete(
@@ -462,6 +463,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
 
         log.debug("TaskManager configuration: {}", taskManagerConfig);
 
+        // TODO 指定container的启动类：YarnTaskExecutorRunner.class
         final ContainerLaunchContext taskExecutorLaunchContext =
                 Utils.createTaskExecutorContext(
                         flinkConfig,

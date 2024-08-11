@@ -443,6 +443,7 @@ public class Task
         invokableHasBeenCanceled = new AtomicBoolean(false);
 
         // finally, create the executing thread, but do not start it
+        // TODO Task是Runnable,传入到Thread,在start(),里面启动线程，调用run()
         executingThread = new Thread(TASK_THREADS_GROUP, this, taskNameWithSubtask);
     }
 
@@ -738,11 +739,11 @@ public class Task
             try {
                 // now load and instantiate the task's invokable code
                 // TODO *step.10; 获取执行TaskInvokable
-                // nameOfInvokableClass 是 JobVertex 的 invokableClassName，
-                // 每一个 StreamNode 在添加的时候都会有一个 jobVertexClass 属性
-                // 对于一个 operator chain，就是 head operator 对应的 invokableClassName，见 StreamingJobGraphGenerator.createChain
-                // 通过反射创建 AbstractInvokable 对象
-                // 对于 Stream 任务而言，就是 StreamTask 的子类，SourceStreamTask、OneInputStreamTask、TwoInputStreamTask 等
+                //  nameOfInvokableClass 是 JobVertex 的 invokableClassName，
+                //  每一个 StreamNode 在添加的时候都会有一个 jobVertexClass 属性
+                //  对于一个 operator chain，就是 head operator 对应的 invokableClassName，见 StreamingJobGraphGenerator.createChain
+                //  通过反射创建 AbstractInvokable 对象
+                //  对于 Stream 任务而言，就是 StreamTask 的子类，SourceStreamTask、OneInputStreamTask、TwoInputStreamTask 等
                 invokable =
                         loadAndInstantiateInvokable(
                                 userCodeClassLoader.asClassLoader(), nameOfInvokableClass, env);

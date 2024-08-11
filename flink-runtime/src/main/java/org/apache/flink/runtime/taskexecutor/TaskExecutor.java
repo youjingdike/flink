@@ -580,7 +580,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
 
     @Override
     /**
-     *  jobMaster发送Rpc提交task的服务端响应
+     *  TODO jobMaster发送Rpc提交task的服务端响应
      */
     public CompletableFuture<Acknowledge> submitTask(
             TaskDeploymentDescriptor tdd, JobMasterId jobMasterId, Time timeout) {
@@ -2236,8 +2236,10 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
 
         @Override
         public void notifyLeaderAddress(final String leaderAddress, final UUID leaderSessionID) {
+            // TODO 主节点检索成功后,回调这里
             runAsync(
                     () ->
+                            // TODO
                             notifyOfNewResourceManagerLeader(
                                     leaderAddress,
                                     ResourceManagerId.fromUuidOrNull(leaderSessionID)));

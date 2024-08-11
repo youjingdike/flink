@@ -97,8 +97,9 @@ class DefaultDeclareResourceRequirementServiceConnectionManager
             ResourceRequirements resourceRequirementsToSend) {
         synchronized (lock) {
             if (isConnected()) {
+                // TODO step.22; 在这里判断是否停止申请资源,否则在下面的方法里面会继续跳会到step.19
                 if (resourceRequirementsToSend == currentResourceRequirements) {
-                    // TODO step.22; 在这里判断是否停止申请资源
+                    // TODO
                     return service.declareResourceRequirements(resourceRequirementsToSend);
                 } else {
                     LOG.debug("Newer resource requirements found. Stop sending old requirements.");

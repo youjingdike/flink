@@ -416,7 +416,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
                         deploymentOptionsByVertex,
                         slotExecutionVertexAssignments);
 
-        //TODO 在step.9中申请好slots资源后，开始部署Task
+        //TODO 在step.9中申请好slots资源后,开始部署Task
         // TODO *step.1; 部署Task
         waitForAllSlotsAndDeploy(deploymentHandles);
     }
@@ -476,7 +476,9 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
     private void waitForAllSlotsAndDeploy(final List<DeploymentHandle> deploymentHandles) {
         // TODO *step.2;deployAll
         FutureUtils.assertNoException(
+                // TODO 分配资源等等
                 assignAllResourcesAndRegisterProducedPartitions(deploymentHandles)
+                        // TODO 部署开始
                         .handle(deployAll(deploymentHandles)));
     }
 
@@ -488,6 +490,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
                     deploymentHandle
                             .getSlotExecutionVertexAssignment()
                             .getLogicalSlotFuture()
+                            // TODO assignResource(..)
                             .handle(assignResource(deploymentHandle))
                             .thenCompose(registerProducedPartitions(deploymentHandle))
                             .handle(
@@ -557,6 +560,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
             }
 
             final ExecutionVertex executionVertex = getExecutionVertex(executionVertexId);
+            // TODO
             executionVertex.tryAssignResource(logicalSlot);
 
             startReserveAllocation(executionVertexId, logicalSlot.getAllocationId());

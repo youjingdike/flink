@@ -294,13 +294,14 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
 
         log.info("Initializing job '{}' ({}).", jobName, jid);
 
+        // TODO resourceManager的检索器
         resourceManagerLeaderRetriever =
                 highAvailabilityServices.getResourceManagerLeaderRetriever();
 
-        // TODO 创建SlotPoolService:DeclarativeSlotPoolBridge
+        // TODO 创建SlotPoolService: DeclarativeSlotPoolBridge
         this.slotPoolService =
                 checkNotNull(slotPoolServiceSchedulerFactory).createSlotPoolService(jid);
-
+        // TODO 保存注册进来的TaskManager到map集合
         this.registeredTaskManagers = new HashMap<>(4);
         this.partitionTracker =
                 checkNotNull(partitionTrackerFactory)
@@ -1223,7 +1224,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
         public void notifyLeaderAddress(final String leaderAddress, final UUID leaderSessionID) {
             runAsync(
                     () ->
-                            //TODO
+                            //TODO 获取ResourceManager的连接
                             notifyOfNewResourceManagerLeader(
                                     leaderAddress,
                                     ResourceManagerId.fromUuidOrNull(leaderSessionID)));

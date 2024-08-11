@@ -115,7 +115,7 @@ public class DeclarativeSlotManager implements SlotManager {
         // AnyMatchingSlotMatchingStrategy.INSTANCE;
         slotMatchingStrategy = slotManagerConfiguration.getSlotMatchingStrategy();
 
-        // TODO 创建TaskExecutorManager
+        // TODO 创建TaskExecutorManager的工厂类,在start()里面，创建TaskExecutorManager
         taskExecutorManagerFactory =
                 (executor, resourceActions) ->
                         new TaskExecutorManager(

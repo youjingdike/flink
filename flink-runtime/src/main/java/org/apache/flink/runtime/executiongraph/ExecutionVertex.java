@@ -425,6 +425,7 @@ public class ExecutionVertex
     }
 
     public void tryAssignResource(LogicalSlot slot) {
+        // TODO
         if (!currentExecution.tryAssignResource(slot)) {
             throw new IllegalStateException(
                     "Could not assign resource "

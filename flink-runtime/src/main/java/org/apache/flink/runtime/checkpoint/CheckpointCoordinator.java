@@ -584,6 +584,7 @@ public class CheckpointCoordinator {
                                                     checkpointInfo.f1);
                                         }
                                         return OperatorCoordinatorCheckpoints
+                                                // TODO
                                                 .triggerAndAcknowledgeAllCoordinatorCheckpointsWithCompletion(
                                                         coordinatorsToCheckpoint,
                                                         pendingCheckpoint,

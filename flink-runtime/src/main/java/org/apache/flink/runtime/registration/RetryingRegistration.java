@@ -153,7 +153,7 @@ public abstract class RetryingRegistration<
                                         fencingToken,
                                         targetType.asSubclass(FencedRpcGateway.class));
             } else {
-                // TODO 可以是TaskExecutor连接ResourceManager
+                // TODO 可以是TaskExecutor连接ResourceManager等等
                 rpcGatewayFuture = rpcService.connect(targetAddress, targetType);
             }
 
