@@ -514,7 +514,8 @@ public class StreamGraph implements Pipeline {
         // TODO 将该StreamNode加入到StreamGraph中
         // TODO 编写算子处理逻辑(UserFunction) ==> StreamOperator ==> Transformation ==> StreamNode
         // TODO 构建StreamNode的时候,会多做一件事,指定InvokableClass
-        // TODO 判断是否是Source算子,如果是则InvokableClass = SourceStreamTask,如果不是则为OneInputStreamTask或Two...等等
+        // TODO 判断是否是Source算子,如果是则InvokableClass =
+        // SourceStreamTask,如果不是则为OneInputStreamTask或Two...等等
         streamNodes.put(vertexID, vertex);
 
         return vertex;
@@ -674,9 +675,9 @@ public class StreamGraph implements Pipeline {
         // If no partitioner was specified and the parallelism of upstream and downstream
         // operator matches use forward partitioning, use rebalance otherwise.
         /* TODO 如果没有设置partitioner
-            1.如果上游StreamNode和下游StreamNode并行度一样,则使用ForwardPartitioner数据分发策略
-            2.如果上游StreamNode和下游StreamNode并行度不一样,则使用RebalancePartitioner数据分发策略
-         */
+           1.如果上游StreamNode和下游StreamNode并行度一样,则使用ForwardPartitioner数据分发策略
+           2.如果上游StreamNode和下游StreamNode并行度不一样,则使用RebalancePartitioner数据分发策略
+        */
         if (partitioner == null
                 && upstreamNode.getParallelism() == downstreamNode.getParallelism()) {
             partitioner = new ForwardPartitioner<Object>();

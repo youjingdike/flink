@@ -260,16 +260,16 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
 
         synchronized (lock) {
             /*
-             TODO initializeServices方法初始化了主节点对外提供服务的时候所需要的三大核心组件启动时所需的基础服务
-                 1. commonRPCService：  基于Akka的RpcService实现。内部包装了ActorSystem
-                 2. JMXService：        启动一个JMXService
-                 3. ioExecutor：        启动一个线程池
-                 4. haServices：        提供对高可用性所需的所有服务的访问注册，分布式计数器和领导人选举
-                 5. blobServer：        负责侦听传入的请求生成线程来处理这些请求 。它还负责创建要存储的目录结构blob或临时缓存目录
-                 6. heartbeatServices： 提供心跳所需的所有服务，这包括创建心跳接收器和心跳发送者。
-                 7. metricRegistry：    跟踪所有已注册的Metric，他作为连接MetricGroup和MetricReporter
-                 8. archivedExecutionGraphStore：存储执行图ExecutionGraph的可序列化形式。
-             */
+            TODO initializeServices方法初始化了主节点对外提供服务的时候所需要的三大核心组件启动时所需的基础服务
+                1. commonRPCService：  基于Akka的RpcService实现。内部包装了ActorSystem
+                2. JMXService：        启动一个JMXService
+                3. ioExecutor：        启动一个线程池
+                4. haServices：        提供对高可用性所需的所有服务的访问注册，分布式计数器和领导人选举
+                5. blobServer：        负责侦听传入的请求生成线程来处理这些请求 。它还负责创建要存储的目录结构blob或临时缓存目录
+                6. heartbeatServices： 提供心跳所需的所有服务，这包括创建心跳接收器和心跳发送者。
+                7. metricRegistry：    跟踪所有已注册的Metric，他作为连接MetricGroup和MetricReporter
+                8. archivedExecutionGraphStore：存储执行图ExecutionGraph的可序列化形式。
+            */
             initializeServices(configuration, pluginManager);
 
             // write host information into configuration
@@ -343,33 +343,29 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
         }
     }
 
-
     protected void initializeServices(Configuration configuration, PluginManager pluginManager)
             throws Exception {
         /*
-         TODO 初始化了主节点对外提供服务的时候所需要的三大核心组件启动时所需的基础服务
-             1. commonRPCService：  基于Akka的RpcService实现。内部包装了ActorSystem
-             2. JMXService：        启动一个JMXService
-             3. ioExecutor：        启动一个线程池
-             4. haServices：        提供对高可用性所需的所有服务的访问注册，分布式计数器和领导人选举
-             5. blobServer：        负责侦听传入的请求生成线程来处理这些请求 。它还负责创建要存储的目录结构blob或临时缓存目录
-             6. heartbeatServices： 提供心跳所需的所有服务，这包括创建心跳接收器和心跳发送者。
-             7. metricRegistry：    跟踪所有已注册的Metric，他作为连接MetricGroup和MetricReporter
-             8. archivedExecutionGraphStore：存储执行图ExecutionGraph的可序列化形式。
-         */
+        TODO 初始化了主节点对外提供服务的时候所需要的三大核心组件启动时所需的基础服务
+            1. commonRPCService：  基于Akka的RpcService实现。内部包装了ActorSystem
+            2. JMXService：        启动一个JMXService
+            3. ioExecutor：        启动一个线程池
+            4. haServices：        提供对高可用性所需的所有服务的访问注册，分布式计数器和领导人选举
+            5. blobServer：        负责侦听传入的请求生成线程来处理这些请求 。它还负责创建要存储的目录结构blob或临时缓存目录
+            6. heartbeatServices： 提供心跳所需的所有服务，这包括创建心跳接收器和心跳发送者。
+            7. metricRegistry：    跟踪所有已注册的Metric，他作为连接MetricGroup和MetricReporter
+            8. archivedExecutionGraphStore：存储执行图ExecutionGraph的可序列化形式。
+        */
         LOG.info("Initializing cluster services.");
 
         synchronized (lock) {
             /**
-             * rpcSystem是{@link org.apache.flink.runtime.rpc.akka.CleanupOnCloseRpcSystem}实例，
-             * 实际持有的是 {@link org.apache.flink.runtime.rpc.akka.AkkaRpcSystem}的实例
-             * 用于下面创建AkkaRpcService实例
+             * rpcSystem是{@link org.apache.flink.runtime.rpc.akka.CleanupOnCloseRpcSystem}实例， 实际持有的是
+             * {@link org.apache.flink.runtime.rpc.akka.AkkaRpcSystem}的实例 用于下面创建AkkaRpcService实例
              */
             rpcSystem = RpcSystem.load(configuration);
 
-            /**RpcService：AkkaRpcService
-             *初始化和启动 AkkaRpcService，内部持有了一个 ActorSystem实例
-             * */
+            /** RpcService：AkkaRpcService 初始化和启动 AkkaRpcService，内部持有了一个 ActorSystem实例 */
             commonRpcService =
                     RpcUtils.createRemoteRpcService(
                             rpcSystem,
@@ -386,14 +382,13 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
             configuration.setString(JobManagerOptions.ADDRESS, commonRpcService.getAddress());
             configuration.setInteger(JobManagerOptions.PORT, commonRpcService.getPort());
 
-
             // 初始化一个负责 IO 的线程池
             ioExecutor =
                     Executors.newFixedThreadPool(
                             ClusterEntrypointUtils.getPoolSize(configuration),
                             new ExecutorThreadFactory("cluster-io"));
 
-            /**初始化 HA 服务组件，非高可用为：StandaloneHaServices，高可用为：ZooKeeperHaServices*/
+            /** 初始化 HA 服务组件，非高可用为：StandaloneHaServices，高可用为：ZooKeeperHaServices */
             haServices = createHaServices(configuration, ioExecutor, rpcSystem);
 
             // 初始化 BlobServer 服务端

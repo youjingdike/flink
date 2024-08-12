@@ -586,9 +586,7 @@ public class CheckpointCoordinator {
                                         return OperatorCoordinatorCheckpoints
                                                 // TODO
                                                 .triggerAndAcknowledgeAllCoordinatorCheckpointsWithCompletion(
-                                                        coordinatorsToCheckpoint,
-                                                        pendingCheckpoint,
-                                                        timer);
+                                                coordinatorsToCheckpoint, pendingCheckpoint, timer);
                                     },
                                     timer);
 

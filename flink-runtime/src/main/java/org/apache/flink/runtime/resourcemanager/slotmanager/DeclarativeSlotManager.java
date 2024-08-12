@@ -110,7 +110,7 @@ public class DeclarativeSlotManager implements SlotManager {
         this.slotTracker = Preconditions.checkNotNull(slotTracker);
         slotTracker.registerSlotStatusUpdateListener(createSlotStatusUpdateListener());
 
-        //LeastUtilizationSlotMatchingStrategy.INSTANCE
+        // LeastUtilizationSlotMatchingStrategy.INSTANCE
         // or
         // AnyMatchingSlotMatchingStrategy.INSTANCE;
         slotMatchingStrategy = slotManagerConfiguration.getSlotMatchingStrategy();
@@ -474,7 +474,6 @@ public class DeclarativeSlotManager implements SlotManager {
                                 .collect(
                                         Collectors.groupingBy(
                                                 PendingTaskManagerSlot::getResourceProfile,
-
                                                 Collectors.summingInt(x -> 1))));
         for (Map.Entry<JobID, ResourceCounter> unfulfilledRequirement :
                 unfulfilledRequirements.entrySet()) {

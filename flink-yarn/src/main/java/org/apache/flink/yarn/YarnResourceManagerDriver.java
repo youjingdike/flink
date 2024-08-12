@@ -264,14 +264,16 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
         } else {
             final Priority priority = priorityAndResourceOpt.get().getPriority();
             final Resource resource = priorityAndResourceOpt.get().getResource();
-            // TODO step.33;请求获取container资源,申请成功后，回调：YarnContainerEventHandler.onContainersAllocated()方法
+            // TODO
+            // step.33;请求获取container资源,申请成功后，回调：YarnContainerEventHandler.onContainersAllocated()方法
             // TODO 在回调里面启动taskExecutor
             resourceManagerClient.addContainerRequest(getContainerRequest(resource, priority));
 
             // make sure we transmit the request fast and receive fast news of granted allocations
             resourceManagerClient.setHeartbeatInterval(containerRequestHeartbeatIntervalMillis);
 
-            // TODO step.34;这里保存taskExecutorProcessSpec与requestResourceFuture的一个队列关系，启动taskExecutor的时候step.36中获取;
+            // TODO
+            // step.34;这里保存taskExecutorProcessSpec与requestResourceFuture的一个队列关系，启动taskExecutor的时候step.36中获取;
             requestResourceFutures
                     .computeIfAbsent(taskExecutorProcessSpec, ignore -> new LinkedList<>())
                     .add(requestResourceFuture);
@@ -339,7 +341,8 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
                     pendingContainerRequestIterator.next();
             final ResourceID resourceId = getContainerResourceId(container);
 
-            // TODO 获取到在step.34中保存的requestResourceFuture,传入startTaskExecutorInContainerAsync(),后续会处理该CompletableFuture
+            // TODO
+            // 获取到在step.34中保存的requestResourceFuture,传入startTaskExecutorInContainerAsync(),后续会处理该CompletableFuture
             final CompletableFuture<YarnWorkerNode> requestResourceFuture =
                     pendingRequestResourceFutures.poll();
             Preconditions.checkState(requestResourceFuture != null);
@@ -391,7 +394,8 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
         final CompletableFuture<ContainerLaunchContext> containerLaunchContextFuture =
                 FutureUtils.supplyAsync(
                         () ->
-                                // TODO step.38; 创建ContainerLaunchContext请求对象，指定启动的入口类YarnTaskExecutorRunner.class及参数
+                                // TODO step.38;
+                                // 创建ContainerLaunchContext请求对象，指定启动的入口类YarnTaskExecutorRunner.class及参数
                                 createTaskExecutorLaunchContext(
                                         resourceId,
                                         container.getNodeId().getHost(),
@@ -402,7 +406,8 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
                 containerLaunchContextFuture.handleAsync(
                         (context, exception) -> {
                             if (exception == null) {
-                                // TODO step.39; 通过YARN NM Client发送启动container请求，运行YarnTaskExecutorRunner.class的main(),驱动启动TaskExecutor进程，申请结束；
+                                // TODO step.39; 通过YARN NM
+                                // Client发送启动container请求，运行YarnTaskExecutorRunner.class的main(),驱动启动TaskExecutor进程，申请结束；
                                 // TODO **资源申请END**
                                 nodeManagerClient.startContainerAsync(container, context);
                                 // TODO step.40;设置传入的requestResourceFuture完成;
@@ -618,7 +623,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
                         checkInitialized();
                         log.info("Received {} containers.", containers.size());
 
-                        //TODO 按优先级进行分组，进行遍历
+                        // TODO 按优先级进行分组，进行遍历
                         for (Map.Entry<Priority, List<Container>> entry :
                                 groupContainerByPriority(containers).entrySet()) {
                             // TODO step.35;启动taskExecutor

@@ -91,10 +91,11 @@ public class DefaultLeaderRetrievalService
                 "DefaultLeaderRetrievalService can " + "only be started once.");
 
         synchronized (lock) {
-            //TODO 初始化Leader监听器，传入不同的子类,在notifyLeaderAddress()被回调时，调用listener的方法;
+            // TODO 初始化Leader监听器，传入不同的子类,在notifyLeaderAddress()被回调时，调用listener的方法;
             leaderListener = listener;
 
-            //TODO ZooKeeperLeaderRetrievalDriverFactory创建ZooKeeperLeaderRetrievalDriver，一切需要进行注册,从zk中获取一些信息的,都被封装成了一个LeaderRetrievalDriver
+            // TODO
+            // ZooKeeperLeaderRetrievalDriverFactory创建ZooKeeperLeaderRetrievalDriver，一切需要进行注册,从zk中获取一些信息的,都被封装成了一个LeaderRetrievalDriver
             // 将自身(其是LeaderRetrievalEventHandler的实现)注入driver,最后driver会回调到该类的notifyLeaderAddress()
             leaderRetrievalDriver =
                     leaderRetrievalDriverFactory.createLeaderRetrievalDriver(

@@ -310,12 +310,12 @@ public class RestClusterClient<T> implements ClusterClient<T> {
     public CompletableFuture<JobID> submitJob(@Nonnull JobGraph jobGraph) {
 
         /*
-         TODO
-            将JobGraph进行持久化，持久化成一个JobGraphFile，这个file的前缀是flink-jobgraph，后缀是 .bin。
-            在提交JobGraph到Flink集群运行的时候,其实提交的就是这个文件，
-            最终由Flink集群的WebMonitor(JobSubmitHandler)去接收请求来执行处理。
-            JobSubmitHandler在执行处理的第一件事就是把接收到的文件反序列化得到JobGraph对象。
-         */
+        TODO
+           将JobGraph进行持久化，持久化成一个JobGraphFile，这个file的前缀是flink-jobgraph，后缀是 .bin。
+           在提交JobGraph到Flink集群运行的时候,其实提交的就是这个文件，
+           最终由Flink集群的WebMonitor(JobSubmitHandler)去接收请求来执行处理。
+           JobSubmitHandler在执行处理的第一件事就是把接收到的文件反序列化得到JobGraph对象。
+        */
         CompletableFuture<java.nio.file.Path> jobGraphFileFuture =
                 CompletableFuture.supplyAsync(
                         () -> {
@@ -334,7 +334,6 @@ public class RestClusterClient<T> implements ClusterClient<T> {
                             }
                         },
                         executorService);
-
 
         /*
         TODO 等待持久化完成之后,将JobGraphFile加入待上传的文件列表

@@ -130,9 +130,10 @@ class SlotSharingExecutionSlotAllocator implements ExecutionSlotAllocator {
                                         slotSharingStrategy::getExecutionSlotSharingGroup));
         Map<ExecutionSlotSharingGroup, SharedSlot> slots =
                 executionsByGroup.keySet().stream()
-                        .map(group ->
-                                // TODO step.11;
-                                getOrAllocateSharedSlot(group, sharedSlotProfileRetriever))
+                        .map(
+                                group ->
+                                        // TODO step.11;
+                                        getOrAllocateSharedSlot(group, sharedSlotProfileRetriever))
                         .collect(
                                 Collectors.toMap(
                                         SharedSlot::getExecutionSlotSharingGroup,

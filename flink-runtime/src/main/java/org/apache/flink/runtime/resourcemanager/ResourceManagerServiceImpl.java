@@ -56,10 +56,9 @@ public class ResourceManagerServiceImpl implements ResourceManagerService, Leade
     private final ResourceManagerFactory<?> resourceManagerFactory;
     private final ResourceManagerProcessContext rmProcessContext;
 
-    /**
-     * HA模式为：DefaultLeaderElectionService，非HA为：StandaloneLeaderElectionService
-     */
+    /** HA模式为：DefaultLeaderElectionService，非HA为：StandaloneLeaderElectionService */
     private final LeaderElectionService leaderElectionService;
+
     private final FatalErrorHandler fatalErrorHandler;
     private final Executor ioExecutor;
 

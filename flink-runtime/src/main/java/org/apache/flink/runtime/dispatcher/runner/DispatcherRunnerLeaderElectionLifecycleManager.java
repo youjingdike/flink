@@ -36,7 +36,8 @@ final class DispatcherRunnerLeaderElectionLifecycleManager<
             T dispatcherRunner, LeaderElectionService leaderElectionService) throws Exception {
         this.dispatcherRunner = dispatcherRunner;
         this.leaderElectionService = leaderElectionService;
-        //TODO 启动选主,将DefaultDispatcherRunner注册为LeaderContender,成为leader后被回调到DefaultDispatcherRunner#grantLeadership
+        // TODO
+        // 启动选主,将DefaultDispatcherRunner注册为LeaderContender,成为leader后被回调到DefaultDispatcherRunner#grantLeadership
         leaderElectionService.start(dispatcherRunner);
     }
 

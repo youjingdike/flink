@@ -39,10 +39,9 @@ import javax.annotation.Nullable;
 class ChainingOutput<T> implements WatermarkGaugeExposingOutput<StreamRecord<T>> {
     private static final Logger LOG = LoggerFactory.getLogger(ChainingOutput.class);
 
-    /**
-     * TODO 当前算子的下游算子
-     */
+    /** TODO 当前算子的下游算子 */
     protected final Input<T> input;
+
     protected final Counter numRecordsIn;
     protected final WatermarkGauge watermarkGauge = new WatermarkGauge();
     @Nullable protected final OutputTag<T> outputTag;

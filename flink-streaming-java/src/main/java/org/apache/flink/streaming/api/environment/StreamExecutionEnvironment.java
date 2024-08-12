@@ -2064,7 +2064,10 @@ public class StreamExecutionEnvironment {
         CompletableFuture<JobClient> jobClientFuture =
                 executorFactory
                         .getExecutor(configuration)
-                        .execute(streamGraph, configuration, userClassloader);//这里接受的是Pipeline的参数类型(StreamGraph就是Pipline的实现)
+                        .execute(
+                                streamGraph,
+                                configuration,
+                                userClassloader); // 这里接受的是Pipeline的参数类型(StreamGraph就是Pipline的实现)
 
         try {
             // TODO 阻塞获取StreamGraph的执行结果

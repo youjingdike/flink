@@ -197,7 +197,8 @@ public abstract class RetryingRegistration<
                                         retryingRegistrationConfiguration.getErrorDelayMillis(),
                                         strippedFailure.getMessage());
                             }
-                            // TODO 如果注册失败,尝试再次注册,延时调度,时长通过cluster.registration.error-delay参数进行配置,默认10s
+                            // TODO
+                            // 如果注册失败,尝试再次注册,延时调度,时长通过cluster.registration.error-delay参数进行配置,默认10s
                             startRegistrationLater(
                                     retryingRegistrationConfiguration.getErrorDelayMillis());
                         }
@@ -245,11 +246,12 @@ public abstract class RetryingRegistration<
                                                 targetAddress);
                                         S success = (S) result;
                                         // TODO 此方法执行完将触发回调:onRegistrationSuccess方法
-                                        //  回调方法触发的地方在我们之前构建TaskExecutor注册对象的方法createNewRegistration()中
+                                        //
+                                        // 回调方法触发的地方在我们之前构建TaskExecutor注册对象的方法createNewRegistration()中
                                         completionFuture.complete(
                                                 RetryingRegistrationResult.success(
                                                         gateway, success));
-                                    // TODO 拒绝注册
+                                        // TODO 拒绝注册
                                     } else if (result instanceof RegistrationResponse.Rejection) {
                                         log.debug(
                                                 "Registration with {} at {} was rejected.",
@@ -257,7 +259,8 @@ public abstract class RetryingRegistration<
                                                 targetAddress);
                                         R rejection = (R) result;
                                         // TODO 此方法执行完将触发回调:onRegistrationFailure方法
-                                        //  回调方法触发的地方在我们之前构建TaskExecutor注册对象的方法createNewRegistration()中
+                                        //
+                                        // 回调方法触发的地方在我们之前构建TaskExecutor注册对象的方法createNewRegistration()中
                                         completionFuture.complete(
                                                 RetryingRegistrationResult.rejection(rejection));
                                     } else {
@@ -316,7 +319,8 @@ public abstract class RetryingRegistration<
                                             timeoutMillis);
                                 }
                                 // TODO 每超时一次,超时时间*2,
-                                //  但是不能超过retryingRegistrationConfiguration.getMaxRegistrationTimeoutMillis()
+                                //
+                                // 但是不能超过retryingRegistrationConfiguration.getMaxRegistrationTimeoutMillis()
                                 long newTimeoutMillis =
                                         Math.min(
                                                 2 * timeoutMillis,

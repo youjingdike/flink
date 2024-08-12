@@ -633,9 +633,9 @@ public abstract class OperatorChain<OUT, OP extends StreamOperator<OUT>>
             int outputId = outputEdge.getTargetId();
             StreamConfig chainedOpConfig = chainedConfigs.get(outputId);
 
-
             // TODO 创建当前节点的下游节点，并返回当前节点的 output
-            // TODO createOperatorChain 在创建 operator 的时候，会调用 createOutputCollector 为 operator 创建 output
+            // TODO createOperatorChain 在创建 operator 的时候，会调用 createOutputCollector 为 operator 创建
+            // output
             // TODO 所以会形成递归调用关系，所有的 operator 以及它们的 output 都会被创建出来
             // TODO 该方法里面会继续调用createOutputCollector()
             WatermarkGaugeExposingOutput<StreamRecord<T>> output =

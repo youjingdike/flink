@@ -737,7 +737,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
 
                                 slotPoolService.registerTaskManager(taskManagerId);
 
-                                //TODO 将taskManager注册进来
+                                // TODO 将taskManager注册进来
                                 registeredTaskManagers.put(
                                         taskManagerId,
                                         Tuple2.of(taskManagerLocation, taskExecutorGateway));
@@ -881,7 +881,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
         JobShuffleContext context = new JobShuffleContextImpl(jobGraph.getJobID(), this);
         shuffleMaster.registerJob(context);
 
-        //TODO 创建心跳管理器，并向resourceManager注册自己
+        // TODO 创建心跳管理器，并向resourceManager注册自己
         startJobMasterServices();
 
         log.info(
@@ -896,11 +896,11 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
     private void startJobMasterServices() throws Exception {
         try {
             // TODO 启动两个心跳服务
-            //TODO 创建与taskManager的心跳管理器
+            // TODO 创建与taskManager的心跳管理器
             // 其为主节点，心跳管理器为HeartbeatManagerSenderImpl(HeartbeatManagerImpl的子类) 心跳请求发送器 Client
             this.taskManagerHeartbeatManager = createTaskManagerHeartbeatManager(heartbeatServices);
 
-            //TODO 创建与resourceManager的心跳管理器，其为从节点，心跳管理器为HeartbeatManagerImpl 心跳请求处理器 Server
+            // TODO 创建与resourceManager的心跳管理器，其为从节点，心跳管理器为HeartbeatManagerImpl 心跳请求处理器 Server
             this.resourceManagerHeartbeatManager =
                     createResourceManagerHeartbeatManager(heartbeatServices);
 
@@ -913,7 +913,8 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
             //   - on notification of the leader, the connection will be established and
             //     the slot pool will start requesting slots
             // TODO 监听ResourceManager的地址更改
-            // TODO 最后会回调listener的notifyLeaderAddress(),这里会完成与ResourceManager建立连接并注册JobMaster，及心跳监控注入；
+            // TODO
+            // 最后会回调listener的notifyLeaderAddress(),这里会完成与ResourceManager建立连接并注册JobMaster，及心跳监控注入；
             resourceManagerLeaderRetriever.start(new ResourceManagerLeaderListener());
         } catch (Exception e) {
             handleStartJobMasterServicesError(e);
@@ -1031,7 +1032,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
             final String newResourceManagerAddress, final ResourceManagerId resourceManagerId) {
         resourceManagerAddress =
                 createResourceManagerAddress(newResourceManagerAddress, resourceManagerId);
-        //TODO
+        // TODO
         reconnectToResourceManager(
                 new FlinkException(
                         String.format(
@@ -1053,7 +1054,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
     }
 
     private void reconnectToResourceManager(Exception cause) {
-        //TODO 关掉之前的连接
+        // TODO 关掉之前的连接
         closeResourceManagerConnection(cause);
         // TODO
         tryConnectToResourceManager();
@@ -1073,7 +1074,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
 
         log.info("Connecting to ResourceManager {}", resourceManagerAddress);
 
-        //TODO RegisteredRpcConnection的子类:JobMaster.ResourceManagerConnection
+        // TODO RegisteredRpcConnection的子类:JobMaster.ResourceManagerConnection
         resourceManagerConnection =
                 new ResourceManagerConnection(
                         log,
@@ -1224,7 +1225,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
         public void notifyLeaderAddress(final String leaderAddress, final UUID leaderSessionID) {
             runAsync(
                     () ->
-                            //TODO 获取ResourceManager的连接
+                            // TODO 获取ResourceManager的连接
                             notifyOfNewResourceManagerLeader(
                                     leaderAddress,
                                     ResourceManagerId.fromUuidOrNull(leaderSessionID)));

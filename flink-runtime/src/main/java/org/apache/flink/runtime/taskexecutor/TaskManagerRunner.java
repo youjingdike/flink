@@ -233,7 +233,7 @@ public class TaskManagerRunner implements FatalErrorHandler {
     // --------------------------------------------------------------------------------------------
 
     public void start() throws Exception {
-        //TaskExecutorToServiceAdapter
+        // TaskExecutorToServiceAdapter
         taskExecutorService.start();
     }
 
@@ -480,10 +480,10 @@ public class TaskManagerRunner implements FatalErrorHandler {
                         externalResourceInfoProvider,
                         fatalErrorHandler);
         /*
-         TODO 封装了一下TaskExecutor
-          TaskExecutor是TaskExecutorToServiceAdapter的成员变量
-          TaskExecutorToServiceAdapter是TaskManagerRunner的成员变量
-         */
+        TODO 封装了一下TaskExecutor
+         TaskExecutor是TaskExecutorToServiceAdapter的成员变量
+         TaskExecutorToServiceAdapter是TaskManagerRunner的成员变量
+        */
         return TaskExecutorToServiceAdapter.createFor(taskExecutor);
     }
 

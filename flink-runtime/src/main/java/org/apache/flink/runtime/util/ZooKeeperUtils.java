@@ -427,7 +427,7 @@ public class ZooKeeperUtils {
         // All operations will have the path as root
         CuratorFramework facade = client.usingNamespace(client.getNamespace() + zooKeeperJobsPath);
 
-//        final String zooKeeperFullJobsPath = client.getNamespace() + zooKeeperJobsPath;
+        //        final String zooKeeperFullJobsPath = client.getNamespace() + zooKeeperJobsPath;
         // TODO 创建StateHandleStore
         final ZooKeeperStateHandleStore<JobGraph> zooKeeperStateHandleStore =
                 new ZooKeeperStateHandleStore<>(facade, stateStorage);

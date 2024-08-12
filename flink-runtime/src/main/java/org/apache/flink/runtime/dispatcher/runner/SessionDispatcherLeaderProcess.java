@@ -85,7 +85,8 @@ public class SessionDispatcherLeaderProcess extends AbstractDispatcherLeaderProc
 
     private void startServices() {
         try {
-            // TODO 启动jobGraphStore，并将自己注册为JobGraphStore的监听器，当有新的JobGraph被提交时，会调用onAddedJobGraph方法，提交新的Job，
+            // TODO
+            // 启动jobGraphStore，并将自己注册为JobGraphStore的监听器，当有新的JobGraph被提交时，会调用onAddedJobGraph方法，提交新的Job，
             //  只有在session模式下，这个监听才起作用
             jobGraphStore.start(this);
         } catch (Exception e) {
@@ -183,11 +184,14 @@ public class SessionDispatcherLeaderProcess extends AbstractDispatcherLeaderProc
         // serialize all ongoing recovery operations
         onGoingRecoveryOperation =
                 onGoingRecoveryOperation
-                        .thenApplyAsync(ignored -> recoverJobIfRunning(jobId), ioExecutor)// TODO 获取JobGraph
+                        .thenApplyAsync(
+                                ignored -> recoverJobIfRunning(jobId),
+                                ioExecutor) // TODO 获取JobGraph
                         .thenCompose(
                                 optionalJobGraph ->
                                         optionalJobGraph
-                                                .flatMap(this::submitAddedJobIfRunning)// TODO 提交JobGraph
+                                                .flatMap(this::submitAddedJobIfRunning) // TODO
+                                                // 提交JobGraph
                                                 .orElse(FutureUtils.completedVoidFuture()))
                         .handle(this::onErrorIfRunning);
     }

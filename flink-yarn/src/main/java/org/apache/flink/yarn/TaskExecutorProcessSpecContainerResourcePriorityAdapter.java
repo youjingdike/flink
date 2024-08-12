@@ -70,7 +70,7 @@ public class TaskExecutorProcessSpecContainerResourcePriorityAdapter {
 
     Optional<TaskExecutorProcessSpecAndResource> getTaskExecutorProcessSpecAndResource(
             Priority priority) {
-        //taskExecutor的启动资源设置
+        // taskExecutor的启动资源设置
         final TaskExecutorProcessSpec taskExecutorProcessSpec =
                 priorityToTaskExecutorProcessSpec.get(priority);
 

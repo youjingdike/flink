@@ -86,7 +86,8 @@ public class DeclarativeSlotPoolService implements SlotPoolService {
         this.rpcTimeout = rpcTimeout;
         this.registeredTaskManagers = new HashSet<>();
 
-        // TODO step.19; DefaultDeclarativeSlotPoolFactory,创建DefaultDeclarativeSlotPool实例，将this::declareResourceRequirements做为Consumer传入
+        // TODO step.19;
+        // DefaultDeclarativeSlotPoolFactory,创建DefaultDeclarativeSlotPool实例，将this::declareResourceRequirements做为Consumer传入
         this.declarativeSlotPool =
                 declarativeSlotPoolFactory.create(
                         jobId, this::declareResourceRequirements, idleSlotTimeout, rpcTimeout);
@@ -119,7 +120,7 @@ public class DeclarativeSlotPoolService implements SlotPoolService {
         this.jobMasterId = Preconditions.checkNotNull(jobMasterId);
         this.jobManagerAddress = Preconditions.checkNotNull(address);
 
-        //DefaultDeclareResourceRequirementServiceConnectionManager
+        // DefaultDeclareResourceRequirementServiceConnectionManager
         this.resourceRequirementServiceConnectionManager =
                 DefaultDeclareResourceRequirementServiceConnectionManager.create(
                         mainThreadExecutor);
@@ -274,11 +275,12 @@ public class DeclarativeSlotPoolService implements SlotPoolService {
         // TODO 这里又跳会到step.19
         declareResourceRequirements(declarativeSlotPool.getResourceRequirements());
     }
+
     private void declareResourceRequirements(Collection<ResourceRequirement> resourceRequirements) {
         assertHasBeenStarted();
 
         // TODO step.19;
-        //DefaultDeclareResourceRequirementServiceConnectionManager
+        // DefaultDeclareResourceRequirementServiceConnectionManager
         resourceRequirementServiceConnectionManager.declareResourceRequirements(
                 ResourceRequirements.create(jobId, jobManagerAddress, resourceRequirements));
     }

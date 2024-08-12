@@ -557,7 +557,8 @@ public class AkkaRpcService implements RpcService {
                 address,
                 clazz.getName());
 
-        // TODO 1) 使用ActorSystem.actorSelection(address).resolveOne的方式来获取Actor的引用ActorRef(ActorRef可以用来向服务端Actor发送消息)
+        // TODO 1)
+        // 使用ActorSystem.actorSelection(address).resolveOne的方式来获取Actor的引用ActorRef(ActorRef可以用来向服务端Actor发送消息)
         final CompletableFuture<ActorRef> actorRefFuture = resolveActorAddress(address);
 
         // TODO 2) ActorRef创建完成后，使用ask的方式向服务端发送一条握手消息(用来验证Client和Server彼此版本一致)
@@ -581,7 +582,8 @@ public class AkkaRpcService implements RpcService {
                 actorRefFuture.thenCombineAsync(
                         handshakeFuture,
                         (ActorRef actorRef, HandshakeSuccessMessage ignored) -> {
-                            // TODO invocationHandlerFactory.apply(actorRef) = new AkkaInvocationHandler 或 new 或 FencedAkkaInvocationHandler
+                            // TODO invocationHandlerFactory.apply(actorRef) = new
+                            // AkkaInvocationHandler 或 new FencedAkkaInvocationHandler
                             InvocationHandler invocationHandler =
                                     invocationHandlerFactory.apply(actorRef);
 

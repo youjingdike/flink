@@ -812,7 +812,8 @@ public class StreamGraphGenerator {
         checkNotNull(transform);
 
         // TODO 获取所有输入
-        // TODO SourceTransformation是在这里转换的，没有放在StreamExecutionEnvironment的transformations里面,其实每个Transformation进来都会转换其输入的Transformation
+        // TODO
+        // SourceTransformation是在这里转换的，没有放在StreamExecutionEnvironment的transformations里面,其实每个Transformation进来都会转换其输入的Transformation
         // TODO 只有source会在这里被转化,其他的Transformation在后面的Transformation转换其输入Transformation时，已经转换完毕；
         final List<Collection<Integer>> allInputIds = getParentInputIds(transform.getInputs());
 

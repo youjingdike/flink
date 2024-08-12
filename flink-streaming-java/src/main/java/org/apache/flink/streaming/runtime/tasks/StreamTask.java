@@ -385,7 +385,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
         environment.setMainMailboxExecutor(mainMailboxExecutor);
         environment.setAsyncOperationsThreadPool(asyncOperationsThreadPool);
 
-        //创建状态存储后端
+        // 创建状态存储后端
         this.stateBackend = createStateBackend();
         this.checkpointStorage = createCheckpointStorage(stateBackend);
 
@@ -669,7 +669,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
          *   这个链的主要入口点是它的mainOperator。mainOperator通过从网络输入和/或源输入中提取记录，并将生成的记录推送到剩余的链式操作符，来驱动StreamTask的执行。
          */
         // TaskStateManagerImpl;RegularOperatorChain
-        //创建 OperatorChain，会加载每一个 operator，并调用 setup 方法
+        // 创建 OperatorChain，会加载每一个 operator，并调用 setup 方法
         operatorChain =
                 getEnvironment().getTaskStateManager().isTaskDeployedAsFinished()
                         ? new FinishedOperatorChain<>(this, recordWriter)

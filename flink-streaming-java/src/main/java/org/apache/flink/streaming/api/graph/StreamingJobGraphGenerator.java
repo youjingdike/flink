@@ -181,10 +181,10 @@ public class StreamingJobGraphGenerator {
 
         // TODO 在这里将StreamNode转换为JobVertex
         /* TODO
-            设置Chaining,将可以Chain到一起的StreamNode chain在一起
-            这里会生成相应的JobVertex、JobEdge、IntermediateDataSet对象
-            把能chain在一起的Operator都合并了，变成了OperatorChain
-         */
+           设置Chaining,将可以Chain到一起的StreamNode chain在一起
+           这里会生成相应的JobVertex、JobEdge、IntermediateDataSet对象
+           把能chain在一起的Operator都合并了，变成了OperatorChain
+        */
         setChaining(hashes, legacyHashes);
 
         // TODO 设置PhysicalEdges,将每个JobVertex的入边集合也序列化到该JobVertex的StreamConfig中
@@ -907,17 +907,17 @@ public class StreamingJobGraphGenerator {
 
         // TODO 判断是否能chain在一起
         if (!(
-                // TODO 上下游算子实例处于同一个SlotSharingGroup中
-                upStreamVertex.isSameSlotSharingGroup(downStreamVertex)
-                        // TODO 这里面有3个条件
+        // TODO 上下游算子实例处于同一个SlotSharingGroup中
+        upStreamVertex.isSameSlotSharingGroup(downStreamVertex)
+                // TODO 这里面有3个条件
                 && areOperatorsChainable(upStreamVertex, downStreamVertex, streamGraph)
-                        // TODO 两个算子建的物理分区逻辑是 ForwardPartitioner
+                // TODO 两个算子建的物理分区逻辑是 ForwardPartitioner
                 && (edge.getPartitioner() instanceof ForwardPartitioner)
-                        // TODO 两个算子间的shuffle方式不等于批处理模式
+                // TODO 两个算子间的shuffle方式不等于批处理模式
                 && edge.getExchangeMode() != StreamExchangeMode.BATCH
-                        // TODO 上下游算子实例的并行度相同
+                // TODO 上下游算子实例的并行度相同
                 && upStreamVertex.getParallelism() == downStreamVertex.getParallelism()
-                        // TODO 启动了chain
+                // TODO 启动了chain
                 && streamGraph.isChainingEnabled())) {
 
             return false;
@@ -958,13 +958,13 @@ public class StreamingJobGraphGenerator {
 
         // TODO 上游节点的chain策略为ALWAYS或HEAD(HEAD只能与下游连接,不能与上游连接,Source默认是HEAD)
         switch (upStreamOperator.getChainingStrategy()) {
-            // TODO NEVER 表示该运算符将不会被链接到之前或之后的运算符
+                // TODO NEVER 表示该运算符将不会被链接到之前或之后的运算符
             case NEVER:
                 isChainable = false;
                 break;
-            // TODO ALWAYS 表示 Operators将竭尽所能的连接在一起
+                // TODO ALWAYS 表示 Operators将竭尽所能的连接在一起
             case ALWAYS:
-            // TODO 运算符不会连接到上游,但是下游算子可以连接到此运算符
+                // TODO 运算符不会连接到上游,但是下游算子可以连接到此运算符
             case HEAD:
             case HEAD_WITH_SOURCES:
                 isChainable = true;

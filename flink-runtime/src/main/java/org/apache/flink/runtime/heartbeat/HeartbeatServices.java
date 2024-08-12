@@ -79,12 +79,12 @@ public class HeartbeatServices {
             Logger log) {
 
         /*
-         TODO
-          1.主节点中的心跳管理器为HeartbeatManagerSenderImpl 是心跳请求发送器 client端
-                在HeartbeatManagerSenderImpl内部构建了一个定时服务
-                每10秒 向所有的心跳目标对象,发送心跳请求
-          2.从节点(当前)中的心跳管理器为HeartbeatManagerImpl 是心跳请求处理器 Server端
-         */
+        TODO
+         1.主节点中的心跳管理器为HeartbeatManagerSenderImpl 是心跳请求发送器 client端
+               在HeartbeatManagerSenderImpl内部构建了一个定时服务
+               每10秒 向所有的心跳目标对象,发送心跳请求
+         2.从节点(当前)中的心跳管理器为HeartbeatManagerImpl 是心跳请求处理器 Server端
+        */
         return new HeartbeatManagerImpl<>(
                 heartbeatTimeout,
                 failedRpcRequestsUntilUnreachable,
@@ -114,12 +114,12 @@ public class HeartbeatServices {
             Logger log) {
 
         /*
-         TODO
-          1.主节点(当前)中的心跳管理器为HeartbeatManagerSenderImpl 是心跳请求发送器 client端
-                在HeartbeatManagerSenderImpl内部构建了一个定时服务
-                每10秒 向所有的心跳目标对象,发送心跳请求
-          2.从节点中的心跳管理器为为HeartbeatManagerImpl 心跳请求处理器 Server端
-         */
+        TODO
+         1.主节点(当前)中的心跳管理器为HeartbeatManagerSenderImpl 是心跳请求发送器 client端
+               在HeartbeatManagerSenderImpl内部构建了一个定时服务
+               每10秒 向所有的心跳目标对象,发送心跳请求
+         2.从节点中的心跳管理器为为HeartbeatManagerImpl 心跳请求处理器 Server端
+        */
         return new HeartbeatManagerSenderImpl<>(
                 heartbeatInterval,
                 heartbeatTimeout,

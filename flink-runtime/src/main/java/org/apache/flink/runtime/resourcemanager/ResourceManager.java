@@ -317,9 +317,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
     //  RPC methods
     // ------------------------------------------------------------------------
 
-    /**
-     * TODO JobMaster向ResourceManager注册时会调用该方法
-     */
+    /** TODO JobMaster向ResourceManager注册时会调用该方法 */
     @Override
     public CompletableFuture<RegistrationResponse> registerJobManager(
             final JobMasterId jobMasterId,
@@ -335,7 +333,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
 
         if (!jobLeaderIdService.containsJob(jobId)) {
             try {
-                //TODO 添加jobId
+                // TODO 添加jobId
                 jobLeaderIdService.addJob(jobId);
             } catch (Exception e) {
                 ResourceManagerException exception =
@@ -375,7 +373,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
             return FutureUtils.completedExceptionally(exception);
         }
 
-        //TODO 获取JobMasterGateway
+        // TODO 获取JobMasterGateway
         CompletableFuture<JobMasterGateway> jobMasterGatewayFuture =
                 getRpcService().connect(jobManagerAddress, jobMasterId, JobMasterGateway.class);
 
@@ -384,7 +382,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
                         jobMasterIdFuture,
                         (JobMasterGateway jobMasterGateway, JobMasterId leadingJobMasterId) -> {
                             if (Objects.equals(leadingJobMasterId, jobMasterId)) {
-                                //TODO 注册JobMaster
+                                // TODO 注册JobMaster
                                 return registerJobMasterInternal(
                                         jobMasterGateway,
                                         jobId,
@@ -431,7 +429,7 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
     @Override
     public CompletableFuture<RegistrationResponse> registerTaskExecutor(
             final TaskExecutorRegistration taskExecutorRegistration, final Time timeout) {
-        //TODO 处理TaskExecutor远程rpc注册调用；
+        // TODO 处理TaskExecutor远程rpc注册调用；
 
         // TODO 获取taskExecutorGateway的代理,准备回复注册响应
         CompletableFuture<TaskExecutorGateway> taskExecutorGatewayFuture =
@@ -952,8 +950,8 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
             // TODO 从节点心跳管理器,保存了注册进来的TaskExecutor的ResourceID和包装的该TaskExecutor的心跳对象
             taskManagerHeartbeatManager.monitorTarget(
                     taskExecutorResourceId,
-                    new TaskExecutorHeartbeatTarget(taskExecutorGateway)// TODO
-            );
+                    new TaskExecutorHeartbeatTarget(taskExecutorGateway) // TODO
+                    );
 
             // TODO 返回注册成功消息给TaskExecutor的引用
             return new TaskExecutorRegistrationSuccess(
@@ -1144,7 +1142,8 @@ public abstract class ResourceManager<WorkerType extends ResourceIDRetrievable>
 
     private void startHeartbeatServices() {
         // TODO ResourceManager(主节点)维持和从节点的心跳，如下两种：
-        //  HeartbeatServices创建HeartbeatManager的子类HeartbeatManagerSenderImpl，该类也是HeartbeatTarget的子类，作为心跳服务的client端
+        //
+        // HeartbeatServices创建HeartbeatManager的子类HeartbeatManagerSenderImpl，该类也是HeartbeatTarget的子类，作为心跳服务的client端
         //  创建不同的HeartbeatManager,处理逻辑都在传入的不同 HeartbeatListener里面
 
         // TODO ResourceManager维持和TaskExecutor(逻辑TaskManager)的心跳

@@ -579,9 +579,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
     // ----------------------------------------------------------------------
 
     @Override
-    /**
-     *  TODO jobMaster发送Rpc提交task的服务端响应
-     */
+    /** TODO jobMaster发送Rpc提交task的服务端响应 */
     public CompletableFuture<Acknowledge> submitTask(
             TaskDeploymentDescriptor tdd, JobMasterId jobMasterId, Time timeout) {
 
@@ -1408,8 +1406,8 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
         // TODO 维持心跳
         resourceManagerHeartbeatManager.monitorTarget(
                 resourceManagerResourceId,
-                new ResourceManagerHeartbeatTarget(resourceManagerGateway)// TODO
-        );
+                new ResourceManagerHeartbeatTarget(resourceManagerGateway) // TODO
+                );
 
         // set the propagated blob server address
         final InetSocketAddress blobServerAddress =
@@ -2214,9 +2212,8 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
         }
 
         /**
-         * TODO 当TaskExecutor收到ResourceManager的心跳后,会进行回复
-         *  此处与hdfs的心跳机制不通,hdfs的主节点只管收心跳,不会发心跳
-         *  而flink的主节点也会向从节点发送心跳
+         * TODO 当TaskExecutor收到ResourceManager的心跳后,会进行回复 此处与hdfs的心跳机制不通,hdfs的主节点只管收心跳,不会发心跳
+         * 而flink的主节点也会向从节点发送心跳
          */
         @Override
         public CompletableFuture<Void> receiveHeartbeat(

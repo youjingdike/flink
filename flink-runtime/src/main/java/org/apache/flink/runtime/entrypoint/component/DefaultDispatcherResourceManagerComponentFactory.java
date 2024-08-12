@@ -118,8 +118,9 @@ public class DefaultDispatcherResourceManagerComponentFactory
         DispatcherRunner dispatcherRunner = null;
 
         try {
-            //step1:首先初始化了一些监控服务：高可用相关，对应的leader检索服务
-            // TODO 非HA为：StandaloneLeaderRetrievalService,HA为：DefaultLeaderRetrievalService 监听 Dispatcher的Leader变化
+            // step1:首先初始化了一些监控服务：高可用相关，对应的leader检索服务
+            // TODO 非HA为：StandaloneLeaderRetrievalService,HA为：DefaultLeaderRetrievalService 监听
+            // Dispatcher的Leader变化
             dispatcherLeaderRetrievalService =
                     highAvailabilityServices.getDispatcherLeaderRetriever();
 
@@ -127,7 +128,8 @@ public class DefaultDispatcherResourceManagerComponentFactory
             resourceManagerRetrievalService =
                     highAvailabilityServices.getResourceManagerLeaderRetriever();
 
-            // TODO RpcGatewayRetriever:使用RpcService实现的gateway相关的Leader检索监听器,其是LeaderRetrievalListener的实现,在检索服务启动时被传入。
+            // TODO
+            // RpcGatewayRetriever:使用RpcService实现的gateway相关的Leader检索监听器,其是LeaderRetrievalListener的实现,在检索服务启动时被传入。
             // TODO Dispatcher 的 RpcGatewayRetriever
             final LeaderGatewayRetriever<DispatcherGateway> dispatcherGatewayRetriever =
                     new RpcGatewayRetriever<>(
@@ -146,13 +148,13 @@ public class DefaultDispatcherResourceManagerComponentFactory
                             new ExponentialBackoffRetryStrategy(
                                     12, Duration.ofMillis(10), Duration.ofMillis(50)));
 
-            //step2: TODO 创建线程池，用于执行WebMonitorEndpoint所接收到的client发送过来的请求
+            // step2: TODO 创建线程池，用于执行WebMonitorEndpoint所接收到的client发送过来的请求
             final ScheduledExecutorService executor =
                     WebMonitorEndpoint.createExecutorService(
                             configuration.getInteger(RestOptions.SERVER_NUM_THREADS),
                             configuration.getInteger(RestOptions.SERVER_THREAD_PRIORITY),
                             "DispatcherRestEndpoint");
-            //step3: TODO 初始化webUI使用的指标获取器 MetricFetcher， 指标更新间隔默认是10s
+            // step3: TODO 初始化webUI使用的指标获取器 MetricFetcher， 指标更新间隔默认是10s
             final long updateInterval =
                     configuration.getLong(MetricOptions.METRIC_FETCHER_UPDATE_INTERVAL);
             final MetricFetcher metricFetcher =
@@ -185,18 +187,18 @@ public class DefaultDispatcherResourceManagerComponentFactory
             final String hostname = RpcUtils.getHostname(rpcService);
 
             /* step5:
-             TODO 创建ResourceManager实例
-                 三个要点:
-                 1. ResourceManager是一个RpcEndpoint(Actor),当构建好对象后启动时会触发onStart(Actor的perStart生命周期方法)方法
-                 2. ResourceManager也是一个LeaderContender,也会执行竞选, 会执行竞选结果方法回调
-                 3. ResourceManagerService 具有两个心跳服务和两个定时服务:
-                        两个心跳服务:
-                            从节点  和  主节点之间的心跳
-                            Job的主控程序 和 主节点之间的心跳
-                        两个定时服务:
-                            TaskManager 的超时检查服务
-                            Slot申请的 超时检查服务
-             */
+            TODO 创建ResourceManager实例
+                三个要点:
+                1. ResourceManager是一个RpcEndpoint(Actor),当构建好对象后启动时会触发onStart(Actor的perStart生命周期方法)方法
+                2. ResourceManager也是一个LeaderContender,也会执行竞选, 会执行竞选结果方法回调
+                3. ResourceManagerService 具有两个心跳服务和两个定时服务:
+                       两个心跳服务:
+                           从节点  和  主节点之间的心跳
+                           Job的主控程序 和 主节点之间的心跳
+                       两个定时服务:
+                           TaskManager 的超时检查服务
+                           Slot申请的 超时检查服务
+            */
             resourceManagerService =
                     ResourceManagerServiceImpl.create(
                             resourceManagerFactory,
@@ -206,12 +208,13 @@ public class DefaultDispatcherResourceManagerComponentFactory
                             heartbeatServices,
                             fatalErrorHandler,
                             new ClusterInformation(hostname, blobServer.getPort()),
-                            webMonitorEndpoint.getRestBaseUrl(),// TODO 将webUI传入通过对应的部署模式进行跳转，比如通过yarn的webUI进行跳转
+                            webMonitorEndpoint.getRestBaseUrl(), // TODO
+                            // 将webUI传入通过对应的部署模式进行跳转，比如通过yarn的webUI进行跳转
                             metricRegistry,
                             hostname,
                             ioExecutor);
 
-            //TODO 创建history server相关
+            // TODO 创建history server相关
             final HistoryServerArchivist historyServerArchivist =
                     HistoryServerArchivist.createHistoryServerArchivist(
                             configuration, webMonitorEndpoint, ioExecutor);
@@ -325,11 +328,12 @@ public class DefaultDispatcherResourceManagerComponentFactory
     public static DefaultDispatcherResourceManagerComponentFactory createJobComponentFactory(
             ResourceManagerFactory<?> resourceManagerFactory, JobGraphRetriever jobGraphRetriever) {
         return new DefaultDispatcherResourceManagerComponentFactory(
-                //TODO 第二个工厂:DefaultDispatcherRunnerFactory 内部引用 JobDispatcherLeaderProcessFactoryFactory
+                // TODO 第二个工厂:DefaultDispatcherRunnerFactory 内部引用
+                // JobDispatcherLeaderProcessFactoryFactory
                 DefaultDispatcherRunnerFactory.createJobRunner(jobGraphRetriever),
-                //TODO 第一个工厂:YarnResourceManagerFactory
+                // TODO 第一个工厂:YarnResourceManagerFactory
                 resourceManagerFactory,
-                //TODO 第三个工厂:JobRestEndpointFactory
+                // TODO 第三个工厂:JobRestEndpointFactory
                 JobRestEndpointFactory.INSTANCE);
     }
 }

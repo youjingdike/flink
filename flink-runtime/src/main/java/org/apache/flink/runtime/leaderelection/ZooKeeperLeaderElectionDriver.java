@@ -171,7 +171,8 @@ public class ZooKeeperLeaderElectionDriver implements LeaderElectionDriver, Lead
 
     @Override
     public void isLeader() {
-        // TODO 竞选成功会回调LeaderElectionEventHandler的onGrantLeadership方法授予领导地位,这里是DefaultLeaderElectionService
+        // TODO
+        // 竞选成功会回调LeaderElectionEventHandler的onGrantLeadership方法授予领导地位,这里是DefaultLeaderElectionService
         leaderElectionEventHandler.onGrantLeadership();
     }
 

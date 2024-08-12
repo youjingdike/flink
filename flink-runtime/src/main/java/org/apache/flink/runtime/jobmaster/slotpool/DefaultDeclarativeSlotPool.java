@@ -158,7 +158,8 @@ public class DefaultDeclarativeSlotPool implements DeclarativeSlotPool {
                 resourceRequirements,
                 System.lineSeparator(),
                 fulfilledResourceRequirements);
-        // TODO step.19;DefaultDeclarativeSlotPoolFactory,查看该consumer为：DeclarativeSlotPoolService的declareResourceRequirements()
+        // TODO
+        // step.19;DefaultDeclarativeSlotPoolFactory,查看该consumer为：DeclarativeSlotPoolService的declareResourceRequirements()
         // TODO 与ResourceManager取得联系
         notifyNewResourceRequirements.accept(resourceRequirements);
     }

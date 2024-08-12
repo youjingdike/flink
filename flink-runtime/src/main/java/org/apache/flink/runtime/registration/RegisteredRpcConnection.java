@@ -102,11 +102,11 @@ public abstract class RegisteredRpcConnection<
                 !isConnected() && pendingRegistration == null,
                 "The RPC connection is already started");
 
-        //TODO 构造注册信息对象，里面会调用子类的generateRegistration()，并调用onRegistrationSuccess()进行心跳注册
+        // TODO 构造注册信息对象，里面会调用子类的generateRegistration()，并调用onRegistrationSuccess()进行心跳注册
         final RetryingRegistration<F, G, S, R> newRegistration = createNewRegistration();
 
         if (REGISTRATION_UPDATER.compareAndSet(this, null, newRegistration)) {
-            //TODO 开始注册,注册完成后的回调代码:在上面的createNewRegistration()方法内
+            // TODO 开始注册,注册完成后的回调代码:在上面的createNewRegistration()方法内
             newRegistration.startRegistration();
         } else {
             // concurrent start operation

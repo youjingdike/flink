@@ -249,9 +249,7 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
         recoveredJobs.clear();
     }
 
-    /**
-     * @param recoveredJob
-     */
+    /** @param recoveredJob */
     private void runRecoveredJob(final JobGraph recoveredJob) {
         // TODO 开始启动任务
         checkNotNull(recoveredJob);
@@ -434,7 +432,7 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
     private void runJob(JobGraph jobGraph, ExecutionType executionType) throws Exception {
         Preconditions.checkState(!runningJobs.containsKey(jobGraph.getJobID()));
         long initializationTimestamp = System.currentTimeMillis();
-        //TODO 创建JobMasterServiceLeadershipRunner，并已调用start()启动;
+        // TODO 创建JobMasterServiceLeadershipRunner，并已调用start()启动;
         /*
         TODO 创建JobManagerRunner,这是一个启动器,内部会初始化DefaultJobMasterServiceProcessFactory对象
          在JobManager竞选完成后,DefaultJobMasterServiceProcessFactory对象会做两件重要的事情:
@@ -519,7 +517,8 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
         final RpcService rpcService = getRpcService();
 
         // TODO 创建JobManager的驱动类，并启动
-        // TODO JobMasterServiceLeadershipRunnerFactory,创建JobMasterServiceLeadershipRunner，内部持有很多factory实例
+        // TODO
+        // JobMasterServiceLeadershipRunnerFactory,创建JobMasterServiceLeadershipRunner，内部持有很多factory实例
         // TODO 构建JobManagerRunner,内部封装了一个DefaultJobMasterServiceProcessFactory,
         //  此对象内部会在后面leader竞选完成后构建JobMaster并启动
         JobManagerRunner runner =

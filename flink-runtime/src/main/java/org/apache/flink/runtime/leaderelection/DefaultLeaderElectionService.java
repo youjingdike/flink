@@ -62,9 +62,7 @@ public class DefaultLeaderElectionService
     @GuardedBy("lock")
     private volatile boolean running;
 
-    /**
-     * ZooKeeperLeaderElectionDriver的实例
-     */
+    /** ZooKeeperLeaderElectionDriver的实例 */
     private LeaderElectionDriver leaderElectionDriver;
 
     public DefaultLeaderElectionService(LeaderElectionDriverFactory leaderElectionDriverFactory) {
@@ -88,11 +86,11 @@ public class DefaultLeaderElectionService
 
         synchronized (lock) {
             /*
-             TODO
-              1.在WebMonitorEndpoint中调用时，此contender为MiniDispatcherRestEndpoint
-              2.在ResourceManager中调用时,contender为ResourceManager
-              3.在DispatcherRunner中调用时,contender为DispatcherRunner
-             */
+            TODO
+             1.在WebMonitorEndpoint中调用时，此contender为MiniDispatcherRestEndpoint
+             2.在ResourceManager中调用时,contender为ResourceManager
+             3.在DispatcherRunner中调用时,contender为DispatcherRunner
+            */
             /*
             TODO 有4中竞选者类型，LeaderContender有4种情况:
              1.Dispatcher = DefaultDispatcherRunner
@@ -311,7 +309,7 @@ public class DefaultLeaderElectionService
                                     leaderContender.getDescription());
                         }
                         leaderElectionDriver.writeLeaderInformation(confirmedLeaderInfo);
-                    // TODO 返回的信息与期望的领导信息不对应,重新写入自身信息
+                        // TODO 返回的信息与期望的领导信息不对应,重新写入自身信息
                     } else if (!leaderInformation.equals(confirmedLeaderInfo)) {
                         // the data field does not correspond to the expected leader information
                         if (LOG.isDebugEnabled()) {
