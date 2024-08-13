@@ -20,6 +20,7 @@ package org.apache.flink.runtime.checkpoint;
 
 import org.apache.flink.annotation.VisibleForTesting;
 import org.apache.flink.api.common.JobID;
+import org.apache.flink.api.common.JobStatus;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.runtime.checkpoint.CheckpointType.PostCheckpointAction;
 import org.apache.flink.runtime.checkpoint.hooks.MasterHooks;
@@ -1735,6 +1736,9 @@ public class CheckpointCoordinator {
     //  Periodic scheduling of checkpoints
     // --------------------------------------------------------------------------------------------
 
+    /**
+     * {@link CheckpointCoordinatorDeActivator#jobStatusChanges(JobID, JobStatus, long, Throwable)}
+     */
     public void startCheckpointScheduler() {
         synchronized (lock) {
             if (shutdown) {
@@ -1748,6 +1752,7 @@ public class CheckpointCoordinator {
             stopCheckpointScheduler();
 
             periodicScheduling = true;
+            // TODO 启动ck的trigger
             currentPeriodicTrigger = scheduleTriggerWithDelay(getRandomInitDelay());
         }
     }

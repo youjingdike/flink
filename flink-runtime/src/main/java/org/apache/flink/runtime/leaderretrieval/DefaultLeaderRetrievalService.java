@@ -97,6 +97,7 @@ public class DefaultLeaderRetrievalService
             // TODO
             // ZooKeeperLeaderRetrievalDriverFactory创建ZooKeeperLeaderRetrievalDriver，一切需要进行注册,从zk中获取一些信息的,都被封装成了一个LeaderRetrievalDriver
             // 将自身(其是LeaderRetrievalEventHandler的实现)注入driver,最后driver会回调到该类的notifyLeaderAddress()
+            /** {@link #notifyLeaderAddress(LeaderInformation)}*/
             leaderRetrievalDriver =
                     leaderRetrievalDriverFactory.createLeaderRetrievalDriver(
                             this, new LeaderRetrievalFatalErrorHandler());
@@ -151,9 +152,11 @@ public class DefaultLeaderRetrievalService
                     lastLeaderSessionID = newLeaderSessionID;
 
                     // Notify the listener only when the leader is truly changed.
-                    // TODO 调用传入的不同listener的方法;
-                    //  1.可以是JobMaster.ResourceManagerLeaderListener
-                    //  2.可以是TaskExecutor.ResourceManagerLeaderListener
+                    // TODO 调用传入的不同listener的方法,listener有多个实现;
+                    /**  1.可以是{@link org.apache.flink.runtime.jobmaster.JobMaster.ResourceManagerLeaderListener#notifyLeaderAddress(String, UUID)}
+                     *    2.可以是{@link org.apache.flink.runtime.taskexecutor.TaskExecutor.ResourceManagerLeaderListener#notifyLeaderAddress(String, UUID)}
+                     *   3.其他有多个实现;
+                    */
                     leaderListener.notifyLeaderAddress(newLeaderAddress, newLeaderSessionID);
                 }
             } else {

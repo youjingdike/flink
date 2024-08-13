@@ -350,6 +350,8 @@ public abstract class SchedulerBase implements SchedulerNG, CheckpointScheduling
 
         newExecutionGraph.setInternalTaskFailuresListener(
                 new UpdateSchedulerNgOnInternalFailuresListener(this));
+        // TODO 注册JobStatusListener
+        /** {@link org.apache.flink.runtime.jobmaster.JobMaster.JobManagerJobStatusListener}*/
         newExecutionGraph.registerJobStatusListener(jobStatusListener);
         newExecutionGraph.start(mainThreadExecutor);
 
@@ -907,6 +909,7 @@ public abstract class SchedulerBase implements SchedulerNG, CheckpointScheduling
                     "Periodic checkpoint scheduling could not be started due to the CheckpointCoordinator being shutdown.");
         } else if (checkpointCoordinator.isPeriodicCheckpointingConfigured()) {
             try {
+                // TODO
                 checkpointCoordinator.startCheckpointScheduler();
             } catch (IllegalStateException ignored) {
                 // Concurrent shut down of the coordinator

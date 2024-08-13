@@ -912,9 +912,12 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
             //   - activate leader retrieval for the resource manager
             //   - on notification of the leader, the connection will be established and
             //     the slot pool will start requesting slots
-            // TODO 监听ResourceManager的地址更改
+            // TODO 监听ResourceManager的地址更改,检索ResourceManager,并向ResourceManager注册自己
             // TODO
             // 最后会回调listener的notifyLeaderAddress(),这里会完成与ResourceManager建立连接并注册JobMaster，及心跳监控注入；
+            /**
+             * {@link ResourceManagerLeaderListener#notifyLeaderAddress(String, UUID)}
+             */
             resourceManagerLeaderRetriever.start(new ResourceManagerLeaderListener());
         } catch (Exception e) {
             handleStartJobMasterServicesError(e);
