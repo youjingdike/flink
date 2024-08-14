@@ -385,7 +385,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
         environment.setMainMailboxExecutor(mainMailboxExecutor);
         environment.setAsyncOperationsThreadPool(asyncOperationsThreadPool);
 
-        // 创建状态存储后端
+        // TODO 创建状态存储后端
         this.stateBackend = createStateBackend();
         this.checkpointStorage = createCheckpointStorage(stateBackend);
 
@@ -668,8 +668,8 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
          * TODO OperatorChain包含了在一个StreamTask中作为一条链执行的所有操作符。
          *   这个链的主要入口点是它的mainOperator。mainOperator通过从网络输入和/或源输入中提取记录，并将生成的记录推送到剩余的链式操作符，来驱动StreamTask的执行。
          */
-        // TaskStateManagerImpl;RegularOperatorChain
-        // 创建 OperatorChain，会加载每一个 operator，并调用 setup 方法
+        // TODO TaskStateManagerImpl;RegularOperatorChain
+        //  创建 OperatorChain，会加载每一个 operator，并调用 setup 方法
         operatorChain =
                 getEnvironment().getTaskStateManager().isTaskDeployedAsFinished()
                         ? new FinishedOperatorChain<>(this, recordWriter)
@@ -682,6 +682,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
                 .ifPresent(restoreId -> latestReportCheckpointId = restoreId);
 
         // task specific initialization
+        // TODO 初始化StreamTaskInput等
         init();
 
         // save the work of reloading state, etc, if the task is already canceled
@@ -692,10 +693,12 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
 
         // we need to make sure that any triggers scheduled in open() cannot be
         // executed before all operators are opened
+        // TODO 执行所有operator的initializeState()和open(),初始化gates,调用inputGate::requestPartitions获取上游数据
         CompletableFuture<Void> allGatesRecoveredFuture = actionExecutor.call(this::restoreGates);
 
         // Run mailbox until all gates will be recovered.
-        // TODO 执行this::processInput
+        // TODO 执行this::processInput,处理接收的数据
+        /** {@link #processInput(MailboxDefaultAction.Controller)} */
         mailboxProcessor.runMailboxLoop();
 
         ensureNotCanceled();
@@ -717,8 +720,10 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
         reader.readOutputData(
                 getEnvironment().getAllWriters(), !configuration.isGraphContainingLoops());
 
+        // TODO 执行所有operator的initializeState()和open()
         operatorChain.initializeStateAndOpenOperators(createStreamTaskStateInitializer());
 
+        // TODO 获取所有InputGate的信息
         IndexedInputGate[] inputGates = getEnvironment().getAllInputGates();
         channelIOExecutor.execute(
                 () -> {
@@ -739,6 +744,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
                     .thenRun(
                             () ->
                                     mainMailboxExecutor.execute(
+                                            // TODO 创建nettyClient的连接,开始读取数据
                                             inputGate::requestPartitions,
                                             "Input gate request partitions"));
         }
@@ -747,12 +753,9 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
                 .thenRun(mailboxProcessor::suspend);
     }
 
-    private void ensureNotCanceled() {
-        if (canceled) {
-            throw new CancelTaskException();
-        }
-    }
-
+    /**
+     *  TODO {Task#restoreAndInvoke(TaskInvokable)}  *step.13;调用invoke(),启动task
+     */
     @Override
     public final void invoke() throws Exception {
         // Allow invoking method 'invoke' without having to call 'restore' before it.
@@ -776,6 +779,12 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
         ensureNotCanceled();
 
         afterInvoke();
+    }
+
+    private void ensureNotCanceled() {
+        if (canceled) {
+            throw new CancelTaskException();
+        }
     }
 
     private void scheduleBufferDebloater() {

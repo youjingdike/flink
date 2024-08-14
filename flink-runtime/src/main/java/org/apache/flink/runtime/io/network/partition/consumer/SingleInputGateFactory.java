@@ -115,6 +115,7 @@ public class SingleInputGateFactory {
             bufferDecompressor = new BufferDecompressor(networkBufferSize, compressionCodec);
         }
 
+        // TODO
         SingleInputGate inputGate =
                 new SingleInputGate(
                         owningTaskName,
@@ -128,7 +129,7 @@ public class SingleInputGateFactory {
                         bufferDecompressor,
                         networkBufferPool,
                         networkBufferSize);
-
+        // TODO
         createInputChannels(owningTaskName, igdd, inputGate, metrics);
         return inputGate;
     }
@@ -148,6 +149,7 @@ public class SingleInputGateFactory {
 
         for (int i = 0; i < inputChannels.length; i++) {
             inputChannels[i] =
+                    // TODO
                     createInputChannel(
                             inputGate, i, shuffleDescriptors[i], channelStatistics, metrics);
         }
@@ -183,6 +185,7 @@ public class SingleInputGateFactory {
                             networkBuffersPerChannel,
                             metrics);
                 },
+                // TODO
                 nettyShuffleDescriptor ->
                         createKnownInputChannel(
                                 inputGate,
@@ -215,6 +218,7 @@ public class SingleInputGateFactory {
                     metrics);
         } else {
             // Different instances => remote
+            // TODO
             channelStatistics.numRemoteChannels++;
             return new RemoteRecoveredInputChannel(
                     inputGate,

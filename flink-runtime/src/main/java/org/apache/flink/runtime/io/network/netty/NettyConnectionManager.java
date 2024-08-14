@@ -60,7 +60,9 @@ public class NettyConnectionManager implements ConnectionManager {
             TaskEventPublisher taskEventPublisher,
             NettyConfig nettyConfig) {
 
+        // TODO 创建NettyServer
         this.server = new NettyServer(nettyConfig);
+        // TODO 创建NettyClient
         this.client = new NettyClient(nettyConfig);
         this.bufferPool = checkNotNull(bufferPool);
 
@@ -74,6 +76,7 @@ public class NettyConnectionManager implements ConnectionManager {
 
     @Override
     public int start() throws IOException {
+        // TODO 启动
         client.init(nettyProtocol, bufferPool);
 
         return server.init(nettyProtocol, bufferPool);
@@ -82,6 +85,7 @@ public class NettyConnectionManager implements ConnectionManager {
     @Override
     public PartitionRequestClient createPartitionRequestClient(ConnectionID connectionId)
             throws IOException, InterruptedException {
+        // TODO
         return partitionRequestClientFactory.createPartitionRequestClient(connectionId);
     }
 

@@ -276,10 +276,11 @@ public class TaskManagerServices {
         final TaskEventDispatcher taskEventDispatcher = new TaskEventDispatcher();
 
         // start the I/O manager, it will create some temp directories.
+        // TODO 创建IOManager
         final IOManager ioManager =
                 new IOManagerAsync(taskManagerServicesConfiguration.getTmpDirPaths());
 
-        // TODO 作业执行期间shuffle相关操作工作,后面讲作业执行时再细聊
+        // TODO 作业执行期间shuffle相关操作工作,执行了使用netty进行数据传输的相关操作
         final ShuffleEnvironment<?, ?> shuffleEnvironment =
                 createShuffleEnvironment(
                         taskManagerServicesConfiguration,
@@ -416,6 +417,7 @@ public class TaskManagerServices {
                         taskManagerMetricGroup,
                         ioExecutor);
 
+        // TODO
         return ShuffleServiceLoader.loadShuffleServiceFactory(
                         taskManagerServicesConfiguration.getConfiguration())
                 .createShuffleEnvironment(shuffleEnvironmentContext);

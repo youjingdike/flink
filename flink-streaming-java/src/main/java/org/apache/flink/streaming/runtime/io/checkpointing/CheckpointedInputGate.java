@@ -94,6 +94,7 @@ public class CheckpointedInputGate implements PullingAsyncDataInput<BufferOrEven
         this.mailboxExecutor = mailboxExecutor;
         this.upstreamRecoveryTracker = upstreamRecoveryTracker;
 
+        // TODO
         waitForPriorityEvents(inputGate, mailboxExecutor);
     }
 
@@ -109,6 +110,7 @@ public class CheckpointedInputGate implements PullingAsyncDataInput<BufferOrEven
         boolean hasPriorityEvent = inputGate.getPriorityEventAvailableFuture().isDone();
         while (hasPriorityEvent) {
             // process as many priority events as possible
+            // TODO
             final Optional<BufferOrEvent> bufferOrEventOpt = pollNext();
             if (!bufferOrEventOpt.isPresent()) {
                 break;
@@ -130,6 +132,7 @@ public class CheckpointedInputGate implements PullingAsyncDataInput<BufferOrEven
                         () -> {
                             try {
                                 mailboxExecutor.execute(
+                                        // TODO
                                         this::processPriorityEvents,
                                         "process priority event @ gate %s",
                                         inputGate);
@@ -147,6 +150,7 @@ public class CheckpointedInputGate implements PullingAsyncDataInput<BufferOrEven
 
     @Override
     public Optional<BufferOrEvent> pollNext() throws IOException, InterruptedException {
+        // TODO
         Optional<BufferOrEvent> next = inputGate.pollNext();
 
         if (!next.isPresent()) {

@@ -415,11 +415,17 @@ public class Task
                         resultPartitionConsumableNotifier);
 
         // consumed intermediate result partitions
+        // TODO 创建 SingleInputGate 的数组
         final IndexedInputGate[] gates =
                 shuffleEnvironment
                         .createInputGates(taskShuffleContext, this, inputGateDeploymentDescriptors)
                         .toArray(new IndexedInputGate[0]);
 
+        // TODO 创建 InputGateWithMetrics 数组，其内部持有上面创建的 SingleInputGate 的实例对象
+        //  而InputGateWithMetrics又用于在StreamTask里面,创建 CheckpointedInputGate 时使用,
+        //  CheckpointedInputGate内部持有 一个 InputGate 的实例对象,但是这个实例对象是：
+        //   1.一个InputGateWithMetrics的实例对象
+        //   2.一个UnionInputGate，内部持有一个Map<Integer, InputGateWithMetrics>集合
         this.inputGates = new IndexedInputGate[gates.length];
         this.throughputCalculator =
                 new ThroughputCalculator(
@@ -742,10 +748,9 @@ public class Task
                 //  nameOfInvokableClass 是 JobVertex 的 invokableClassName，
                 //  每一个 StreamNode 在添加的时候都会有一个 jobVertexClass 属性
                 //  对于一个 operator chain，就是 head operator 对应的 invokableClassName，见
-                // StreamingJobGraphGenerator.createChain
+                //  StreamingJobGraphGenerator.createChain
                 //  通过反射创建 AbstractInvokable 对象
-                //  对于 Stream 任务而言，就是 StreamTask
-                // 的子类，SourceStreamTask、OneInputStreamTask、TwoInputStreamTask 等
+                //  对于 Stream 任务而言，就是 StreamTask 的子类，SourceStreamTask、OneInputStreamTask、TwoInputStreamTask 等
                 invokable =
                         loadAndInstantiateInvokable(
                                 userCodeClassLoader.asClassLoader(), nameOfInvokableClass, env);
@@ -948,6 +953,9 @@ public class Task
                     new TaskExecutionState(executionId, ExecutionState.RUNNING));
 
             // TODO *step.13;调用invoke(),启动task
+            /**
+             * {@link org.apache.flink.streaming.runtime.tasks.StreamTask#invoke()}
+             */
             runWithSystemExitMonitoring(finalInvokable::invoke);
         } catch (Throwable throwable) {
             try {

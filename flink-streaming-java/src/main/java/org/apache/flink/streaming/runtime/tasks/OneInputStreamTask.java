@@ -97,9 +97,11 @@ public class OneInputStreamTask<IN, OUT> extends StreamTask<OUT, OneInputStreamO
         int numberOfInputs = configuration.getNumberOfNetworkInputs();
 
         if (numberOfInputs > 0) {
+            // TODO 创建CheckpointedInputGate
             CheckpointedInputGate inputGate = createCheckpointedInputGate();
             Counter numRecordsIn = setupNumRecordsInCounter(mainOperator);
             DataOutput<IN> output = createDataOutput(numRecordsIn);
+            // TODO 创建StreamTaskNetworkInput,内部持有CheckpointedInputGate实例对象
             StreamTaskInput<IN> input = createTaskInput(inputGate);
 
             StreamConfig.InputConfig[] inputConfigs =
@@ -154,6 +156,7 @@ public class OneInputStreamTask<IN, OUT> extends StreamTask<OUT, OneInputStreamO
 
     @SuppressWarnings("unchecked")
     private CheckpointedInputGate createCheckpointedInputGate() {
+        // TODO 是InputGateWithMetrics的数组
         IndexedInputGate[] inputGates = getEnvironment().getAllInputGates();
 
         checkpointBarrierHandler =
@@ -192,6 +195,7 @@ public class OneInputStreamTask<IN, OUT> extends StreamTask<OUT, OneInputStreamO
         TypeSerializer<IN> inSerializer =
                 configuration.getTypeSerializerIn1(getUserCodeClassLoader());
 
+        // TODO StreamTaskNetworkInput
         return StreamTaskNetworkInputFactory.create(
                 inputGate,
                 inSerializer,

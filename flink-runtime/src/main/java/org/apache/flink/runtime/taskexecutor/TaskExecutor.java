@@ -718,7 +718,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
                             changelogStorage,
                             taskRestore,
                             checkpointResponder);
-
+            // TODO 创建内存管理器
             MemoryManager memoryManager;
             try {
                 memoryManager = taskSlotTable.getTaskMemoryManager(tdd.getAllocationId());

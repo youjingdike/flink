@@ -78,6 +78,7 @@ class PartitionRequestClientFactory {
 
             if (clientFuture == null) {
                 try {
+                    // TODO
                     client = connectWithRetries(connectionId);
                 } catch (Throwable e) {
                     newClientFuture.completeExceptionally(
@@ -111,6 +112,7 @@ class PartitionRequestClientFactory {
         int tried = 0;
         while (true) {
             try {
+                // TODO
                 return connect(connectionId);
             } catch (RemoteTransportException e) {
                 tried++;
@@ -134,6 +136,8 @@ class PartitionRequestClientFactory {
             // It's important to use `sync` here because it waits for this future until it is
             // done, and rethrows the cause of the failure if this future failed. `await` only
             // waits for this future to be completed, without throwing the error.
+            // TODO 创建channel,封装到NettyPartitionRequestClient里面
+            // TODO
             Channel channel = nettyClient.connect(connectionId.getAddress()).sync().channel();
             NetworkClientHandler clientHandler = channel.pipeline().get(NetworkClientHandler.class);
             return new NettyPartitionRequestClient(channel, clientHandler, connectionId, this);

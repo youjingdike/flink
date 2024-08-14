@@ -91,6 +91,7 @@ public class UnionInputGate extends InputGate {
     private final int[] inputGateChannelIndexOffsets;
 
     public UnionInputGate(IndexedInputGate... inputGates) {
+        // TODO 将IndexedInputGate保存到map<Integer, InputGate>集合中,key是index
         inputGatesByGateIndex =
                 Arrays.stream(inputGates)
                         .collect(Collectors.toMap(IndexedInputGate::getGateIndex, ig -> ig));

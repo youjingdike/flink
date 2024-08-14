@@ -101,10 +101,12 @@ abstract class AbstractRecordReader<T extends IOReadableWritable> extends Abstra
         if (!requestedPartitions) {
             CompletableFuture<Void> stateConsumedFuture = inputGate.getStateConsumedFuture();
             while (!stateConsumedFuture.isDone()) {
+                // TODO 获取数据
                 Optional<BufferOrEvent> polled = inputGate.pollNext();
                 Preconditions.checkState(!polled.isPresent());
             }
             inputGate.setChannelStateWriter(ChannelStateWriter.NO_OP);
+            // TODO
             inputGate.requestPartitions();
             requestedPartitions = true;
         }
@@ -127,6 +129,7 @@ abstract class AbstractRecordReader<T extends IOReadableWritable> extends Abstra
                 }
             }
 
+            // TODO
             final BufferOrEvent bufferOrEvent =
                     inputGate.getNext().orElseThrow(IllegalStateException::new);
 

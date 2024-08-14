@@ -81,6 +81,8 @@ public abstract class AbstractStreamTaskNetworkInput<
 
         this.statusWatermarkValve = checkNotNull(statusWatermarkValve);
         this.inputIndex = inputIndex;
+
+        // TODO map<InputChannelInf,SpillingAdaptiveSpanningRecordDeserializer>集合
         this.recordDeserializers = checkNotNull(recordDeserializers);
     }
 
@@ -181,6 +183,7 @@ public abstract class AbstractStreamTaskNetworkInput<
     protected void processBuffer(BufferOrEvent bufferOrEvent) throws IOException {
         lastChannel = bufferOrEvent.getChannelInfo();
         checkState(lastChannel != null);
+        // TODO SpillingAdaptiveSpanningRecordDeserializer
         currentRecordDeserializer = getActiveSerializer(bufferOrEvent.getChannelInfo());
         checkState(
                 currentRecordDeserializer != null,

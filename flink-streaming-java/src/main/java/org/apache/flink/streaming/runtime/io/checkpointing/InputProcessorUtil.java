@@ -61,7 +61,7 @@ public class InputProcessorUtil {
             StreamConfig config) {
 
         registerCheckpointMetrics(taskIOMetricGroup, barrierHandler);
-
+        // TODO 这么做是考虑到有 多输入 的Task
         InputGate[] unionedInputGates =
                 Arrays.stream(inputGates)
                         .map(InputGateUtil::createInputGate)
@@ -99,6 +99,7 @@ public class InputProcessorUtil {
                         .toArray(CheckpointableInput[]::new);
 
         Clock clock = SystemClock.getInstance();
+        // TODO 根据不同的模式，创建不同的CheckpointBarrierHandler
         switch (config.getCheckpointMode()) {
             case EXACTLY_ONCE:
                 int numberOfChannels =

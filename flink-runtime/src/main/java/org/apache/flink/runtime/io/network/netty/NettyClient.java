@@ -190,6 +190,7 @@ class NettyClient {
                                             serverSocketAddress.getPort());
                             channel.pipeline().addLast("ssl", sslHandler);
                         }
+                        // TODO 添加处理逻辑的handlers
                         channel.pipeline().addLast(protocol.getClientChannelHandlers());
                     }
                 });

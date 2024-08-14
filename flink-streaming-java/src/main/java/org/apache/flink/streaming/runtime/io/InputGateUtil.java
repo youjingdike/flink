@@ -36,10 +36,11 @@ public class InputGateUtil {
         if (inputGates.size() <= 0) {
             throw new RuntimeException("No such input gate.");
         }
-
+        // TODO 如果只有一个IndexedInputGate，就返回IndexedInputGate,实际是InputGateWithMetrics
         if (inputGates.size() == 1) {
             return inputGates.get(0);
         } else {
+            // TODO 如果有多个就返回UnionInputGate，里面持有Map<Integer, InputGate>集合,实际是Map<Integer, InputGateWithMetrics>
             return new UnionInputGate(inputGates.toArray(new IndexedInputGate[0]));
         }
     }

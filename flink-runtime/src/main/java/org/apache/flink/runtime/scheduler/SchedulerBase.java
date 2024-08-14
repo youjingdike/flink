@@ -679,7 +679,7 @@ public abstract class SchedulerBase implements SchedulerNG, CheckpointScheduling
     }
 
     @Override
-    public final boolean updateTaskExecutionState(
+    public final boolean updateTaskExecutionState(// TODO **明天跟踪该方法如何被调用
             final TaskExecutionStateTransition taskExecutionState) {
         final Optional<ExecutionVertexID> executionVertexId =
                 getExecutionVertexId(taskExecutionState.getID());

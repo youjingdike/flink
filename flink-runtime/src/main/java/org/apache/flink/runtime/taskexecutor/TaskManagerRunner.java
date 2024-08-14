@@ -534,7 +534,7 @@ public class TaskManagerRunner implements FatalErrorHandler {
                         taskManagerServicesConfiguration.getNumIoThreads(),
                         new ExecutorThreadFactory("flink-taskexecutor-io"));
 
-        // TODO 初始化了一些核心服务
+        // TODO 初始化了一些核心服务,创建netty相关的数据传输组件等等
         TaskManagerServices taskManagerServices =
                 TaskManagerServices.fromConfiguration(
                         taskManagerServicesConfiguration,

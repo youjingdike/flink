@@ -119,6 +119,7 @@ public class NettyProtocol {
      * @return channel handlers
      */
     public ChannelHandler[] getClientChannelHandlers() {
+        // TODO 数据处理的handler
         NetworkClientHandler networkClientHandler = new CreditBasedPartitionRequestClientHandler();
 
         return new ChannelHandler[] {

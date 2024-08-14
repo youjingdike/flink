@@ -294,8 +294,9 @@ public class SingleInputGate extends IndexedInputGate {
                                             + "channels [%s].",
                                     inputChannels.size(), numberOfInputChannels));
                 }
-
+                // TODO
                 convertRecoveredInputChannels();
+                // TODO
                 internalRequestPartitions();
             }
 
@@ -311,6 +312,7 @@ public class SingleInputGate extends IndexedInputGate {
             InputChannel inputChannel = entry.getValue();
             if (inputChannel instanceof RecoveredInputChannel) {
                 try {
+                    // TODO
                     InputChannel realInputChannel =
                             ((RecoveredInputChannel) inputChannel).toInputChannel();
                     inputChannel.releaseAllResources();
@@ -327,6 +329,7 @@ public class SingleInputGate extends IndexedInputGate {
     private void internalRequestPartitions() {
         for (InputChannel inputChannel : inputChannels.values()) {
             try {
+                // TODO
                 inputChannel.requestSubpartition(consumedSubpartitionIndex);
             } catch (Throwable t) {
                 inputChannel.setError(t);
@@ -665,6 +668,7 @@ public class SingleInputGate extends IndexedInputGate {
 
     @Override
     public Optional<BufferOrEvent> pollNext() throws IOException, InterruptedException {
+        // TODO
         return getNextBufferOrEvent(false);
     }
 
@@ -685,6 +689,7 @@ public class SingleInputGate extends IndexedInputGate {
         }
 
         InputWithData<InputChannel, BufferAndAvailability> inputWithData = next.get();
+        // TODO
         return Optional.of(
                 transformToBufferOrEvent(
                         inputWithData.data.buffer(),
@@ -703,6 +708,7 @@ public class SingleInputGate extends IndexedInputGate {
                 }
 
                 final InputChannel inputChannel = inputChannelOpt.get();
+                // TODO
                 Optional<BufferAndAvailability> bufferAndAvailabilityOpt =
                         inputChannel.getNextBuffer();
 
@@ -756,6 +762,7 @@ public class SingleInputGate extends IndexedInputGate {
         if (buffer.isBuffer()) {
             return transformBuffer(buffer, moreAvailable, currentChannel, morePriorityEvents);
         } else {
+            // TODO
             return transformEvent(buffer, moreAvailable, currentChannel, morePriorityEvents);
         }
     }
@@ -802,6 +809,7 @@ public class SingleInputGate extends IndexedInputGate {
                 // 1. releasing inputChannelsWithData lock in this method and reaching this place
                 // 2. empty data notification that re-enqueues a channel we can end up with
                 // moreAvailable flag set to true, while we expect no more data.
+                // TODO pollNext()到该方法是个循环调用
                 checkState(!moreAvailable || !pollNext().isPresent());
                 moreAvailable = false;
                 markAvailable();

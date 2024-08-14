@@ -219,6 +219,7 @@ public class StateAssignmentOperation {
                     executionJobVertex.getTaskVertices()[subTaskIndex].getCurrentExecutionAttempt();
 
             if (assignment.isFullyFinished) {
+                // TODO
                 assignFinishedStateToTask(currentExecutionAttempt);
             } else {
                 // TODO

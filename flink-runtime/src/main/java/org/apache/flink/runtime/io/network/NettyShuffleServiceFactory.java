@@ -76,6 +76,7 @@ public class NettyShuffleServiceFactory
                         shuffleEnvironmentContext.getNetworkMemorySize(),
                         shuffleEnvironmentContext.isLocalCommunicationOnly(),
                         shuffleEnvironmentContext.getHostAddress());
+        // TODO
         return createNettyShuffleEnvironment(
                 networkConfig,
                 shuffleEnvironmentContext.getTaskExecutorResourceId(),
@@ -91,6 +92,7 @@ public class NettyShuffleServiceFactory
             TaskEventPublisher taskEventPublisher,
             MetricGroup metricGroup,
             Executor ioExecutor) {
+        // TODO
         return createNettyShuffleEnvironment(
                 config,
                 taskExecutorResourceId,
@@ -109,6 +111,7 @@ public class NettyShuffleServiceFactory
             MetricGroup metricGroup,
             Executor ioExecutor) {
         NettyConfig nettyConfig = config.nettyConfig();
+        // TODO
         ConnectionManager connectionManager =
                 nettyConfig != null
                         ? new NettyConnectionManager(
