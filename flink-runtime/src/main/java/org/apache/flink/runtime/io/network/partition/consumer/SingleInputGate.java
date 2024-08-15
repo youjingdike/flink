@@ -294,7 +294,7 @@ public class SingleInputGate extends IndexedInputGate {
                                             + "channels [%s].",
                                     inputChannels.size(), numberOfInputChannels));
                 }
-                // TODO
+                // TODO 转换 InputChannel
                 convertRecoveredInputChannels();
                 // TODO
                 internalRequestPartitions();

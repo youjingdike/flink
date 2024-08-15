@@ -240,6 +240,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
                                 "Failing deployments {} due to no longer being deployed.",
                                 executionAttemptIds);
                         for (ExecutionAttemptID executionAttemptId : executionAttemptIds) {
+                            // TODO
                             schedulerNG.updateTaskExecutionState(
                                     new TaskExecutionState(
                                             executionAttemptId,
@@ -269,6 +270,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
                 };
 
         this.executionDeploymentTracker = executionDeploymentTracker;
+        // TODO DefaultExecutionDeploymentReconciler
         this.executionDeploymentReconciler =
                 executionDeploymentReconcilerFactory.create(executionStateReconciliationHandler);
 
@@ -1395,6 +1397,7 @@ public class JobMaster extends PermanentlyFencedRpcEndpoint<JobMasterId>
         public void reportPayload(
                 ResourceID resourceID, TaskExecutorToJobManagerHeartbeatPayload payload) {
             validateRunsInMainThread();
+            // TODO
             executionDeploymentReconciler.reconcileExecutionDeployments(
                     resourceID,
                     payload.getExecutionDeploymentReport(),

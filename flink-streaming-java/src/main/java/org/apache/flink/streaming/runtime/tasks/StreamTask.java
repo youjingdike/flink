@@ -715,6 +715,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
     }
 
     private CompletableFuture<Void> restoreGates() throws Exception {
+        // TODO SequentialChannelStateReaderImpl
         SequentialChannelStateReader reader =
                 getEnvironment().getTaskStateManager().getSequentialChannelStateReader();
         reader.readOutputData(

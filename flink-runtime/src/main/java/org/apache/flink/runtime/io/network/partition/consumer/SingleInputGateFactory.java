@@ -143,6 +143,7 @@ public class SingleInputGateFactory {
                 inputGateDeploymentDescriptor.getShuffleDescriptors();
 
         // Create the input channels. There is one input channel for each consumed partition.
+        // TODO 创建输入通道。每个消耗的分区都有一个输入通道。
         InputChannel[] inputChannels = new InputChannel[shuffleDescriptors.length];
 
         ChannelStatistics channelStatistics = new ChannelStatistics();

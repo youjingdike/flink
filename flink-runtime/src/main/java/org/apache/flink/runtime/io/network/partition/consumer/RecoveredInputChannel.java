@@ -103,7 +103,7 @@ public abstract class RecoveredInputChannel extends InputChannel implements Chan
     public final InputChannel toInputChannel() throws IOException {
         Preconditions.checkState(
                 stateConsumedFuture.isDone(), "recovered state is not fully consumed");
-        // TODO
+        // TODO 调用子类的toInputChannelInternal()
         final InputChannel inputChannel = toInputChannelInternal();
         inputChannel.checkpointStopped(lastStoppedCheckpointId);
         return inputChannel;

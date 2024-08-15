@@ -144,7 +144,7 @@ public class StateAssignmentOperation {
         // actually assign the state
         for (TaskStateAssignment stateAssignment : vertexAssignments.values()) {
             if (stateAssignment.hasNonFinishedState || stateAssignment.isFullyFinished) {
-                // TODO
+                // TODO 分配状态
                 assignTaskStateToExecutionJobVertices(stateAssignment);
             }
         }

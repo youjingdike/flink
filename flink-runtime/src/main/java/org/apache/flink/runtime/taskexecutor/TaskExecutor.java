@@ -708,8 +708,11 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
                 throw new TaskSubmissionException(e);
             }
 
+            // TODO 获取状态
             final JobManagerTaskRestore taskRestore = tdd.getTaskRestore();
 
+            // TODO 在创建TaskStateManagerImpl时，根据taskRestore是否为null,在构造SequentialChannelStateReaderImpl时,传入不同的TaskStateSnapshot,
+            //  以及在StreamTask创建
             final TaskStateManager taskStateManager =
                     new TaskStateManagerImpl(
                             jobId,

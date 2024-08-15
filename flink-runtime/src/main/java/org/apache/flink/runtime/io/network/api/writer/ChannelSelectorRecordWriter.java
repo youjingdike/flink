@@ -51,6 +51,7 @@ public final class ChannelSelectorRecordWriter<T extends IOReadableWritable>
 
     @Override
     public void emit(T record) throws IOException {
+        // TODO 根据分区器，选择哪个分区
         emit(record, channelSelector.selectChannel(record));
     }
 
