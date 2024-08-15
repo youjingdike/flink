@@ -139,6 +139,7 @@ public abstract class BufferWritingResultPartition extends ResultPartition {
 
     @Override
     public void emitRecord(ByteBuffer record, int targetSubpartition) throws IOException {
+        // TODO
         BufferBuilder buffer = appendUnicastDataForNewRecord(record, targetSubpartition);
 
         while (record.hasRemaining()) {
@@ -261,6 +262,7 @@ public abstract class BufferWritingResultPartition extends ResultPartition {
 
         if (buffer == null) {
             buffer = requestNewUnicastBufferBuilder(targetSubpartition);
+            // TODO
             addToSubpartition(buffer, targetSubpartition, 0);
         }
 
@@ -273,6 +275,7 @@ public abstract class BufferWritingResultPartition extends ResultPartition {
             throws IOException {
         int desirableBufferSize =
                 subpartitions[targetSubpartition].add(
+                        // TODO
                         buffer.createBufferConsumerFromBeginning(), i);
 
         if (desirableBufferSize > 0) {

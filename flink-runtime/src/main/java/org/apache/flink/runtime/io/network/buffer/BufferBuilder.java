@@ -74,6 +74,7 @@ public class BufferBuilder implements AutoCloseable {
         checkState(
                 !bufferConsumerCreated, "Two BufferConsumer shouldn't exist for one BufferBuilder");
         bufferConsumerCreated = true;
+        // TODO
         return new BufferConsumer(buffer.retainBuffer(), positionMarker, currentReaderPosition);
     }
 
