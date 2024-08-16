@@ -23,6 +23,7 @@ import org.apache.flink.runtime.io.network.TaskEventPublisher;
 import org.apache.flink.runtime.io.network.partition.ResultPartitionProvider;
 
 import org.apache.flink.shaded.netty4.io.netty.channel.ChannelHandler;
+import org.apache.flink.shaded.netty4.io.netty.channel.ChannelHandlerContext;
 
 /** Defines the server and client channel handlers, i.e. the protocol, used by netty. */
 public class NettyProtocol {
@@ -74,6 +75,7 @@ public class NettyProtocol {
      */
     public ChannelHandler[] getServerChannelHandlers() {
         PartitionRequestQueue queueOfPartitionQueues = new PartitionRequestQueue();
+        // TODO 服务端处理客户端发来的数据请求的handler，看PartitionRequestServerHandler.channelRead0()
         PartitionRequestServerHandler serverHandler =
                 new PartitionRequestServerHandler(
                         partitionProvider, taskEventPublisher, queueOfPartitionQueues);
@@ -120,11 +122,14 @@ public class NettyProtocol {
      */
     public ChannelHandler[] getClientChannelHandlers() {
         // TODO 数据处理的handler
+        /** {@link CreditBasedPartitionRequestClientHandler#channelRead(ChannelHandlerContext, Object)} */
         NetworkClientHandler networkClientHandler = new CreditBasedPartitionRequestClientHandler();
 
         return new ChannelHandler[] {
             messageEncoder,
+                // TODO NettyMessage解码,涉及到向RemoteInputChannel持有的BufferManager申请buffer(NetworkBuffer)存放数据的逻辑,封装到NettyMessage.BufferResponse
             new NettyMessageClientDecoderDelegate(networkClientHandler),
+                // TODO 数据处理的handler
             networkClientHandler
         };
     }

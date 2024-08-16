@@ -90,6 +90,7 @@ class CreditBasedSequenceNumberingViewReader
                 // schedule a separate task at the event loop that will
                 // start consuming this. Otherwise the reference to the
                 // view cannot be available in getNextBuffer().
+                // TODO 创建的是PipelinedSubpartitionView实例对象
                 this.subpartitionView =
                         partitionProvider.createSubpartitionView(
                                 resultPartitionId, subPartitionIndex, this);
@@ -98,6 +99,7 @@ class CreditBasedSequenceNumberingViewReader
             }
         }
 
+        // TODO
         notifyDataAvailable();
     }
 
@@ -190,13 +192,16 @@ class CreditBasedSequenceNumberingViewReader
     @Nullable
     @Override
     public BufferAndAvailability getNextBuffer() throws IOException {
+        // TODO 通过subpartitionView获取一个buffer，PipelinedSubpartitionView.java
         BufferAndBacklog next = subpartitionView.getNextBuffer();
         if (next != null) {
+            // TODO 获取一个buffer，信任值credit就减1
             if (next.buffer().isBuffer() && --numCreditsAvailable < 0) {
                 throw new IllegalStateException("no credit available");
             }
 
             final Buffer.DataType nextDataType = getNextDataType(next);
+            // TODO 对buffer进行封装
             return new BufferAndAvailability(
                     next.buffer(), nextDataType, next.buffersInBacklog(), next.getSequenceNumber());
         } else {
@@ -226,6 +231,7 @@ class CreditBasedSequenceNumberingViewReader
 
     @Override
     public void notifyDataAvailable() {
+        // TODO
         requestQueue.notifyReaderNonEmpty(this);
     }
 

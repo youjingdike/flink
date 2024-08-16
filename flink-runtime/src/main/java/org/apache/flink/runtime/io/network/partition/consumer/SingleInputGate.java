@@ -668,7 +668,9 @@ public class SingleInputGate extends IndexedInputGate {
 
     @Override
     public Optional<BufferOrEvent> pollNext() throws IOException, InterruptedException {
-        // TODO
+
+        // TODO 被CheckpointedInputGate调用
+        /** {@link org.apache.flink.streaming.runtime.io.checkpointing.CheckpointedInputGate#pollNext()}*/
         return getNextBufferOrEvent(false);
     }
 
@@ -682,6 +684,7 @@ public class SingleInputGate extends IndexedInputGate {
             throw new CancelTaskException("Input gate is already closed.");
         }
 
+        // TODO
         Optional<InputWithData<InputChannel, BufferAndAvailability>> next =
                 waitAndGetNextData(blocking);
         if (!next.isPresent()) {
@@ -702,13 +705,17 @@ public class SingleInputGate extends IndexedInputGate {
             boolean blocking) throws IOException, InterruptedException {
         while (true) {
             synchronized (inputChannelsWithData) {
+                // TODO 获取InputChanne,再获取数据进行处理
+                //  **重点：这里就是和nettyClient接收数据的连接点,其会把数据放入channel中
+                /** {@link #queueChannelUnsafe(InputChannel, boolean)} */
+                // TODO 通过inputChannelsWithData衔接整个数据写入/获取处理的流程
                 Optional<InputChannel> inputChannelOpt = getChannel(blocking);
                 if (!inputChannelOpt.isPresent()) {
                     return Optional.empty();
                 }
 
                 final InputChannel inputChannel = inputChannelOpt.get();
-                // TODO
+                // TODO 获取buffer数据
                 Optional<BufferAndAvailability> bufferAndAvailabilityOpt =
                         inputChannel.getNextBuffer();
 
@@ -809,7 +816,7 @@ public class SingleInputGate extends IndexedInputGate {
                 // 1. releasing inputChannelsWithData lock in this method and reaching this place
                 // 2. empty data notification that re-enqueues a channel we can end up with
                 // moreAvailable flag set to true, while we expect no more data.
-                // TODO pollNext()到该方法是个循环调用
+                // TODO pollNext()
                 checkState(!moreAvailable || !pollNext().isPresent());
                 moreAvailable = false;
                 markAvailable();
@@ -888,6 +895,7 @@ public class SingleInputGate extends IndexedInputGate {
     // ------------------------------------------------------------------------
 
     void notifyChannelNonEmpty(InputChannel channel) {
+        // TODO
         queueChannel(checkNotNull(channel), null, false);
     }
 
@@ -929,6 +937,7 @@ public class SingleInputGate extends IndexedInputGate {
 
     private void queueChannel(
             InputChannel channel, @Nullable Integer prioritySequenceNumber, boolean forcePriority) {
+        // TODO
         try (GateNotificationHelper notification =
                 new GateNotificationHelper(this, inputChannelsWithData)) {
             synchronized (inputChannelsWithData) {
@@ -945,6 +954,8 @@ public class SingleInputGate extends IndexedInputGate {
                     return;
                 }
 
+                // TODO queueChannelUnsafe(..)将自己添加到inputChannelsWithData，可以继续被InputGate轮询
+                //  这里就与处理数据的流程衔接上了，通过channel,处理流程会从channel中获取数据
                 if (!queueChannelUnsafe(channel, priority)) {
                     return;
                 }
@@ -989,6 +1000,10 @@ public class SingleInputGate extends IndexedInputGate {
             return false;
         }
 
+        // TODO 将自己添加到inputChannelsWithData，可以继续被InputGate轮询
+        //  这里就与处理数据的流程衔接上了，通过channel,处理流程会从channel中获取数据
+        /** {@link #waitAndGetNextData(boolean)}*/
+        // TODO 通过inputChannelsWithData衔接整个数据写入/获取处理的流程
         inputChannelsWithData.add(channel, priority, alreadyEnqueued);
         if (!alreadyEnqueued) {
             enqueuedInputChannelsWithData.set(channel.getChannelIndex());
@@ -1012,6 +1027,7 @@ public class SingleInputGate extends IndexedInputGate {
             }
         }
 
+        // TODO 获取inputChannel
         InputChannel inputChannel = inputChannelsWithData.poll();
         enqueuedInputChannelsWithData.clear(inputChannel.getChannelIndex());
 

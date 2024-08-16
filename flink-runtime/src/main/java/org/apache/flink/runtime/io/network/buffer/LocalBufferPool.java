@@ -518,6 +518,7 @@ class LocalBufferPool implements BufferPool {
 
                 checkConsistentAvailability();
             }
+            // TODO fireBufferAvailableNotification()
         } while (!fireBufferAvailableNotification(listener, segment));
 
         mayNotifyAvailable(toNotify);
@@ -529,6 +530,7 @@ class LocalBufferPool implements BufferPool {
         // notification and which other threads also access them.
         // -> call notifyBufferAvailable() outside of the synchronized block to avoid a deadlock
         // (FLINK-9676)
+        // TODO
         return listener.notifyBufferAvailable(new NetworkBuffer(segment, this));
     }
 

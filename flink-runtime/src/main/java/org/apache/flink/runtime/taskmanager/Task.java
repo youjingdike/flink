@@ -400,6 +400,7 @@ public class Task
                         taskNameWithSubtaskAndId, executionId, metrics.getIOMetricGroup());
 
         // produced intermediate result partitions
+        // TODO 创建ResultPartitionWriter,用于写出数据
         final ResultPartitionWriter[] resultPartitionWriters =
                 shuffleEnvironment
                         .createResultPartitionWriters(

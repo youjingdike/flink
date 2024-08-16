@@ -223,6 +223,7 @@ public class NettyShuffleEnvironment
             for (int partitionIndex = 0;
                     partitionIndex < resultPartitions.length;
                     partitionIndex++) {
+                // TODO
                 resultPartitions[partitionIndex] =
                         resultPartitionFactory.create(
                                 ownerContext.getOwnerName(),
@@ -330,6 +331,7 @@ public class NettyShuffleEnvironment
 
             try {
                 LOG.debug("Starting network connection manager");
+                // TODO 启动netty的服务端与客户端
                 return connectionManager.start();
             } catch (IOException t) {
                 throw new IOException("Failed to instantiate network connection manager.", t);

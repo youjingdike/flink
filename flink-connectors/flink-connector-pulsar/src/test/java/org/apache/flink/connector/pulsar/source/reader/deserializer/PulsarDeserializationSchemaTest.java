@@ -20,7 +20,7 @@ package org.apache.flink.connector.pulsar.source.reader.deserializer;
 
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.api.common.typeinfo.Types;
-import org.apache.flink.connector.pulsar.SampleMessage.TestMessage;
+import org.apache.flink.connector.pulsar.SampleMessag.TestMessage;
 import org.apache.flink.connector.testutils.source.deserialization.TestingDeserializationContext;
 import org.apache.flink.core.memory.DataOutputSerializer;
 import org.apache.flink.types.StringValue;

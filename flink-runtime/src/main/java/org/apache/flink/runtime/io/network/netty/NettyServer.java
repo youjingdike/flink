@@ -67,8 +67,10 @@ class NettyServer {
     }
 
     int init(final NettyProtocol protocol, NettyBufferPool nettyBufferPool) throws IOException {
+        // TODO
         return init(
                 nettyBufferPool,
+                // TODO 设置handler
                 sslHandlerFactory -> new ServerChannelInitializer(protocol, sslHandlerFactory));
     }
 
@@ -138,13 +140,14 @@ class NettyServer {
         // --------------------------------------------------------------------
         // Child channel pipeline for accepted connections
         // --------------------------------------------------------------------
-
+        // TODO 设置handler
         bootstrap.childHandler(channelInitializer.apply(sslHandlerFactory));
 
         // --------------------------------------------------------------------
         // Start Server
         // --------------------------------------------------------------------
 
+        // TODO 启动server
         bindFuture = bootstrap.bind().syncUninterruptibly();
 
         localAddress = (InetSocketAddress) bindFuture.channel().localAddress();
@@ -225,6 +228,8 @@ class NettyServer {
                         .addLast("ssl", sslHandlerFactory.createNettySSLHandler(channel.alloc()));
             }
 
+            // TODO 设置handler,
+            /** {@link NettyProtocol#getServerChannelHandlers()} */
             channel.pipeline().addLast(protocol.getServerChannelHandlers());
         }
     }

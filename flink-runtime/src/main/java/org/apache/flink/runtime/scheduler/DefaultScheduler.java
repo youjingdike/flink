@@ -476,7 +476,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
     private void waitForAllSlotsAndDeploy(final List<DeploymentHandle> deploymentHandles) {
         // TODO *step.2;deployAll
         FutureUtils.assertNoException(
-                // TODO 分配资源等等
+                // TODO 分配资源,向ShuffleMaster注册ProducedPartition等等
                 assignAllResourcesAndRegisterProducedPartitions(deploymentHandles)
                         // TODO 部署开始
                         .handle(deployAll(deploymentHandles)));
@@ -492,6 +492,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
                             .getLogicalSlotFuture()
                             // TODO assignResource(..)
                             .handle(assignResource(deploymentHandle))
+                            // TODO 注册ProducedPartition
                             .thenCompose(registerProducedPartitions(deploymentHandle))
                             .handle(
                                     (ignore, throwable) -> {
@@ -604,6 +605,7 @@ public class DefaultScheduler extends SchedulerBase implements SchedulerOperatio
                 final CompletableFuture<Void> partitionRegistrationFuture =
                         executionVertex
                                 .getCurrentExecutionAttempt()
+                                // TODO
                                 .registerProducedPartitions(
                                         logicalSlot.getTaskManagerLocation(),
                                         notifyPartitionDataAvailable);

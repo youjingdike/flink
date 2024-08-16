@@ -203,6 +203,7 @@ public abstract class BufferWritingResultPartition extends ResultPartition {
         checkState(!isReleased(), "Partition released.");
 
         ResultSubpartition subpartition = subpartitions[subpartitionIndex];
+        // TODO PipelinedSubpartition创建 PipelinedSubpartitionView
         ResultSubpartitionView readView = subpartition.createReadView(availabilityListener);
 
         LOG.debug("Created {}", readView);

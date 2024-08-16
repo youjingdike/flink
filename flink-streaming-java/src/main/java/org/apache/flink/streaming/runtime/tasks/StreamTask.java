@@ -372,9 +372,10 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
             throws Exception {
         this.environment = environment;
         this.configuration = new StreamConfig(environment.getTaskConfiguration());
+        // TODO 创建RecordWriterDelegate,通过getRecordWriter方法获取具体的recordWriter
         this.recordWriter = createRecordWriterDelegate(configuration, environment);
         this.actionExecutor = Preconditions.checkNotNull(actionExecutor);
-        // TODO 传入this::processInput,**重点：所有task处理数据的启动方法入口；
+        // TODO 传入this::processInput,**重点：所有task处理数据的启动方法入口,并且被循环调用
         this.mailboxProcessor = new MailboxProcessor(this::processInput, mailbox, actionExecutor);
         this.mainMailboxExecutor = mailboxProcessor.getMainMailboxExecutor();
         this.asyncExceptionHandler = new StreamTaskAsyncExceptionHandler(environment);
@@ -1613,9 +1614,12 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
             RecordWriterDelegate<SerializationDelegate<StreamRecord<OUT>>>
                     createRecordWriterDelegate(
                             StreamConfig configuration, Environment environment) {
+        // TODO RecordWriters,构建task对应的writers,通常是1个
         List<RecordWriter<SerializationDelegate<StreamRecord<OUT>>>> recordWrites =
                 createRecordWriters(configuration, environment);
+        // TODO 判断writer的输出数量,一般情况下就是1 也就是构建的都是SingleRecordWriter
         if (recordWrites.size() == 1) {
+            // TODO 直接获取对其包装一下即可
             return new SingleRecordWriter<>(recordWrites.get(0));
         } else if (recordWrites.size() == 0) {
             return new NonRecordWriter<>();
@@ -1629,13 +1633,18 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
                     StreamConfig configuration, Environment environment) {
         List<RecordWriter<SerializationDelegate<StreamRecord<OUT>>>> recordWriters =
                 new ArrayList<>();
+        // TODO 找到operator的所有出边
         List<StreamEdge> outEdgesInOrder =
                 configuration.getOutEdgesInOrder(
                         environment.getUserCodeClassLoader().asClassLoader());
 
+        // TODO 遍历出边集合,为每一个出边构建一个recordWriter
         for (int i = 0; i < outEdgesInOrder.size(); i++) {
             StreamEdge edge = outEdgesInOrder.get(i);
             recordWriters.add(
+                    // TODO 获取task对应的partitioner,获取对应的ResultPartitionWriter,然后通过构造者模式构建RecordWriter
+                    // TODO 在内部会判断是不是广播的,如果是广播的则构建BroadcastRecordWriter,否则是ChannelSelectorRecordWriter(基本都是他)
+                    // TODO ChannelSelectorRecordWriter的构造过程中最终要的两个参数ResultPartitionWriter, ChannelSelector
                     createRecordWriter(
                             edge,
                             i,
@@ -1683,6 +1692,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
             }
         }
 
+        // TODO 创建RecordWriter
         RecordWriter<SerializationDelegate<StreamRecord<OUT>>> output =
                 new RecordWriterBuilder<SerializationDelegate<StreamRecord<OUT>>>()
                         .setChannelSelector(outputPartitioner)

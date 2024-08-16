@@ -32,6 +32,8 @@ import org.apache.flink.runtime.io.network.partition.consumer.BufferOrEvent;
 import org.apache.flink.runtime.io.network.partition.consumer.EndOfChannelStateEvent;
 import org.apache.flink.runtime.io.network.partition.consumer.InputChannel;
 import org.apache.flink.runtime.io.network.partition.consumer.InputGate;
+import org.apache.flink.streaming.runtime.io.AbstractStreamTaskNetworkInput;
+import org.apache.flink.streaming.runtime.io.PushingAsyncDataInput;
 import org.apache.flink.streaming.runtime.io.StreamTaskNetworkInput;
 
 import org.slf4j.Logger;
@@ -94,7 +96,7 @@ public class CheckpointedInputGate implements PullingAsyncDataInput<BufferOrEven
         this.mailboxExecutor = mailboxExecutor;
         this.upstreamRecoveryTracker = upstreamRecoveryTracker;
 
-        // TODO
+        // TODO 开始处理优先级的事件,这里不是处理业务数据
         waitForPriorityEvents(inputGate, mailboxExecutor);
     }
 
@@ -150,7 +152,10 @@ public class CheckpointedInputGate implements PullingAsyncDataInput<BufferOrEven
 
     @Override
     public Optional<BufferOrEvent> pollNext() throws IOException, InterruptedException {
-        // TODO
+        // TODO 这个方法被两个地方调用,处理优先级的事件
+        /** {@link #processPriorityEvents()}*/
+        // TODO 被处理流数据的流程调用
+        /** {@link AbstractStreamTaskNetworkInput#emitNext(PushingAsyncDataInput.DataOutput)}*/
         Optional<BufferOrEvent> next = inputGate.pollNext();
 
         if (!next.isPresent()) {

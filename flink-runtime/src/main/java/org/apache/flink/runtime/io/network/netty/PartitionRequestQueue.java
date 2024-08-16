@@ -88,6 +88,9 @@ class PartitionRequestQueue extends ChannelInboundHandlerAdapter {
         // TODO This could potentially have a bad performance impact as in the
         // worst case (network consumes faster than the producer) each buffer
         // will trigger a separate event loop task being scheduled.
+
+        // TODO PartitionRequestQueue是ChannelInboundHandler的子实现,这里处理之后会调用到userEventTriggered()方法
+        /** {@link #userEventTriggered(ChannelHandlerContext, Object)}*/
         ctx.executor().execute(() -> ctx.pipeline().fireUserEventTriggered(reader));
     }
 
@@ -117,9 +120,12 @@ class PartitionRequestQueue extends ChannelInboundHandlerAdapter {
         // we try trigger the actual write. Otherwise this will be handled by
         // the writeAndFlushNextMessageIfPossible calls.
         boolean triggerWrite = availableReaders.isEmpty();
+        // TODO 将reader添加到可读取队列
+        //  下面的方法writeAndFlushNextMessageIfPossible()会从可对队列获取队列
         registerAvailableReader(reader);
 
         if (triggerWrite) {
+            // TODO 触发数据发送
             writeAndFlushNextMessageIfPossible(ctx.channel());
         }
     }
@@ -224,13 +230,17 @@ class PartitionRequestQueue extends ChannelInboundHandlerAdapter {
                                     }
                                 });
     }
-
+    
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object msg) throws Exception {
+        // TODO 被下面这个方法触发调用
+        /** 被{@link #notifyReaderNonEmpty(NetworkSequenceViewReader) 触发调用}*/
+
         // The user event triggered event loop callback is used for thread-safe
         // hand over of reader queues and cancelled producers.
 
         if (msg instanceof NetworkSequenceViewReader) {
+            // TODO
             enqueueAvailableReader((NetworkSequenceViewReader) msg);
         } else if (msg.getClass() == InputChannelID.class) {
             // Release partition view that get a cancel request.
@@ -266,6 +276,7 @@ class PartitionRequestQueue extends ChannelInboundHandlerAdapter {
         BufferAndAvailability next = null;
         try {
             while (true) {
+                // TODO 从可用reader队列里拿一个reader，
                 NetworkSequenceViewReader reader = pollAvailableReader();
 
                 // No queue with available data. We allow this here, because
@@ -274,6 +285,7 @@ class PartitionRequestQueue extends ChannelInboundHandlerAdapter {
                     return;
                 }
 
+                // TODO reader从ResultSubPartition里读取一个数据buffer，每读一个buffer，凭据credit就减1
                 next = reader.getNextBuffer();
                 if (next == null) {
                     if (!reader.isReleased()) {
@@ -292,9 +304,12 @@ class PartitionRequestQueue extends ChannelInboundHandlerAdapter {
                     // This channel was now removed from the available reader queue.
                     // We re-add it into the queue if it is still available
                     if (next.moreAvailable()) {
+                        // TODO 如果ResultSubPartition里还有可消费的数据，再次将这个reader添加到可用reader队列里
                         registerAvailableReader(reader);
                     }
 
+                    // TODO 一个变量很重要，就是buffersInBacklog，这个值是ResultSubPartition中的buffer积压量，
+                    //  就是有多少个buffer积压了，这对于flink的背压判断很重要，这个积压量决定了Reduce应该使用多少个buffer来接收数据。
                     BufferResponse msg =
                             new BufferResponse(
                                     next.buffer(),
@@ -304,6 +319,8 @@ class PartitionRequestQueue extends ChannelInboundHandlerAdapter {
 
                     // Write and flush and wait until this is done before
                     // trying to continue with the next buffer.
+                    // TODO 将buffer数据发送出去,同时注册一个listener,处理完成再次调用该方法writeAndFlushNextMessageIfPossible(..),直到reader==null结束发送
+                    /** {@link WriteAndFlushNextMessageIfPossibleListener#operationComplete(ChannelFuture)}*/
                     channel.writeAndFlush(msg).addListener(writeListener);
 
                     return;
@@ -319,12 +336,14 @@ class PartitionRequestQueue extends ChannelInboundHandlerAdapter {
     }
 
     private void registerAvailableReader(NetworkSequenceViewReader reader) {
+        // TODO
         availableReaders.add(reader);
         reader.setRegisteredAsAvailable(true);
     }
 
     @Nullable
     private NetworkSequenceViewReader pollAvailableReader() {
+        // TODO
         NetworkSequenceViewReader reader = availableReaders.poll();
         if (reader != null) {
             reader.setRegisteredAsAvailable(false);
@@ -389,6 +408,7 @@ class PartitionRequestQueue extends ChannelInboundHandlerAdapter {
         public void operationComplete(ChannelFuture future) throws Exception {
             try {
                 if (future.isSuccess()) {
+                    // TODO 再次调用
                     writeAndFlushNextMessageIfPossible(future.channel());
                 } else {
                     onChannelFutureFailure(future);

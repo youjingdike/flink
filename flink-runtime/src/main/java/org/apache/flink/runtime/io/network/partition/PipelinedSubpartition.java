@@ -308,6 +308,7 @@ public class PipelinedSubpartition extends ResultSubpartition
             }
 
             while (!buffers.isEmpty()) {
+                // TODO 从PipelinedSubpartition的buffers数据队列取队头的buffer
                 BufferConsumerWithPartialRecordLength bufferConsumerWithPartialRecordLength =
                         buffers.peek();
                 BufferConsumer bufferConsumer =
@@ -324,6 +325,7 @@ public class PipelinedSubpartition extends ResultSubpartition
                     flushRequested = false;
                 }
 
+                // TODO 如果buffer是已经被写满的，不是写了一半数据的那种，就可以从buffers队列里删掉了
                 if (bufferConsumer.isFinished()) {
                     requireNonNull(buffers.poll()).getBufferConsumer().close();
                     decreaseBuffersInBacklogUnsafe(bufferConsumer.isBuffer());
@@ -357,6 +359,7 @@ public class PipelinedSubpartition extends ResultSubpartition
                 isBlocked = true;
             }
 
+            // TODO 更新PipelinedSubpartition的数据状态
             updateStatistics(buffer);
             // Do not report last remaining buffer on buffers as available to read (assuming it's
             // unfinished).
@@ -411,6 +414,7 @@ public class PipelinedSubpartition extends ResultSubpartition
                     getSubPartitionIndex(),
                     parent.getPartitionId());
 
+            // TODO
             readView = new PipelinedSubpartitionView(this, availabilityListener);
         }
 

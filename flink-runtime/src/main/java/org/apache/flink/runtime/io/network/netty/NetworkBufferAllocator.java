@@ -56,6 +56,7 @@ class NetworkBufferAllocator {
         // message
         // will be discarded.
         if (inputChannel != null) {
+            // TODO
             buffer = inputChannel.requestBuffer();
         }
 

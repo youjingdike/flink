@@ -183,6 +183,7 @@ public class BufferManager implements BufferListener, BufferRecycler {
         int numRequestedBuffers = 0;
         while (bufferQueue.getAvailableBufferSize() < numRequiredBuffers
                 && !isWaitingForFloatingBuffers) {
+            // TODO LocalBufferPool
             BufferPool bufferPool = inputChannel.inputGate.getBufferPool();
             Buffer buffer = bufferPool.requestBuffer();
             if (buffer != null) {
@@ -342,6 +343,7 @@ public class BufferManager implements BufferListener, BufferRecycler {
 
                 bufferQueue.addFloatingBuffer(buffer);
                 isBufferUsed = true;
+                // TODO tryRequestBuffers()
                 numBuffers += 1 + tryRequestBuffers();
                 bufferQueue.notifyAll();
             }

@@ -410,6 +410,7 @@ public class Execution
         assertRunningInJobMasterMainThread();
 
         return FutureUtils.thenApplyAsyncIfNotDone(
+                // TODO
                 registerProducedPartitions(
                         vertex, location, attemptId, notifyPartitionDataAvailable),
                 vertex.getExecutionGraphAccessor().getJobMasterMainThreadExecutor(),
@@ -444,26 +445,27 @@ public class Execution
                     TaskManagerLocation location,
                     ExecutionAttemptID attemptId,
                     boolean notifyPartitionDataAvailable) {
-
+        // TODO 创建ProducerDescriptor
         ProducerDescriptor producerDescriptor = ProducerDescriptor.create(location, attemptId);
-
+        //  TODO 获取当前节点的partition信息
         Collection<IntermediateResultPartition> partitions =
                 vertex.getProducedPartitions().values();
         Collection<CompletableFuture<ResultPartitionDeploymentDescriptor>> partitionRegistrations =
                 new ArrayList<>(partitions.size());
-
+        //  TODO 向ShuffleMaster注册partition信息
         for (IntermediateResultPartition partition : partitions) {
             PartitionDescriptor partitionDescriptor = PartitionDescriptor.from(partition);
             int maxParallelism =
                     getPartitionMaxParallelism(
                             partition,
                             vertex.getExecutionGraphAccessor()::getExecutionVertexOrThrow);
+            // TODO  调用ShuffleMaster注册partitionDescriptor和producerDescriptor
             CompletableFuture<? extends ShuffleDescriptor> shuffleDescriptorFuture =
                     vertex.getExecutionGraphAccessor()
                             .getShuffleMaster()
                             .registerPartitionWithProducer(
                                     vertex.getJobId(), partitionDescriptor, producerDescriptor);
-
+            //  TODO 创建ResultPartitionDeploymentDescriptor实例
             CompletableFuture<ResultPartitionDeploymentDescriptor> partitionRegistration =
                     shuffleDescriptorFuture.thenApply(
                             shuffleDescriptor ->
@@ -472,9 +474,10 @@ public class Execution
                                             shuffleDescriptor,
                                             maxParallelism,
                                             notifyPartitionDataAvailable));
+            // TODO  添加到partitionRegistrations集合中
             partitionRegistrations.add(partitionRegistration);
         }
-
+        // TODO 转换存储结构
         return FutureUtils.combineAll(partitionRegistrations)
                 .thenApply(
                         rpdds -> {

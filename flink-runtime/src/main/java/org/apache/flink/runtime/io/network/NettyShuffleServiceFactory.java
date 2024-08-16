@@ -111,7 +111,7 @@ public class NettyShuffleServiceFactory
             MetricGroup metricGroup,
             Executor ioExecutor) {
         NettyConfig nettyConfig = config.nettyConfig();
-        // TODO
+        // TODO 创建NettyConnectionManager
         ConnectionManager connectionManager =
                 nettyConfig != null
                         ? new NettyConnectionManager(

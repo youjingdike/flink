@@ -281,12 +281,14 @@ public class TaskManagerServices {
                 new IOManagerAsync(taskManagerServicesConfiguration.getTmpDirPaths());
 
         // TODO 作业执行期间shuffle相关操作工作,执行了使用netty进行数据传输的相关操作
+        //  NettyShuffleEnvironment
         final ShuffleEnvironment<?, ?> shuffleEnvironment =
                 createShuffleEnvironment(
                         taskManagerServicesConfiguration,
                         taskEventDispatcher,
                         taskManagerMetricGroup,
                         ioExecutor);
+        // TODO 启动ShuffleEnvironment,这里有重要的netty的服务和客户端的启动
         final int listeningDataPort = shuffleEnvironment.start();
 
         // TODO state管理服务

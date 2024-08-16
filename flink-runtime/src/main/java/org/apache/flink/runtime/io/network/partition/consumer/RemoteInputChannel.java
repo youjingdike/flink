@@ -488,6 +488,7 @@ public class RemoteInputChannel extends InputChannel {
      */
     @Nullable
     public Buffer requestBuffer() {
+        // TODO
         return bufferManager.requestBuffer();
     }
 
@@ -545,6 +546,7 @@ public class RemoteInputChannel extends InputChannel {
                     firstPriorityEvent = addPriorityBuffer(sequenceBuffer);
                     recycleBuffer = false;
                 } else {
+                    // TODO 将这个buffer添加到自己的buffer数据队列里
                     receivedBuffers.add(sequenceBuffer);
                     recycleBuffer = false;
                     if (dataType.requiresAnnouncement()) {
@@ -567,13 +569,16 @@ public class RemoteInputChannel extends InputChannel {
             }
 
             if (firstPriorityEvent) {
+                // TODO 处理优先级数据
                 notifyPriorityEvent(sequenceNumber);
             }
             if (wasEmpty) {
+                // TODO 让自己可以被InputGate消费
                 notifyChannelNonEmpty();
             }
 
             if (backlog >= 0) {
+                // TODO 向生产者反馈credit信任值
                 onSenderBacklog(backlog);
             }
         } finally {

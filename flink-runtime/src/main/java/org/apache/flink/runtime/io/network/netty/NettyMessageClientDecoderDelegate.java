@@ -105,6 +105,7 @@ public class NettyMessageClientDecoderDelegate extends ChannelInboundHandlerAdap
         try {
             while (data.isReadable()) {
                 if (currentDecoder != null) {
+                    // TODO
                     NettyMessageDecoder.DecodingResult result = currentDecoder.onChannelRead(data);
                     if (!result.isFinished()) {
                         break;
@@ -114,7 +115,6 @@ public class NettyMessageClientDecoderDelegate extends ChannelInboundHandlerAdap
                     currentDecoder = null;
                     frameHeaderBuffer.clear();
                 }
-
                 decodeFrameHeader(data);
             }
             checkState(!data.isReadable(), "Not all data of the received buffer consumed.");

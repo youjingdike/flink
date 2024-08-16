@@ -72,6 +72,7 @@ public class ResultPartitionManager implements ResultPartitionProvider {
 
             LOG.debug("Requesting subpartition {} of {}.", subpartitionIndex, partition);
 
+            // TODO BufferWritingResultPartition
             subpartitionView =
                     partition.createSubpartitionView(subpartitionIndex, availabilityListener);
         }

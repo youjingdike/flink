@@ -94,7 +94,7 @@ public abstract class AbstractStreamTaskNetworkInput<
             if (currentRecordDeserializer != null) {
                 RecordDeserializer.DeserializationResult result;
                 try {
-                    // TODO 获取数据
+                    // TODO 得到数据
                     result = currentRecordDeserializer.getNextRecord(deserializationDelegate);
                 } catch (IOException e) {
                     throw new IOException(
@@ -105,13 +105,13 @@ public abstract class AbstractStreamTaskNetworkInput<
                 }
 
                 if (result.isFullRecord()) {
-                    // TODO 处理数据
+                    // TODO 处理数据,将数据发送到OperatorChain里面处理
                     processElement(deserializationDelegate.getInstance(), output);
                     return DataInputStatus.MORE_AVAILABLE;
                 }
             }
 
-            // TODO 处理checkpoint barrier
+            // TODO **获取所有类型数据的入口:
             Optional<BufferOrEvent> bufferOrEvent = checkpointedInputGate.pollNext();
             if (bufferOrEvent.isPresent()) {
                 // return to the mailbox after receiving a checkpoint barrier to avoid processing of
@@ -141,7 +141,7 @@ public abstract class AbstractStreamTaskNetworkInput<
         //  3.LatencyMarker
         //  4.StreamStatus
         if (recordOrMark.isRecord()) {
-            // TODO StreamTaskNetworkOutput in OneInputStreamTask
+            // TODO StreamTaskNetworkOutput in OneInputStreamTask,将数据发送到OperatorChain里面处理
             output.emitRecord(recordOrMark.asRecord());
         } else if (recordOrMark.isWatermark()) {
             statusWatermarkValve.inputWatermark(

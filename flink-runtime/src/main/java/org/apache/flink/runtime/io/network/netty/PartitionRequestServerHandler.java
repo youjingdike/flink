@@ -77,17 +77,21 @@ class PartitionRequestServerHandler extends SimpleChannelInboundHandler<NettyMes
             // ----------------------------------------------------------------
             // Intermediate result partition requests
             // ----------------------------------------------------------------
+            // TODO 处理数据请求的逻辑
             if (msgClazz == PartitionRequest.class) {
                 PartitionRequest request = (PartitionRequest) msg;
 
                 LOG.debug("Read channel on {}: {}.", ctx.channel().localAddress(), request);
 
                 try {
+                    // TODO reader都有一个初始凭据credit，值等于消费端(下游)RemoteInputChannel的独占buffer数
                     NetworkSequenceViewReader reader;
                     reader =
                             new CreditBasedSequenceNumberingViewReader(
                                     request.receiverId, request.credit, outboundQueue);
-
+                    // TODO reader随后会创建一个ResultSubpartitionView，
+                    //  reader就是通过这个ResultSubpartitionView来从对应的ResultSubpartition里读取数据，
+                    //  在实时计算里，这个ResultSubpartitionView是PipelinedSubpartitionView的实例
                     reader.requestSubpartitionView(
                             partitionProvider, request.partitionId, request.queueIndex);
 

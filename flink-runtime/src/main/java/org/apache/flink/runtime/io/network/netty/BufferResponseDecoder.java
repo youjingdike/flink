@@ -57,6 +57,7 @@ class BufferResponseDecoder extends NettyMessageDecoder {
     @Override
     public DecodingResult onChannelRead(ByteBuf data) throws Exception {
         if (bufferResponse == null) {
+            // TODO 封装BufferResponse
             decodeMessageHeader(data);
         }
 
@@ -95,6 +96,7 @@ class BufferResponseDecoder extends NettyMessageDecoder {
                         MESSAGE_HEADER_LENGTH,
                         messageHeaderBuffer.readableBytes());
         if (fullFrameHeaderBuf != null) {
+            // TODO
             bufferResponse = BufferResponse.readFrom(fullFrameHeaderBuf, allocator);
         }
     }
