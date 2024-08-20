@@ -269,6 +269,7 @@ public class DeclarativeSlotPoolService implements SlotPoolService {
         resourceRequirementServiceConnectionManager.connect(
                 resourceRequirements ->
                         // TODO step.23; 通过ResourceManager的gateway,向Flink RM发送RPC请求，获取slots资源
+                        //  并在此时启动TaskManager
                         resourceManagerGateway.declareRequiredResources(
                                 jobMasterId, resourceRequirements, rpcTimeout));
 

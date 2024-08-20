@@ -26,7 +26,6 @@ import org.apache.flink.runtime.io.network.TaskEventPublisher;
 import org.apache.flink.runtime.io.network.partition.ResultPartitionProvider;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 
 import static org.apache.flink.util.Preconditions.checkNotNull;
 

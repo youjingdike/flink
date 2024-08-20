@@ -147,7 +147,7 @@ public class PipelinedRegionSchedulingStrategy implements SchedulingStrategy {
                 IterableUtils.toStream(schedulingTopology.getAllPipelinedRegions())
                         .filter(this::isSourceRegion)
                         .collect(Collectors.toSet());
-        // TODO step.6;申请Slot,并部署StreamTask运行
+        // TODO step.6;申请Slot,并部署StreamTask运行,并启动taskManager
         maybeScheduleRegions(sourceRegions);
     }
 

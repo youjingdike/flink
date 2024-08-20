@@ -230,7 +230,7 @@ class PartitionRequestQueue extends ChannelInboundHandlerAdapter {
                                     }
                                 });
     }
-    
+
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object msg) throws Exception {
         // TODO 被下面这个方法触发调用

@@ -1737,7 +1737,7 @@ public class CheckpointCoordinator {
     // --------------------------------------------------------------------------------------------
 
     /**
-     * {@link CheckpointCoordinatorDeActivator#jobStatusChanges(JobID, JobStatus, long, Throwable)}
+     * {@link CheckpointCoordinatorDeActivator#jobStatusChanges(JobID, JobStatus, long, Throwable)}.
      */
     public void startCheckpointScheduler() {
         synchronized (lock) {

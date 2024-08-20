@@ -181,7 +181,7 @@ public class ActiveResourceManager<WorkerType extends ResourceIDRetrievable>
 
     @Override
     public boolean startNewWorker(WorkerResourceSpec workerResourceSpec) {
-        // TODO step.31;
+        // TODO step.31; 在这里开始申请资源,启动container,即启动taskManager
         requestNewWorker(workerResourceSpec);
         return true;
     }

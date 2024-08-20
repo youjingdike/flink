@@ -265,7 +265,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
             final Priority priority = priorityAndResourceOpt.get().getPriority();
             final Resource resource = priorityAndResourceOpt.get().getResource();
             // TODO
-            // step.33;请求获取container资源,申请成功后，回调：YarnContainerEventHandler.onContainersAllocated()方法
+            //  step.33;请求获取container资源,申请成功后，回调：YarnContainerEventHandler.onContainersAllocated()方法
             // TODO 在回调里面启动taskExecutor
             resourceManagerClient.addContainerRequest(getContainerRequest(resource, priority));
 
@@ -273,7 +273,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
             resourceManagerClient.setHeartbeatInterval(containerRequestHeartbeatIntervalMillis);
 
             // TODO
-            // step.34;这里保存taskExecutorProcessSpec与requestResourceFuture的一个队列关系，启动taskExecutor的时候step.36中获取;
+            //  step.34;这里保存taskExecutorProcessSpec与requestResourceFuture的一个队列关系，启动taskExecutor的时候step.36中获取;
             requestResourceFutures
                     .computeIfAbsent(taskExecutorProcessSpec, ignore -> new LinkedList<>())
                     .add(requestResourceFuture);
