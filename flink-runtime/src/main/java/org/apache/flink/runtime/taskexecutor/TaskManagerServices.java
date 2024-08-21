@@ -313,6 +313,7 @@ public class TaskManagerServices {
         // TODO 一张存放TaskSlot的表
         final TaskSlotTable<Task> taskSlotTable =
                 createTaskSlotTable(
+                        // TODO slot的个数
                         taskManagerServicesConfiguration.getNumberOfSlots(),
                         taskManagerServicesConfiguration.getTaskExecutorResourceSpec(),
                         taskManagerServicesConfiguration.getTimerServiceShutdownTimeout(),
