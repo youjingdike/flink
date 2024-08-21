@@ -372,7 +372,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
             throws Exception {
         this.environment = environment;
         this.configuration = new StreamConfig(environment.getTaskConfiguration());
-        // TODO 创建RecordWriterDelegate,通过getRecordWriter方法获取具体的recordWriter
+        // TODO 创建RecordWriterDelegate,通过getRecordWriter方法获取具体的RecordWriter
         this.recordWriter = createRecordWriterDelegate(configuration, environment);
         this.actionExecutor = Preconditions.checkNotNull(actionExecutor);
         // TODO 传入this::processInput,**重点：所有task处理数据的启动方法入口,并且被循环调用
@@ -1617,6 +1617,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
         // TODO RecordWriters,构建task对应的writers,通常是1个
         List<RecordWriter<SerializationDelegate<StreamRecord<OUT>>>> recordWrites =
                 createRecordWriters(configuration, environment);
+
         // TODO 判断writer的输出数量,一般情况下就是1 也就是构建的都是SingleRecordWriter
         if (recordWrites.size() == 1) {
             // TODO 直接获取对其包装一下即可

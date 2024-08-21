@@ -162,7 +162,7 @@ public abstract class OperatorChain<OUT, OP extends StreamOperator<OUT>>
 
         // create the final output stream writers
         // we iterate through all the out edges from this job vertex and create a stream output
-        // TODO 所有的输出边，这是对外输出，不包含内部 operator 之间的的数据传输
+        // TODO 所有的输出边，这是对外输出(即末尾算子的输出)，不包含内部 operator 之间的的数据传输
         List<StreamEdge> outEdgesInOrder = configuration.getOutEdgesInOrder(userCodeClassloader);
         Map<StreamEdge, RecordWriterOutput<?>> streamOutputMap =
                 new HashMap<>(outEdgesInOrder.size());
@@ -176,7 +176,7 @@ public abstract class OperatorChain<OUT, OP extends StreamOperator<OUT>>
         // from here on, we need to make sure that the output writers are shut down again on failure
         boolean success = false;
         try {
-            // TODO 对外输出的 RecordWriterOutput
+            // TODO 创建末尾算子对外输出的 RecordWriterOutput,放入this.streamOutputs数组中
             createChainOutputs(
                     outEdgesInOrder,
                     recordWriterDelegate,
@@ -472,6 +472,7 @@ public abstract class OperatorChain<OUT, OP extends StreamOperator<OUT>>
         for (int i = 0; i < outEdgesInOrder.size(); i++) {
             StreamEdge outEdge = outEdgesInOrder.get(i);
 
+            // TODO 创建RecordWriterOutput
             RecordWriterOutput<?> streamOutput =
                     createStreamOutput(
                             recordWriterDelegate.getRecordWriter(i),
@@ -508,6 +509,7 @@ public abstract class OperatorChain<OUT, OP extends StreamOperator<OUT>>
                             taskEnvironment.getUserCodeClassLoader().asClassLoader());
         }
 
+        // TODO 创建RecordWriterOutput
         return closer.register(
                 new RecordWriterOutput<OUT>(
                         recordWriter,
