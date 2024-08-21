@@ -426,7 +426,7 @@ public abstract class Dispatcher extends PermanentlyFencedRpcEndpoint<Dispatcher
         // TODO 之前在讲主节点启动时Dispatcher会启动一个JobGraphStore服务,并且如果里面还有未执行完的JobGraph,会先进行恢复
         // TODO JobGraphWriter = DefaultJobGraphStore，持久化JobGraph
         jobGraphWriter.putJobGraph(jobGraph);
-        // TODO
+        // TODO 创建并启动JobMaster
         runJob(jobGraph, ExecutionType.SUBMISSION);
     }
 
