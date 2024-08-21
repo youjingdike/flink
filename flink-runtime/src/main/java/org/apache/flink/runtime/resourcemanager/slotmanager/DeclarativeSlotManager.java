@@ -576,7 +576,7 @@ public class DeclarativeSlotManager implements SlotManager {
         pendingSlotAllocations.put(slotId, allocationId);
 
         // RPC call to the task manager
-        // TODO
+        // TODO 通过rpc请求,向taskExecutor请求slot
         CompletableFuture<Acknowledge> requestFuture =
                 gateway.requestSlot(
                         slotId,

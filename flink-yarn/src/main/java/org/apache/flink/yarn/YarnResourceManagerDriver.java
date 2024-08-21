@@ -161,7 +161,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
 
     @Override
     protected void initializeInternal() throws Exception {
-        // TODO YarnContainerEventHandler该类的方法会被回调
+        // TODO YarnContainerEventHandler该类的方法会被申请完container之后进行回调
         final YarnContainerEventHandler yarnContainerEventHandler = new YarnContainerEventHandler();
         try {
             // TODO 创建并启动AMRMClientAsync，联系YARN RM
@@ -265,7 +265,8 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
             final Priority priority = priorityAndResourceOpt.get().getPriority();
             final Resource resource = priorityAndResourceOpt.get().getResource();
             // TODO
-            //  step.33;请求获取container资源,申请成功后，回调：YarnContainerEventHandler.onContainersAllocated()方法
+            //  step.33;请求获取container资源,申请成功后，回调：YarnContainerEventHandler.onContainersAllocated(..)方法
+            /** {@link YarnContainerEventHandler#onContainersAllocated(List)}*/
             // TODO 在回调里面启动taskExecutor
             resourceManagerClient.addContainerRequest(getContainerRequest(resource, priority));
 
@@ -341,8 +342,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
                     pendingContainerRequestIterator.next();
             final ResourceID resourceId = getContainerResourceId(container);
 
-            // TODO
-            // 获取到在step.34中保存的requestResourceFuture,传入startTaskExecutorInContainerAsync(),后续会处理该CompletableFuture
+            // TODO 获取到在step.34中保存的requestResourceFuture,传入startTaskExecutorInContainerAsync(),后续会处理该CompletableFuture
             final CompletableFuture<YarnWorkerNode> requestResourceFuture =
                     pendingRequestResourceFutures.poll();
             Preconditions.checkState(requestResourceFuture != null);
@@ -395,7 +395,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
                 FutureUtils.supplyAsync(
                         () ->
                                 // TODO step.38;
-                                // 创建ContainerLaunchContext请求对象，指定启动的入口类YarnTaskExecutorRunner.class及参数
+                                //  创建ContainerLaunchContext请求对象，指定启动的入口类YarnTaskExecutorRunner.class及参数
                                 createTaskExecutorLaunchContext(
                                         resourceId,
                                         container.getNodeId().getHost(),
@@ -407,7 +407,7 @@ public class YarnResourceManagerDriver extends AbstractResourceManagerDriver<Yar
                         (context, exception) -> {
                             if (exception == null) {
                                 // TODO step.39; 通过YARN NM
-                                // Client发送启动container请求，运行YarnTaskExecutorRunner.class的main(),驱动启动TaskExecutor进程，申请结束；
+                                //  Client发送启动container请求，运行YarnTaskExecutorRunner.class的main(),驱动启动TaskExecutor进程，申请结束；
                                 // TODO **资源申请END**
                                 nodeManagerClient.startContainerAsync(container, context);
                                 // TODO step.40;设置传入的requestResourceFuture完成;

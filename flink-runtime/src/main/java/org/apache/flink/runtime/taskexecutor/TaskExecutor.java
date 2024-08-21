@@ -284,7 +284,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
             FatalErrorHandler fatalErrorHandler,
             TaskExecutorPartitionTracker partitionTracker) {
 
-        // TaskExecutor为RPCEndpoint的子类,这个构造器调用的RPCEndpoint的构造器
+        // TODO TaskExecutor为RPCEndpoint的子类,这个构造器调用的RPCEndpoint的构造器
         super(rpcService, RpcServiceUtils.createRandomName(TASK_MANAGER_NAME));
 
         checkArgument(
@@ -413,7 +413,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
     private void startTaskExecutorServices() throws Exception {
         try {
             // start by connecting to the ResourceManager
-            // TODO 监控ResourceManager
+            // TODO ResourceManager检索
             /*
             TODO
              1.从代码的字面意思能够得知,这就是为了获取ResourceManager的地址,同时添加监听
@@ -1090,6 +1090,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
         }
 
         try {
+            // TODO
             allocateSlot(slotId, jobId, allocationId, resourceProfile);
         } catch (SlotAllocationException sae) {
             return FutureUtils.completedExceptionally(sae);
@@ -1145,6 +1146,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
             SlotID slotId, JobID jobId, AllocationID allocationId, ResourceProfile resourceProfile)
             throws SlotAllocationException {
         if (taskSlotTable.isSlotFree(slotId.getSlotNumber())) {
+            // TODO
             if (taskSlotTable.allocateSlot(
                     slotId.getSlotNumber(),
                     jobId,
