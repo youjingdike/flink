@@ -1278,6 +1278,7 @@ public class JobGraphGenerator implements Visitor<PlanNode> {
             boolean isBroadcast)
             throws CompilerException {
         // ------------ connect the vertices to the job graph --------------
+        // TODO 设置DistributionPattern
         final DistributionPattern distributionPattern;
 
         switch (channel.getShipStrategy()) {
@@ -1297,6 +1298,7 @@ public class JobGraphGenerator implements Visitor<PlanNode> {
                         "Unknown runtime ship strategy: " + channel.getShipStrategy());
         }
 
+        // TODO 设置ResultPartitionType
         final ResultPartitionType resultType;
 
         switch (channel.getDataExchangeMode()) {

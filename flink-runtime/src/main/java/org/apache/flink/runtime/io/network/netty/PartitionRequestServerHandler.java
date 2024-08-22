@@ -89,9 +89,10 @@ class PartitionRequestServerHandler extends SimpleChannelInboundHandler<NettyMes
                     reader =
                             new CreditBasedSequenceNumberingViewReader(
                                     request.receiverId, request.credit, outboundQueue);
-                    // TODO reader随后会创建一个ResultSubpartitionView，
+                    // TODO reader在该方法里会创建一个ResultSubpartitionView，
                     //  reader就是通过这个ResultSubpartitionView来从对应的ResultSubpartition里读取数据，
-                    //  在实时计算里，这个ResultSubpartitionView是PipelinedSubpartitionView的实例
+                    //  在实时计算里，这个ResultSubpartitionView是PipelinedSubpartitionView的实例，其持有对应的PipelinedSubpartition,
+                    //  而PipelinedSubpartition正是数据写出的buffer的持有者
                     reader.requestSubpartitionView(
                             partitionProvider, request.partitionId, request.queueIndex);
 

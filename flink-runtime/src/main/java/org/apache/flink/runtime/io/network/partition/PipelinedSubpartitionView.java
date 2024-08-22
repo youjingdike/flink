@@ -32,6 +32,7 @@ public class PipelinedSubpartitionView implements ResultSubpartitionView {
     /** The subpartition this view belongs to. */
     private final PipelinedSubpartition parent;
 
+    // TODO 持有CreditBasedSequenceNumberingViewReader的实例
     private final BufferAvailabilityListener availabilityListener;
 
     /** Flag indicating whether this view has been released. */
@@ -53,6 +54,7 @@ public class PipelinedSubpartitionView implements ResultSubpartitionView {
 
     @Override
     public void notifyDataAvailable() {
+        // TODO availabilityListener为CreditBasedSequenceNumberingViewReader的实例,唤醒数据输出
         availabilityListener.notifyDataAvailable();
     }
 

@@ -159,6 +159,7 @@ public class NetworkBufferPool
      */
     @Nullable
     public MemorySegment requestPooledMemorySegment() {
+        // TODO LocalBufferPool中的buffer从这里获取
         synchronized (availableMemorySegments) {
             return internalRequestMemorySegment();
         }

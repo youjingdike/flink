@@ -80,19 +80,23 @@ public class PipelinedSubpartition extends ResultSubpartition
     private final int receiverExclusiveBuffersPerChannel;
 
     /** All buffers of this subpartition. Access to the buffers is synchronized on this object. */
+    /** TODO ResultSubpartition用于缓存数据的buffer，RecordWriter将数据写到这些buffer里，然后Reduce任务会消费这些buffer数据*/
     final PrioritizedDeque<BufferConsumerWithPartialRecordLength> buffers =
             new PrioritizedDeque<>();
 
     /** The number of non-event buffers currently in this subpartition. */
+    /** TODO ResultSubpartition中buffer的积压量，当有新buffer添加进来这个值会加1，当有buffer被消费时这个值会减1*/
     @GuardedBy("buffers")
     private int buffersInBacklog;
 
     /** The read view to consume this subpartition. */
+    /** TODO 消费ResultSubpartition buffer的reader视图，由netty服务端向消费端发送数据时调用*/
     PipelinedSubpartitionView readView;
 
     /** Flag indicating whether the subpartition has been finished. */
     private boolean isFinished;
 
+    /** TODO 刷新请求，上述说过，当Map端的数据生产速度较慢时，会定时刷新buffer数据，这个变量就是用来标记刷新动作的*/
     @GuardedBy("buffers")
     private boolean flushRequested;
 
@@ -194,6 +198,8 @@ public class PipelinedSubpartition extends ResultSubpartition
         if (prioritySequenceNumber != -1) {
             notifyPriorityEvent(prioritySequenceNumber);
         }
+
+        // TODO 唤醒数据输出
         if (notifyDataAvailable) {
             notifyDataAvailable();
         }
@@ -296,6 +302,7 @@ public class PipelinedSubpartition extends ResultSubpartition
 
     @Nullable
     BufferAndBacklog pollBuffer() {
+        // TODO 读取流程最终的调用到这个方法，将buffer数据读取出，发送给下游算子
         synchronized (buffers) {
             if (isBlocked) {
                 return null;
@@ -589,6 +596,7 @@ public class PipelinedSubpartition extends ResultSubpartition
     }
 
     private void notifyDataAvailable() {
+        // TODO 唤醒数据输出
         final PipelinedSubpartitionView readView = this.readView;
         if (readView != null) {
             readView.notifyDataAvailable();

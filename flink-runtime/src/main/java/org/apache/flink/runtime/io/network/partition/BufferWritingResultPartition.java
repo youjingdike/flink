@@ -51,6 +51,8 @@ import static org.apache.flink.util.Preconditions.checkState;
 public abstract class BufferWritingResultPartition extends ResultPartition {
 
     /** The subpartitions of this partition. At least one. */
+    /** TODO ResultSubpartition类型数组，ResultSubpartition对应的是下游的任务，
+     *   一个ResultSubpartition对应了一个下游子任务，每个ResultSubpartition里会有一些buffer来缓存下游任务所要消费的数据。*/
     protected final ResultSubpartition[] subpartitions;
 
     /**
@@ -139,7 +141,7 @@ public abstract class BufferWritingResultPartition extends ResultPartition {
 
     @Override
     public void emitRecord(ByteBuffer record, int targetSubpartition) throws IOException {
-        // TODO
+        // TODO 获取BufferBuilder,就是对MemorySegment的封装
         BufferBuilder buffer = appendUnicastDataForNewRecord(record, targetSubpartition);
 
         while (record.hasRemaining()) {
@@ -262,8 +264,9 @@ public abstract class BufferWritingResultPartition extends ResultPartition {
         BufferBuilder buffer = unicastBufferBuilders[targetSubpartition];
 
         if (buffer == null) {
+            // TODO 申请BufferBuilder
             buffer = requestNewUnicastBufferBuilder(targetSubpartition);
-            // TODO
+            // TODO 将buffer加入到Subpartition中
             addToSubpartition(buffer, targetSubpartition, 0);
         }
 
@@ -275,8 +278,8 @@ public abstract class BufferWritingResultPartition extends ResultPartition {
     private void addToSubpartition(BufferBuilder buffer, int targetSubpartition, int i)
             throws IOException {
         int desirableBufferSize =
+                // TODO 将buffer加入到Subpartition中
                 subpartitions[targetSubpartition].add(
-                        // TODO
                         buffer.createBufferConsumerFromBeginning(), i);
 
         if (desirableBufferSize > 0) {
@@ -289,6 +292,7 @@ public abstract class BufferWritingResultPartition extends ResultPartition {
     private BufferBuilder appendUnicastDataForRecordContinuation(
             final ByteBuffer remainingRecordBytes, final int targetSubpartition)
             throws IOException {
+        // TODO
         final BufferBuilder buffer = requestNewUnicastBufferBuilder(targetSubpartition);
         // !! Be aware, in case of partialRecordBytes != 0, partial length and data has to
         // `appendAndCommit` first
@@ -297,6 +301,7 @@ public abstract class BufferWritingResultPartition extends ResultPartition {
         // with a complete record.
         // !! The next two lines can not change order.
         final int partialRecordBytes = buffer.appendAndCommit(remainingRecordBytes);
+        // TODO 将buffer加入到Subpartition中
         addToSubpartition(buffer, targetSubpartition, partialRecordBytes);
 
         return buffer;
@@ -344,6 +349,7 @@ public abstract class BufferWritingResultPartition extends ResultPartition {
             throws IOException {
         checkInProduceState();
         ensureUnicastMode();
+        // TODO
         final BufferBuilder bufferBuilder = requestNewBufferBuilderFromPool(targetSubpartition);
         unicastBufferBuilders[targetSubpartition] = bufferBuilder;
 
@@ -361,6 +367,7 @@ public abstract class BufferWritingResultPartition extends ResultPartition {
 
     private BufferBuilder requestNewBufferBuilderFromPool(int targetSubpartition)
             throws IOException {
+        // TODO
         BufferBuilder bufferBuilder = bufferPool.requestBufferBuilder(targetSubpartition);
         if (bufferBuilder != null) {
             return bufferBuilder;
@@ -368,6 +375,7 @@ public abstract class BufferWritingResultPartition extends ResultPartition {
 
         backPressuredTimeMsPerSecond.markStart();
         try {
+            // TODO
             bufferBuilder = bufferPool.requestBufferBuilderBlocking(targetSubpartition);
             backPressuredTimeMsPerSecond.markEnd();
             return bufferBuilder;

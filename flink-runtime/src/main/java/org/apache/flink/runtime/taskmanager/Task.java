@@ -407,6 +407,8 @@ public class Task
                                 taskShuffleContext, resultPartitionDeploymentDescriptors)
                         .toArray(new ResultPartitionWriter[] {});
 
+        /** TODO resultPartitionConsumableNotifier：对应批处理模式，当partition的数据可用了，这个唤醒者会触发JobManager进行下游任务部署*/
+        // TODO 该处会根据Partition的属性进行判断是否需要进行包装
         this.consumableNotifyingPartitionWriters =
                 ConsumableNotifyingResultPartitionWriterDecorator.decorate(
                         resultPartitionDeploymentDescriptors,

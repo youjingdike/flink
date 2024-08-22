@@ -84,6 +84,10 @@ public abstract class ResultPartition implements ResultPartitionWriter {
     protected final ResultPartitionID partitionId;
 
     /** Type of this partition. Defines the concrete subpartition implementation to use. */
+    /** TODO 上下游之间数据的传送类型，
+     *   BLOCKING: 阻塞，上游数据处理完了，下游才开始处理；
+     *   PIPELINED: 流水线，上下游可以同时进行生产和消费；
+     *   PIPELINED_BOUNDED: 流水线模式，但是流量有限制，意思是在出现背压时，任务不会将大量的数据缓存到自己的buffer里，在流处理情况下都是这种类型*/
     protected final ResultPartitionType partitionType;
 
     protected final ResultPartitionManager partitionManager;

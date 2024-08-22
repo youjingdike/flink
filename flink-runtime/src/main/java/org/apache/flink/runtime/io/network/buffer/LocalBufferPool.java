@@ -68,6 +68,7 @@ class LocalBufferPool implements BufferPool {
     private static final int UNKNOWN_CHANNEL = -1;
 
     /** Global network buffer pool to get buffers from. */
+    /** TODO 全局的网络buffer池，LocalBufferPool中的buffer将通过networkBufferPool中获取*/
     private final NetworkBufferPool networkBufferPool;
 
     /** The minimum number of required segments for this pool. */
@@ -83,6 +84,7 @@ class LocalBufferPool implements BufferPool {
      * org.apache.flink.runtime.io.network.partition.consumer.BufferManager#bufferQueue} via the
      * {@link #registeredListeners} callback.
      */
+    /** TODO LocalBufferPool中当前可用的buffer队列，已经从networkBufferPool获取，但是还没有用来缓冲数据的buffer。LocalBufferPool中的buffer形式就是MemorySegment*/
     private final ArrayDeque<MemorySegment> availableMemorySegments =
             new ArrayDeque<MemorySegment>();
 
@@ -90,9 +92,11 @@ class LocalBufferPool implements BufferPool {
      * Buffer availability listeners, which need to be notified when a Buffer becomes available.
      * Listeners can only be registered at a time/state where no Buffer instance was available.
      */
+    /** TODO buffer可用时的监听器，当LocalBufferPool中有可用的buffer了，就会通知这些监听器，一般在数据消费端才会使用*/
     private final ArrayDeque<BufferListener> registeredListeners = new ArrayDeque<>();
 
     /** Maximum number of network buffers to allocate. */
+    /** TODO LocalBufferPool中最大的buffer数量*/
     private final int maxNumberOfMemorySegments;
 
     /** The current size of this pool. */
@@ -104,6 +108,7 @@ class LocalBufferPool implements BufferPool {
      * somehow referenced through this pool (e.g. wrapped in Buffer instances or as available
      * segments).
      */
+    /** TODO 已经从networkBufferPool中申请的buffer数量*/
     @GuardedBy("availableMemorySegments")
     private int numberOfRequestedMemorySegments;
 
@@ -299,6 +304,7 @@ class LocalBufferPool implements BufferPool {
 
     @Override
     public BufferBuilder requestBufferBuilder(int targetChannel) {
+        // TODO
         return toBufferBuilder(requestMemorySegment(targetChannel), targetChannel);
     }
 
@@ -315,6 +321,7 @@ class LocalBufferPool implements BufferPool {
     @Override
     public BufferBuilder requestBufferBuilderBlocking(int targetChannel)
             throws InterruptedException {
+        // TODO
         return toBufferBuilder(requestMemorySegmentBlocking(targetChannel), targetChannel);
     }
 
@@ -340,6 +347,7 @@ class LocalBufferPool implements BufferPool {
     private MemorySegment requestMemorySegmentBlocking(int targetChannel)
             throws InterruptedException {
         MemorySegment segment;
+        // TODO  requestMemorySegment(targetChannel)
         while ((segment = requestMemorySegment(targetChannel)) == null) {
             try {
                 // wait until available
@@ -378,6 +386,7 @@ class LocalBufferPool implements BufferPool {
                 }
             }
 
+            // TODO
             if (!checkAvailability()) {
                 availabilityHelper.resetUnavailable();
             }
@@ -403,6 +412,7 @@ class LocalBufferPool implements BufferPool {
                 !isDestroyed,
                 "Destroyed buffer pools should never acquire segments - this will lead to buffer leaks.");
 
+        // TODO LocalBufferPool中的buffer将从全局的网络buffer池networkBufferPool中获取
         MemorySegment segment = networkBufferPool.requestPooledMemorySegment();
         if (segment != null) {
             availableMemorySegments.add(segment);
@@ -464,6 +474,7 @@ class LocalBufferPool implements BufferPool {
             return unavailableSubpartitionsCount == 0;
         }
         if (!isRequestedSizeReached()) {
+            // TODO
             if (requestMemorySegmentFromGlobal()) {
                 return unavailableSubpartitionsCount == 0;
             } else {

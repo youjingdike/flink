@@ -63,11 +63,14 @@ public class ConsumableNotifyingResultPartitionWriterDecorator {
                 new ResultPartitionWriter[partitionWriters.length];
         int counter = 0;
         for (ResultPartitionDeploymentDescriptor desc : descs) {
+            // TODO desc.notifyPartitionDataAvailable()为true,对应批处理模式，当partition的数据可用了，会触发JobManager进行下游任务部署
+            // TODO 进行包装
             if (desc.notifyPartitionDataAvailable() && desc.getPartitionType().isPipelined()) {
                 consumableNotifyingPartitionWriters[counter] =
                         new ConsumableNotifyingResultPartitionWriter(
                                 taskActions, jobId, partitionWriters[counter], notifier);
             } else {
+                // TODO 不包装
                 consumableNotifyingPartitionWriters[counter] = partitionWriters[counter];
             }
             counter++;

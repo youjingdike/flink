@@ -113,6 +113,7 @@ public class ResultPartitionFactory {
             String taskNameWithSubtaskAndId,
             int partitionIndex,
             ResultPartitionDeploymentDescriptor desc) {
+        // TODO
         return create(
                 taskNameWithSubtaskAndId,
                 partitionIndex,
@@ -139,6 +140,7 @@ public class ResultPartitionFactory {
 
         ResultSubpartition[] subpartitions = new ResultSubpartition[numberOfSubpartitions];
 
+        // TODO 流式任务
         final ResultPartition partition;
         if (type == ResultPartitionType.PIPELINED
                 || type == ResultPartitionType.PIPELINED_BOUNDED
