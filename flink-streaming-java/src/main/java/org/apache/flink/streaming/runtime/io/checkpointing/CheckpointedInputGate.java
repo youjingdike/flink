@@ -157,7 +157,7 @@ public class CheckpointedInputGate implements PullingAsyncDataInput<BufferOrEven
      */
     @Override
     public Optional<BufferOrEvent> pollNext() throws IOException, InterruptedException {
-        // TODO
+        // TODO InputGateWithMetrics
         Optional<BufferOrEvent> next = inputGate.pollNext();
 
         if (!next.isPresent()) {

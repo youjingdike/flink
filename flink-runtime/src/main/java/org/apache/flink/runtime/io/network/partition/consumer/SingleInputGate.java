@@ -666,11 +666,12 @@ public class SingleInputGate extends IndexedInputGate {
         return getNextBufferOrEvent(true);
     }
 
-    /** TODO 被CheckpointedInputGate调用
+    /** TODO 间接被CheckpointedInputGate调用
      * {@link org.apache.flink.streaming.runtime.io.checkpointing.CheckpointedInputGate#pollNext()}
      */
     @Override
     public Optional<BufferOrEvent> pollNext() throws IOException, InterruptedException {
+        // TODO
         return getNextBufferOrEvent(false);
     }
 
@@ -715,7 +716,7 @@ public class SingleInputGate extends IndexedInputGate {
                 }
 
                 final InputChannel inputChannel = inputChannelOpt.get();
-                // TODO 获取buffer数据
+                // TODO 获取buffer数据 RomoteInputChannel
                 Optional<BufferAndAvailability> bufferAndAvailabilityOpt =
                         inputChannel.getNextBuffer();
 
@@ -1027,7 +1028,7 @@ public class SingleInputGate extends IndexedInputGate {
             }
         }
 
-        // TODO 获取inputChannel
+        // TODO 获取inputChannel,与获取外部数据的流程衔接
         InputChannel inputChannel = inputChannelsWithData.poll();
         enqueuedInputChannelsWithData.clear(inputChannel.getChannelIndex());
 

@@ -115,7 +115,7 @@ public class SingleInputGateFactory {
             bufferDecompressor = new BufferDecompressor(networkBufferSize, compressionCodec);
         }
 
-        // TODO
+        // TODO 创建SingleInputGate
         SingleInputGate inputGate =
                 new SingleInputGate(
                         owningTaskName,
@@ -129,7 +129,7 @@ public class SingleInputGateFactory {
                         bufferDecompressor,
                         networkBufferPool,
                         networkBufferSize);
-        // TODO
+        // TODO 为SingleInputGate设置InputChannels
         createInputChannels(owningTaskName, igdd, inputGate, metrics);
         return inputGate;
     }
@@ -143,17 +143,19 @@ public class SingleInputGateFactory {
                 inputGateDeploymentDescriptor.getShuffleDescriptors();
 
         // Create the input channels. There is one input channel for each consumed partition.
-        // TODO 创建输入通道。每个消耗的分区都有一个输入通道。
+        // TODO 创建输入通道数组。每个消耗的分区都有一个输入通道。
         InputChannel[] inputChannels = new InputChannel[shuffleDescriptors.length];
 
         ChannelStatistics channelStatistics = new ChannelStatistics();
 
+        // TODO 创建InputChannel放入数组中
         for (int i = 0; i < inputChannels.length; i++) {
             inputChannels[i] =
                     // TODO
                     createInputChannel(
                             inputGate, i, shuffleDescriptors[i], channelStatistics, metrics);
         }
+        // TODO 为SingleInputGate设置inputChannels，一个SingleInputGate有多个inputChannel
         inputGate.setInputChannels(inputChannels);
 
         LOG.debug(

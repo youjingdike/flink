@@ -746,7 +746,7 @@ public abstract class StreamTask<OUT, OP extends StreamOperator<OUT>>
                     .thenRun(
                             () ->
                                     mainMailboxExecutor.execute(
-                                            // TODO 创建nettyClient的连接,开始读取数据
+                                            // TODO 创建NettyClient的连接,开始读取数据
                                             inputGate::requestPartitions,
                                             "Input gate request partitions"));
         }

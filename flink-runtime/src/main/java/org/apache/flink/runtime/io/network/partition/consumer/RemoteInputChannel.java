@@ -178,7 +178,7 @@ public class RemoteInputChannel extends InputChannel {
                     channelStatePersister);
             // Create a client and request the partition
             try {
-                // TODO
+                // TODO 与上游算子的NettyServer建立连接
                 partitionRequestClient =
                         connectionManager.createPartitionRequestClient(connectionId);
             } catch (IOException e) {
@@ -187,7 +187,7 @@ public class RemoteInputChannel extends InputChannel {
                 throw new PartitionConnectionException(partitionId, e);
             }
 
-            // TODO
+            // TODO 请求数据
             partitionRequestClient.requestSubpartition(partitionId, subpartitionIndex, this, 0);
         }
     }
@@ -212,6 +212,7 @@ public class RemoteInputChannel extends InputChannel {
         final DataType nextDataType;
 
         synchronized (receivedBuffers) {
+            // TODO 获取SequenceBuffer
             next = receivedBuffers.poll();
             nextDataType =
                     receivedBuffers.peek() != null
@@ -546,7 +547,8 @@ public class RemoteInputChannel extends InputChannel {
                     firstPriorityEvent = addPriorityBuffer(sequenceBuffer);
                     recycleBuffer = false;
                 } else {
-                    // TODO 将这个buffer添加到自己的buffer数据队列里
+                    // TODO 将这个buffer添加到自己的buffer数据队列里，
+                    //  当SingleInputGate通过调用该类的getNextBuffer()时,从receivedBuffers里面获取Buffer
                     receivedBuffers.add(sequenceBuffer);
                     recycleBuffer = false;
                     if (dataType.requiresAnnouncement()) {

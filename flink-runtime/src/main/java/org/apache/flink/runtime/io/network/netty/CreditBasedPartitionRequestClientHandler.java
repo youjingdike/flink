@@ -336,7 +336,8 @@ class CreditBasedPartitionRequestClientHandler extends ChannelInboundHandlerAdap
         if (bufferOrEvent.isBuffer() && bufferOrEvent.bufferSize == 0) {
             inputChannel.onEmptyBuffer(bufferOrEvent.sequenceNumber, bufferOrEvent.backlog);
         } else if (bufferOrEvent.getBuffer() != null) {
-            // TODO onBuffer()核心处理逻辑
+            // TODO onBuffer()核心处理逻辑，也是读取/发送的关键地方
+            //  RemoteInputChannel的onBuffer(..),这里就会与向下游发送的地方交汇衔接
             inputChannel.onBuffer(
                     bufferOrEvent.getBuffer(), bufferOrEvent.sequenceNumber, bufferOrEvent.backlog);
         } else {

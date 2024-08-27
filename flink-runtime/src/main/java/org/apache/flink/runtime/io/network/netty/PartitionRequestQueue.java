@@ -121,7 +121,7 @@ class PartitionRequestQueue extends ChannelInboundHandlerAdapter {
         // the writeAndFlushNextMessageIfPossible calls.
         boolean triggerWrite = availableReaders.isEmpty();
         // TODO 将reader添加到可读取队列
-        //  下面的方法writeAndFlushNextMessageIfPossible()会从可对队列获取队列
+        //  下面的方法writeAndFlushNextMessageIfPossible()会从可读队列获取队列
         registerAvailableReader(reader);
 
         if (triggerWrite) {

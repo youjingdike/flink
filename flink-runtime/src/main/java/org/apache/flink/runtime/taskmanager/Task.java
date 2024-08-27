@@ -418,7 +418,8 @@ public class Task
                         resultPartitionConsumableNotifier);
 
         // consumed intermediate result partitions
-        // TODO 创建 SingleInputGate 的数组
+        // TODO **这个创建是个重点**
+        // TODO 创建 SingleInputGate 的数组，并且为每个SingleInputGate设置了inputChannels(及一个SingleInputGate有一个或多个inputChannel)
         final IndexedInputGate[] gates =
                 shuffleEnvironment
                         .createInputGates(taskShuffleContext, this, inputGateDeploymentDescriptors)
