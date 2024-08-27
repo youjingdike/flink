@@ -412,7 +412,7 @@ class LocalBufferPool implements BufferPool {
                 !isDestroyed,
                 "Destroyed buffer pools should never acquire segments - this will lead to buffer leaks.");
 
-        // TODO LocalBufferPool中的buffer将从全局的网络buffer池networkBufferPool中获取
+        // TODO LocalBufferPool中的buffer将从全局的网络buffer池 networkBufferPool中获取
         MemorySegment segment = networkBufferPool.requestPooledMemorySegment();
         if (segment != null) {
             availableMemorySegments.add(segment);

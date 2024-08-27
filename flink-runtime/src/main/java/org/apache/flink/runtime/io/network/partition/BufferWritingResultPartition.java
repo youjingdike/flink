@@ -270,6 +270,7 @@ public abstract class BufferWritingResultPartition extends ResultPartition {
             addToSubpartition(buffer, targetSubpartition, 0);
         }
 
+        // TODO 写入数据
         buffer.appendAndCommit(record);
 
         return buffer;

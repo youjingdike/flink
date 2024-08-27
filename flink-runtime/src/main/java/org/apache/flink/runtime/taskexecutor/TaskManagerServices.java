@@ -280,7 +280,7 @@ public class TaskManagerServices {
         final IOManager ioManager =
                 new IOManagerAsync(taskManagerServicesConfiguration.getTmpDirPaths());
 
-        // TODO 作业执行期间shuffle相关操作工作,执行了使用netty进行数据传输的相关操作
+        // TODO 作业执行期间shuffle相关操作工作,执行了使用netty进行数据传输的相关操作，数据的读入与写出
         //  NettyShuffleEnvironment
         final ShuffleEnvironment<?, ?> shuffleEnvironment =
                 createShuffleEnvironment(

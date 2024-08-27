@@ -48,13 +48,13 @@ public class PipelinedSubpartitionView implements ResultSubpartitionView {
     @Nullable
     @Override
     public BufferAndBacklog getNextBuffer() {
-        // TODO
+        // TODO 获取Buffer发送数据
         return parent.pollBuffer();
     }
 
     @Override
     public void notifyDataAvailable() {
-        // TODO availabilityListener为CreditBasedSequenceNumberingViewReader的实例,唤醒数据输出
+        // TODO availabilityListener为CreditBasedSequenceNumberingViewReader的实例,当有数据写入时，唤醒数据输出
         availabilityListener.notifyDataAvailable();
     }
 

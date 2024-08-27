@@ -143,6 +143,7 @@ public class PipelinedSubpartition extends ResultSubpartition
 
     @Override
     public int add(BufferConsumer bufferConsumer, int partialRecordLength) {
+        // TODO
         return add(bufferConsumer, partialRecordLength, false);
     }
 
@@ -184,6 +185,7 @@ public class PipelinedSubpartition extends ResultSubpartition
             }
 
             // Add the bufferConsumer and update the stats
+            // TODO 添加buffer
             if (addBuffer(bufferConsumer, partialRecordLength)) {
                 prioritySequenceNumber = sequenceNumber;
             }
@@ -212,6 +214,7 @@ public class PipelinedSubpartition extends ResultSubpartition
         if (bufferConsumer.getDataType().hasPriority()) {
             return processPriorityBuffer(bufferConsumer, partialRecordLength);
         }
+        // TODO
         buffers.add(new BufferConsumerWithPartialRecordLength(bufferConsumer, partialRecordLength));
         return false;
     }
