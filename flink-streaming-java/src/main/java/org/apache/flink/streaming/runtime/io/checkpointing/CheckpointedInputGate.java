@@ -150,12 +150,14 @@ public class CheckpointedInputGate implements PullingAsyncDataInput<BufferOrEven
         return inputGate.getAvailableFuture();
     }
 
+    /** TODO 这个方法被两个地方调用,处理优先级的事件
+     * {@link #processPriorityEvents()}
+     * TODO 被处理流数据的流程调用
+     * {@link AbstractStreamTaskNetworkInput#emitNext(PushingAsyncDataInput.DataOutput)}
+     */
     @Override
     public Optional<BufferOrEvent> pollNext() throws IOException, InterruptedException {
-        // TODO 这个方法被两个地方调用,处理优先级的事件
-        /** {@link #processPriorityEvents()}*/
-        // TODO 被处理流数据的流程调用
-        /** {@link AbstractStreamTaskNetworkInput#emitNext(PushingAsyncDataInput.DataOutput)}*/
+        // TODO
         Optional<BufferOrEvent> next = inputGate.pollNext();
 
         if (!next.isPresent()) {

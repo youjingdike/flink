@@ -296,7 +296,7 @@ public class SingleInputGate extends IndexedInputGate {
                 }
                 // TODO 转换 InputChannel
                 convertRecoveredInputChannels();
-                // TODO
+                // TODO 请求Partition数据
                 internalRequestPartitions();
             }
 
@@ -666,11 +666,11 @@ public class SingleInputGate extends IndexedInputGate {
         return getNextBufferOrEvent(true);
     }
 
+    /** TODO 被CheckpointedInputGate调用
+     * {@link org.apache.flink.streaming.runtime.io.checkpointing.CheckpointedInputGate#pollNext()}
+     */
     @Override
     public Optional<BufferOrEvent> pollNext() throws IOException, InterruptedException {
-
-        // TODO 被CheckpointedInputGate调用
-        /** {@link org.apache.flink.streaming.runtime.io.checkpointing.CheckpointedInputGate#pollNext()}*/
         return getNextBufferOrEvent(false);
     }
 
@@ -708,7 +708,7 @@ public class SingleInputGate extends IndexedInputGate {
                 // TODO 获取InputChanne,再获取数据进行处理
                 //  **重点：这里就是和nettyClient接收数据的连接点,其会把数据放入channel中
                 /** {@link #queueChannelUnsafe(InputChannel, boolean)} */
-                // TODO 通过inputChannelsWithData衔接整个数据写入/获取处理的流程
+                // TODO 通过 inputChannelsWithData 衔接整个数据写入/获取处理的流程
                 Optional<InputChannel> inputChannelOpt = getChannel(blocking);
                 if (!inputChannelOpt.isPresent()) {
                     return Optional.empty();
@@ -1003,7 +1003,7 @@ public class SingleInputGate extends IndexedInputGate {
         // TODO 将自己添加到inputChannelsWithData，可以继续被InputGate轮询
         //  这里就与处理数据的流程衔接上了，通过channel,处理流程会从channel中获取数据
         /** {@link #waitAndGetNextData(boolean)}*/
-        // TODO 通过inputChannelsWithData衔接整个数据写入/获取处理的流程
+        // TODO 通过 inputChannelsWithData 衔接整个数据写入/获取处理的流程
         inputChannelsWithData.add(channel, priority, alreadyEnqueued);
         if (!alreadyEnqueued) {
             enqueuedInputChannelsWithData.set(channel.getChannelIndex());

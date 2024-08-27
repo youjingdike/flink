@@ -100,9 +100,10 @@ public class OneInputStreamTask<IN, OUT> extends StreamTask<OUT, OneInputStreamO
             // TODO 创建CheckpointedInputGate
             CheckpointedInputGate inputGate = createCheckpointedInputGate();
             Counter numRecordsIn = setupNumRecordsInCounter(mainOperator);
-            // TODO 创建StreamTaskNetworkOutput
+            // TODO 创建StreamTaskNetworkOutput,用于从外部接入数据到Task实例后再转发到HeaderOperator中
             DataOutput<IN> output = createDataOutput(numRecordsIn);
-            // TODO 创建StreamTaskNetworkInput,内部持有CheckpointedInputGate实例对象
+
+            // TODO 创建StreamTaskNetworkInput,内部持有CheckpointedInputGate实例对象,从上游算子读取数据
             StreamTaskInput<IN> input = createTaskInput(inputGate);
 
             StreamConfig.InputConfig[] inputConfigs =

@@ -70,7 +70,7 @@ public class ConsumableNotifyingResultPartitionWriterDecorator {
                         new ConsumableNotifyingResultPartitionWriter(
                                 taskActions, jobId, partitionWriters[counter], notifier);
             } else {
-                // TODO 不包装
+                // TODO 流任务 不包装
                 consumableNotifyingPartitionWriters[counter] = partitionWriters[counter];
             }
             counter++;

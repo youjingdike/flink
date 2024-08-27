@@ -61,7 +61,7 @@ public class InputProcessorUtil {
             StreamConfig config) {
 
         registerCheckpointMetrics(taskIOMetricGroup, barrierHandler);
-        // TODO 这么做是考虑到有 多输入 的Task
+        // TODO 这么做是考虑到有 多输入 的Task InputGateUtil::createInputGate
         InputGate[] unionedInputGates =
                 Arrays.stream(inputGates)
                         .map(InputGateUtil::createInputGate)
@@ -70,6 +70,7 @@ public class InputProcessorUtil {
         return Arrays.stream(unionedInputGates)
                 .map(
                         unionedInputGate ->
+                                // TODO
                                 new CheckpointedInputGate(
                                         unionedInputGate,
                                         barrierHandler,

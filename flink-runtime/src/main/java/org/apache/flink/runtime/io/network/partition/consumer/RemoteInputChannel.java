@@ -572,6 +572,7 @@ public class RemoteInputChannel extends InputChannel {
                 // TODO 处理优先级数据
                 notifyPriorityEvent(sequenceNumber);
             }
+            // TODO 原来为空的才需要被唤醒被InputGate消费消费数据
             if (wasEmpty) {
                 // TODO 让自己可以被InputGate消费
                 notifyChannelNonEmpty();

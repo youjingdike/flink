@@ -76,7 +76,7 @@ public class NettyConnectionManager implements ConnectionManager {
 
     @Override
     public int start() throws IOException {
-        // TODO 启动client，连接的是上游算子的服务端,当调用connect()创建连接并设置处理的handler
+        // TODO 初始化client，连接的是上游算子的服务端,当调用connect()创建连接时才设置处理的handler
         /** {@link NettyClient#connect(InetSocketAddress)}*/
         client.init(nettyProtocol, bufferPool);
 

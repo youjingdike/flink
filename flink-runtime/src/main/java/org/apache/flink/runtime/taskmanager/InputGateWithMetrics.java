@@ -124,6 +124,8 @@ public class InputGateWithMetrics extends IndexedInputGate {
 
     @Override
     public void requestPartitions() throws IOException {
+        // TODO SingleInputGate
+        /** {@link org.apache.flink.streaming.runtime.tasks.StreamTask#restoreGates()}*/
         inputGate.requestPartitions();
     }
 
